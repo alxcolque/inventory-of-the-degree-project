@@ -18,3 +18,7 @@ export type { IShopsResponse } from './shops/shops-response';
 
 export type { ICategoryResponse } from './categories/category-response';
 export type { ICategoriesResponse } from './categories/categories-response';
+
+export type { ICustomerResponse } from './customer/customer-response';
+
+export type { ISupplierResponse } from './suppliers/supplier-response';
