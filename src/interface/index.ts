@@ -15,3 +15,6 @@ export type { IGetUsersResponse } from './users/get-users-response';
 
 export type { IShopResponse } from './shops/shop-response';
 export type { IShopsResponse } from './shops/shops-response';
+
+export type { ICategoryResponse } from './categories/category-response';
+export type { ICategoriesResponse } from './categories/categories-response';

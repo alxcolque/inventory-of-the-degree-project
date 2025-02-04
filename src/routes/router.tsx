@@ -14,6 +14,7 @@ import { Layout } from "../layouts/layout";
 import ProtectedRoute from "./protected-routes";
 
 import {
+  IndexCategories,
   IndexShops,
   IndexUsers,
   SettingsPage,
@@ -75,6 +76,15 @@ const router = createBrowserRouter([
             element: (
               <ProtectedRoute roles={["admin"]}>
                 <IndexShops />
+              </ProtectedRoute>
+            ),
+          },
+          /* categories */
+          {
+            path: "categories",
+            element: (
+              <ProtectedRoute roles={["admin"]}>
+                <IndexCategories />
               </ProtectedRoute>
             ),
           },

@@ -66,4 +66,35 @@ export const shops = [
         store_front: "https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}",
         show_fonnt_key: "123456"
     }
-]   
+] 
+//Data for categories
+export const categories = [
+    {
+        id: 1,
+        name: "category 1",
+        slug: "category-1",
+        color: "#000000",
+        icon: "fa-solid fa-circle-dot"
+    },
+    {
+        id: 2,
+        name: "category 2",
+        slug: "category-2",
+        color: "#000000",
+        icon: "fa-solid fa-circle-dot"
+    },
+    {
+        id: 3,
+        name: "category 3",
+        slug: "category-3",
+        color: "#000000",
+        icon: "fa-solid fa-circle-dot"
+    },
+    {
+        id: 4,
+        name: "category 4",
+        slug: "category-4",
+        color: "#000000",
+        icon: "fa-solid fa-circle-dot"
+    }
+]
