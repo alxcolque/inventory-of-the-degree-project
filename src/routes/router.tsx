@@ -15,6 +15,7 @@ import ProtectedRoute from "./protected-routes";
 
 import {
   IndexCategories,
+  IndexProducts,
   IndexShops,
   IndexUsers,
   SettingsPage,
@@ -85,6 +86,15 @@ const router = createBrowserRouter([
             element: (
               <ProtectedRoute roles={["admin"]}>
                 <IndexCategories />
+              </ProtectedRoute>
+            ),
+          },
+          /* products */
+          {
+            path: "products",
+            element: (
+              <ProtectedRoute roles={["admin"]}>
+                <IndexProducts />
               </ProtectedRoute>
             ),
           },

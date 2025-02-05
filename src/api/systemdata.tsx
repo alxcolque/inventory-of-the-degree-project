@@ -203,7 +203,6 @@ export const products = [
         name: "product 1",
         slug: "product-1",
         price: 100,
-        stock: 100,
         description: "product 1 description",
         image: "https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}"
     },
@@ -212,7 +211,6 @@ export const products = [
         name: "product 2",
         slug: "product-2",
         price: 100,
-        stock: 100,
         description: "product 2 description",
         image: "https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}"
     },
@@ -221,7 +219,6 @@ export const products = [
         name: "product 3",
         slug: "product-3",
         price: 100,
-        stock: 100,
         description: "product 3 description",
         image: "https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}"
     },
@@ -230,7 +227,6 @@ export const products = [
         name: "product 4",
         slug: "product-4",
         price: 100,
-        stock: 100,
         description: "product 4 description",
         image: "https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}"
     },
@@ -239,7 +235,6 @@ export const products = [
         name: "product 5",
         slug: "product-5",
         price: 100,
-        stock: 100,
         description: "product 5 description",
         image: "https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}"
     }

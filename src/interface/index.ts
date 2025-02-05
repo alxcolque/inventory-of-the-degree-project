@@ -18,3 +18,11 @@ export type { IShopsResponse } from './shops/shops-response';
 
 export type { ICategoryResponse } from './categories/category-response';
 export type { ICategoriesResponse } from './categories/categories-response';
+
+
+
+
+
+export type { IProductResponse } from './products/product-response';
+export type { IProductsResponse } from './products/products-response';
+
