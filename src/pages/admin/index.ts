@@ -12,3 +12,5 @@ export { IndexShops } from "./shops/index-shops";
 export { IndexCategories } from "./categories/index-categories";
 
 export { IndexProducts } from "./products/index-products";
+
+export { IndexInventories } from "./inventories/index-inventories";

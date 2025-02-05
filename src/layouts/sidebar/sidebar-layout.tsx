@@ -90,10 +90,10 @@ export const SidebarLayout = () => {
               />
               {/* Inventory */}
               <SidebarItem
-                isActive={pathname === "/admin/inventory"}
+                isActive={pathname === "/admin/inventories"}
                 title="Inventario"
                 icon={<FaBox className="text-default-500" size={20} />}
-                href="/admin/inventory"
+                href="/admin/inventories"
               />
               {/* Orders */}
               <SidebarItem

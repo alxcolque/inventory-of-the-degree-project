@@ -240,70 +240,70 @@ export const products = [
     }
 ]
 // data for inventory
-export const inventory = [
+export const inventories = [
     {
         id: 1,
-        product_id: 1,
-        shop_id: 1,
-        supplier_id: 1,
-        quantity: 100,
-        restock_date: new Date(),
+        productId: 1,
+        shopId: 1,
+        supplierId: 1,
+        stock: 100,
+        restockDate: new Date(),
     },
     {
         id: 2,
-        product_id: 2,
-        shop_id: 2,
-        supplier_id: 2,
-        quantity: 100,
-        restock_date: new Date(),
+        productId: 2,
+        shopId: 2,
+        supplierId: 2,
+        stock: 100,
+        restockDate: new Date(),
     },
     {
         id: 3,
-        product_id: 3,
-        shop_id: 3,
-        supplier_id: 3,
-        quantity: 100,
-        restock_date: new Date(),
+        productId: 3,
+        shopId: 3,
+        supplierId: 3,
+        stock: 100,
+        restockDate: new Date(),
     },
     {
         id: 4,
-        product_id: 4,
-        shop_id: 4,
-        supplier_id: 4,
-        quantity: 100,
-        restock_date: new Date(),
+        productId: 4,
+        shopId: 4,
+        supplierId: 4,
+        stock: 100,
+        restockDate: new Date(),
     }
 ]
 // data for orders
 export const orders = [
     {
         id: 1,
-        customer_id: 1,
-        shop_id: 1,
+        customerId: 1,
+        shopId: 1,
         quantity: 100,
         total: 100,
         status: "pending"
     },
     {
         id: 2,
-        customer_id: 2,
-        shop_id: 2,
+        customerId: 2,
+        shopId: 2,
         quantity: 100,
         total: 100,
         status: "pending"
     },
     {
         id: 3,
-        customer_id: 3,
-        shop_id: 3,
+        customerId: 3,
+        shopId: 3,
         quantity: 100,
         total: 100,
         status: "pending"
     },
     {
         id: 4,
-        customer_id: 4,
-        shop_id: 4,
+        customerId: 4,
+        shopId: 4,
         quantity: 100,
         total: 100,
         status: "pending"

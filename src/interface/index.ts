@@ -26,3 +26,7 @@ export type { ICategoriesResponse } from './categories/categories-response';
 export type { IProductResponse } from './products/product-response';
 export type { IProductsResponse } from './products/products-response';
 
+
+export type { IInventoryResponse } from './inventories/inventory-response';
+export type { IInventoriesResponse } from './inventories/inventories-response';
+

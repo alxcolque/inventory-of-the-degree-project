@@ -21,9 +21,13 @@ export const DynamicTable = ({ stringSearch, onCreate, data, columns, onEdit, on
   const [searchQuery, setSearchQuery] = useState(''); // Estado para el campo de búsqueda
 
   // Filtrar los datos según la búsqueda
-  const filteredData = data.filter((item: any) =>
-    item[stringSearch].toString().toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredData = data.filter((item: any) => {
+    if (item[stringSearch] === null || item[stringSearch] === undefined) {
+      return;
+    }else{
+      return item[stringSearch].toString().toLowerCase().includes(searchQuery.toLowerCase())
+    }
+  });
   // Cálculo del índice de los elementos a mostrar
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
