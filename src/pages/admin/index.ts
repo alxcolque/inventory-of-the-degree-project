@@ -10,3 +10,5 @@ export { SettingsPage } from "./settings/index-settings";
 export { IndexShops } from "./shops/index-shops";
 
 export { IndexCategories } from "./categories/index-categories";
+
+export { IndexSubcategories } from "./subcategories/index-subcategories";
