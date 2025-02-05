@@ -14,3 +14,5 @@ export { IndexCategories } from "./categories/index-categories";
 export { IndexProducts } from "./products/index-products";
 
 export { IndexInventories } from "./inventories/index-inventories";
+
+export { IndexOrders } from "./orders/index-orders";

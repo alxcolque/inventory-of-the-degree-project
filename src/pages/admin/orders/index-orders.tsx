@@ -3,10 +3,9 @@ import { useEffect, useState } from "react";
 import { DynamicBreadcrumbs, DynamicTable, FormModal } from "../../../components"
 import { useNavigate } from "react-router-dom";
 import { Button } from "@nextui-org/react";
-import { useAuthStore } from "../../../stores";
-import { useProductsStore } from "../../../stores/products/products.store";
+import { useAuthStore, useOrdersStore } from "../../../stores";
 
-export const IndexProducts = () => {
+export const IndexOrders = () => {
     const token = useAuthStore(state => state.token);
 
     const [selectedRowData, setSelectedRowData] = useState<Record<string, any> | null>(null);
@@ -17,17 +16,17 @@ export const IndexProducts = () => {
     const [deleteCountdown, setDeleteCountdown] = useState<number | null>(null);
     const [deleteRowId, setDeleteRowId] = useState<number | null>(null);
     /* products */
-    const products = useProductsStore(state => state.products);
-    const getProducts = useProductsStore(state => state.getProducts);
+    const orders = useOrdersStore(state => state.orders);
+    const getOrders = useOrdersStore(state => state.getOrders);
 
     const navigate = useNavigate();
-    const handleFetchProducts = async () => {
-        if (products.length === 0) {
-            await getProducts(token!);
+    const handleFetchOrders = async () => {
+        if (orders.length === 0) {
+            await getOrders(token!);
         }
     }
     useEffect(() => {
-        handleFetchProducts();
+        handleFetchOrders();
 
         if (deleteCountdown !== null && deleteCountdown > 0) {
             const timer = setTimeout(() => {
@@ -40,19 +39,15 @@ export const IndexProducts = () => {
     }, [deleteCountdown]);
 
     const headers = [
-        { name: 'NOMBRE', uid: 'name' },
-        { name: 'SLUG', uid: 'slug' },
-        { name: 'PRECIO', uid: 'price' },
-        { name: 'DESCRIPCION', uid: 'description' },
-        { name: 'IMAGEN', uid: 'image' },
+        { name: 'NOMBRE', uid: 'customerId' },
+        { name: 'TOTAL', uid: 'total' },
+        { name: 'ESTADO', uid: 'status' },
         { name: 'ACCIONES', uid: 'actions' }
     ];
     const fields = [
-        { name: 'name', label: 'Nombre', type: 'text', placeholder: 'Nombre de la categoría' },
-        { name: 'slug', label: 'Slug', type: 'text', placeholder: 'Slug de la categoría' },
-        { name: 'price', label: 'Precio', type: 'text', placeholder: 'Precio de la categoría' },
-        { name: 'description', label: 'Descripción', type: 'text', placeholder: 'Descripción de la categoría' },
-        { name: 'image', label: 'Imagen', type: 'text', placeholder: 'Imagen de la categoría' },
+        { name: 'customerId', label: 'Nombre', type: 'text', placeholder: 'Nombre de la categoría' },
+        { name: 'total', label: 'Slug', type: 'text', placeholder: 'Slug de la categoría' },
+        { name: 'status', label: 'Precio', type: 'text', placeholder: 'Precio de la categoría' },
     ];
     const handleFormSubmit = async (formData: Record<string, any>) => {
 
@@ -114,8 +109,8 @@ export const IndexProducts = () => {
             />
             <div className="my-2 px-4 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
                 <DynamicBreadcrumbs />
-                <h2>Productos</h2>
-                <DynamicTable stringSearch={'name'} onCreate={handleNewCategoryClick} data={products} columns={headers} onEdit={ handleEditClick } onDelete={handleDeleteClick} onView={handleViewClick} />
+                <h2>Pedidos</h2>
+                <DynamicTable stringSearch={'name'} onCreate={handleNewCategoryClick} data={orders} columns={headers} onEdit={ handleEditClick } onDelete={handleDeleteClick} onView={handleViewClick} />
                 {deleteRowId != null ? (
                     /* Una pequeña alerta fixed para eliminar con contador en la parte superior, tiene el boton cancelar la eliminacion */
                     <div className="fixed top-6 left-0 right-0 bg-red-500 text-white p-2 text-center z-50">

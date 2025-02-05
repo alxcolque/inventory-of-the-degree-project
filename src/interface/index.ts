@@ -30,3 +30,7 @@ export type { IProductsResponse } from './products/products-response';
 export type { IInventoryResponse } from './inventories/inventory-response';
 export type { IInventoriesResponse } from './inventories/inventories-response';
 
+export type { IOrderResponse } from './orders/order-response';
+export type { IOrdersResponse } from './orders/orders-response';
+
+
