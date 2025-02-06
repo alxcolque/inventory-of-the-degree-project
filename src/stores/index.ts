@@ -13,3 +13,8 @@ export { useProductsStore } from "./products/products.store";
 export { useInventoriesStore } from "./inventories/inventories.store";
 
 export { useOrdersStore } from "./orders/orders.store";
+
+
+export { useCustomerStore } from "./customer/customer.store";
+
+export { useSupplierStore } from "./suppliers/suppliers.store";

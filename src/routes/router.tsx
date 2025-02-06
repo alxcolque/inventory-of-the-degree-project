@@ -18,8 +18,10 @@ import {
   IndexInventories,
   IndexOrders,
   IndexProducts,
-  IndexShops,
   IndexSubcategories,
+  IndexCustomers,
+  IndexShops,
+  IndexSuppliers,
   IndexUsers,
   SettingsPage,
   Terms,
@@ -126,6 +128,24 @@ const router = createBrowserRouter([
             element: (
               <ProtectedRoute roles={["admin"]}>
                 <IndexSubcategories />
+              </ProtectedRoute>
+            ),
+          },
+           /* customers */
+           {
+            path: "customers",
+            element: (
+              <ProtectedRoute roles={["admin"]}>
+                <IndexCustomers/>
+              </ProtectedRoute>
+            ),
+          },
+           /* suppliers */
+           {
+            path: "suppliers",
+            element: (
+              <ProtectedRoute roles={["admin"]}>
+                <IndexSuppliers/>
               </ProtectedRoute>
             ),
           },

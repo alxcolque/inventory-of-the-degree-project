@@ -36,3 +36,6 @@ export type { IOrdersResponse } from './orders/orders-response';
 
 export type { ISubcategoryResponse } from './subcategories/subcategory-response';
 export type { ISubcategoriesResponse } from './subcategories/subcategories-response';
+export type { ICustomerResponse } from './customer/customer-response';
+
+export type { ISupplierResponse } from './suppliers/supplier-response';

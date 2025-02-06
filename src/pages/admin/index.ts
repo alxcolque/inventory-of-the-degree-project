@@ -17,3 +17,6 @@ export { IndexInventories } from "./inventories/index-inventories";
 
 export { IndexOrders } from "./orders/index-orders";
 export { IndexSubcategories } from "./subcategories/index-subcategories";
+export { IndexCustomers } from "./customers/index-customers";
+
+export { IndexSuppliers } from "./suppliers/index-suppliers";
