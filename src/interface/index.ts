@@ -34,3 +34,5 @@ export type { IOrderResponse } from './orders/order-response';
 export type { IOrdersResponse } from './orders/orders-response';
 
 
+export type { ISubcategoryResponse } from './subcategories/subcategory-response';
+export type { ISubcategoriesResponse } from './subcategories/subcategories-response';

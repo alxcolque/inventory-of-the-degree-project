@@ -19,6 +19,7 @@ import {
   IndexOrders,
   IndexProducts,
   IndexShops,
+  IndexSubcategories,
   IndexUsers,
   SettingsPage,
   Terms,
@@ -118,6 +119,17 @@ const router = createBrowserRouter([
               </ProtectedRoute>
             ),
           },
+
+          /* subcategories */
+          {
+            path: "subcategories",
+            element: (
+              <ProtectedRoute roles={["admin"]}>
+                <IndexSubcategories />
+              </ProtectedRoute>
+            ),
+          },
+          
           {
             path: "company-terms/:id",
             element: (
