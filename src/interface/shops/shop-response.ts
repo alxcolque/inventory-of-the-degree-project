@@ -1,9 +1,10 @@
 export interface IShopResponse {
-    id: string;
+    id: number | any;
     name: string;
+    slug: string;
     location: string;
     address: string;
     phone: string;
-    shop_front: string;
-    show_fonnt_key: string;
+    storeFront: string;
+    storeFront_key: string;
 }

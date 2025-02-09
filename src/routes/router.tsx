@@ -26,6 +26,8 @@ import {
   SettingsPage,
   Terms,
 } from "../pages/admin";
+import { IndexSale, ShopHome, ShopIndex} from "../pages/shop";
+
 
 //instanciar usuarios roles y permisos
 const router = createBrowserRouter([
@@ -54,8 +56,31 @@ const router = createBrowserRouter([
         ],
 
       },
+      //Routes shop page
+      {
+        path: "tienda",
+        element: <NavbarLayout />,
+        children: [
+          {
+            path: "",
+            element: <ShopIndex />,
+            errorElement: <ErrorPage />, // Página 404
+          },
+          /* home shop */
+          {
+            path: ":slug",
+            element: <ShopHome />,
+          },
+          /* Ventas */
+          {
+            path: "ventas",
+            element: <IndexSale />,
+          },
+        ],
+      },
       
       //Routes auth Admin page
+
       {
         path: "admin",
         element: <Layout />,

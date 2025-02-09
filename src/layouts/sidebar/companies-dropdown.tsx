@@ -7,21 +7,27 @@ import {
   DropdownTrigger,
 } from "@nextui-org/react";
 import { FaHome } from "react-icons/fa";
-import { FaCreativeCommons } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
-import { useSettingStore } from "../../stores";
+import { useAuthStore, useSettingStore } from "../../stores";
 import { useEffect } from "react";
+import { useShopsStore } from "../../stores/shops/shops.store";
 
 
 export const CompaniesDropdown = () => {
+  const token = useAuthStore(state => state.token);
   const navigate = useNavigate();
   const company = useSettingStore(state => state.systemData);
   const { logo, name } = company as any;
+  const shops = useShopsStore(state => state.shops);
+
   const getSystemData = useSettingStore(state => state.getSystemData);
+  const getShops = useShopsStore(state => state.getShops);
   useEffect(() => {
+    getShops(token as string);
     getSystemData();
   }, []);
   console.log(company);
+
   return (
     <Dropdown
       classNames={{
@@ -43,12 +49,31 @@ export const CompaniesDropdown = () => {
         </div>
       </DropdownTrigger>
       <DropdownMenu aria-label="Avatar Actions">
-        <DropdownSection title="Companies">
-          <DropdownItem
+        <DropdownSection title="Tiendas">
+          {shops.map((shop) => (
+            <DropdownItem
+              key={shop.id}
+              startContent={<FaHome />}
+              description={shop.name}
+              classNames={{
+                base: "py-4",
+                title: "text-base font-semibold",
+              }}
+              onPress={() => {
+                navigate(`/tienda/${shop.slug}`);
+              }}
+            >
+
+              {shop.name}
+            </DropdownItem>
+          ))}
+
+          {/* <DropdownItem
             key="1"
             startContent={<FaHome />}
             description="Página de bienvenida"
             classNames={{
+
               base: "py-4",
               title: "text-base font-semibold",
             }}
@@ -70,7 +95,7 @@ export const CompaniesDropdown = () => {
             target="_blank"
           >
             Culking
-          </DropdownItem>
+          </DropdownItem> */}
           {/* <DropdownItem
             key="3"
             startContent={<FaCreativeCommons />}

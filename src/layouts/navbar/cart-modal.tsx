@@ -4,7 +4,6 @@ import {
   ModalBody,
   ModalContent,
   ModalHeader,
-  NavbarItem,
   Select,
   SelectItem,
 } from "@nextui-org/react";
@@ -16,8 +15,11 @@ export const CartModal = () => {
   return (
     <>
       <div>
-        <Button onClick={() => setIsOpen(true)}>
-          <FaShoppingCart className="text-default-500" size={20} />
+        <Button isIconOnly variant="light" onPress={() => setIsOpen(true)}>
+        <FaShoppingCart className="absolute text-default-500" size={20}/>
+          <span className="relative -top-1 -right-2 w-4 h-4 bg-danger-500 rounded-full flex items-center justify-center text-xs text-white font-semibold">
+            3</span>
+
 
         </Button>
       </div>

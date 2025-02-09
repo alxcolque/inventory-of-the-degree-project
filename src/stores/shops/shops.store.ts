@@ -1,14 +1,17 @@
 import {create, StateCreator} from "zustand";
-import { IShopResponse, IShopsResponse } from "../../interface";
+import { IShopResponse } from "../../interface/shops/shop-response";
 import { shops } from "../../api/systemdata";
+                                            
+
 
 interface ShopsState{
-    shops: IShopsResponse[];
+    shops: IShopResponse[];
     shop: IShopResponse;
 }
+
 interface Actions{
     getShops: ( token: string) => Promise<void>;
-    //getShop: (id: string, token: string) => Promise<void>;
+    getShop: (token: string, slug: string) => Promise<void>;
 }
 
 const storeApi: StateCreator<ShopsState & Actions> = (set) => ({
@@ -22,15 +25,16 @@ const storeApi: StateCreator<ShopsState & Actions> = (set) => ({
         const response = shops;
         console.log(token);
         set({ shops: response as any });
-    }
-    /* getShop: async (id: string, token: string) => {
+    },
+    getShop: async (token: string, slug: string) => {
         //const response = await api.get<IShopResponse>(`/shops/${id}`);
         //set({ shop: response.data });
+        console.log(token);
+        const response = shops.find(shop => shop.slug === slug);
+        set({ shop: response as any });
 
-        const response = shops.find(shop => shop.id === id);
-        set({ shop: response });
+
     } 
-    */ 
 });
 
 export const useShopsStore = create<ShopsState & Actions>()(storeApi);

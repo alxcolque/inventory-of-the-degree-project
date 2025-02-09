@@ -1,18 +1,12 @@
-// params: user, token
-
-//method: post
-//url: /systemdata
-//body: { user, token }
-//response: { user, token }
 
 export const dataLogin =
     {
         user: {
             id: 1,
-            name: 'admin',
+            name: 'Alex admin',
             email: 'admin@admin.com',
             password: 'admin123',
-            username: 'admin',
+            username: 'admin_alec',
             avatar: 'https://i.pravatar.cc/150?img=1',
             roles: ['admin'],
             permissions: ['list', 'create']
@@ -41,55 +35,72 @@ export const company = {
 export const shops = [
     {
         id: 1,
-        name: "tienda A",
+        name: "Lenovo Oruro",
+        slug: "lenovo-oruro",
         location: "-12333232,12323213",
         address: "calle sucre, #45",
         phone: "+591 60427039",
-        store_front: "https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}",
-        show_fonnt_key: "123456"
+
+        storeFront: `https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}`,
+        storeFront_key: "123456"
+
     },
+
     {
         id: 2,
-        name: "tienda B",
+        name: "Samsung Cochabamba",
+        slug: "samsung-cochabamba",
         location: "-12333232,12323213",
         address: "calle sucre, #45",
         phone: "+591 60427039",
-        store_front: "https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}",
-        show_fonnt_key: "123456"
+
+
+        storeFront: `https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}`,
+        storeFront_key: "123456"
+
+
+
     },
     {
         id: 3,
-        name: "tienda C",
+        name: "Tarija Tech",
+        slug: "tarija-tech",
         location: "-12333232,12323213",
         address: "calle sucre, #45",
         phone: "+591 60427039",
-        store_front: "https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}",
-        show_fonnt_key: "123456"
+        storeFront: `https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}`,
+
+        storeFront_key: "123456"
+
+
     }
 ] 
 //Data for categories
 export const categories = [
     {
         id: 1,
-        name: "category 1",
-        slug: "category-1",
+        name: "Computadoras",
+        slug: "computadoras",
         color: "#000000",
         icon: "fa-solid fa-circle-dot"
     },
+
     {
         id: 2,
-        name: "category 2",
-        slug: "category-2",
+        name: "Audífonos",
+        slug: "audifonos",
         color: "#000000",
         icon: "fa-solid fa-circle-dot"
     },
+
     {
         id: 3,
-        name: "category 3",
-        slug: "category-3",
+        name: "Accesorios",
+        slug: "accesorios",
         color: "#000000",
         icon: "fa-solid fa-circle-dot"
     },
+
     {
         id: 4,
         name: "category 4",
