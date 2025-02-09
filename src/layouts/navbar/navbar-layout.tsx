@@ -1,23 +1,23 @@
 
 import { Toaster } from "sonner";
-import { Button, CircularProgress, Link, Navbar, NavbarBrand, NavbarContent, NavbarItem} from "@nextui-org/react";
+import { Button, CircularProgress, Input, Link, Navbar, NavbarBrand, NavbarContent } from "@nextui-org/react";
 
 import { BurguerButton } from "./burguer-button";
 import { NotificationsDropdown } from "./notifications-dropdown";
 import { UserDropdown } from "./user-dropdown";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useAuthStore, useSettingStore } from "../../stores";
 import { DarkModeSwitch } from "./darkmodeswitch";
 import { FaCircleQuestion } from "react-icons/fa6";
 import { RiMegaphoneFill } from "react-icons/ri";
-import { IoHome} from "react-icons/io5";
+import { IoMdSearch } from "react-icons/io";
 import { useEffect } from "react";
-import { TbSoccerField } from "react-icons/tb";
-import { MdWorkspacePremium } from "react-icons/md";
+import { CartModal } from "./cart-modal";
+
 
 
 export const NavbarLayout = () => {
-  const pathname = useLocation().pathname;
+  //const pathname = useLocation().pathname;
   const navigate = useNavigate();
   const authStatus = useAuthStore(state => state.authStatus);
   const checkAuthStatus = useAuthStore(state => state.checkAuthStatus);
@@ -80,18 +80,6 @@ export const NavbarLayout = () => {
               )
             }
           </NavbarContent>
-          {/* <NavbarContent className="w-full max-md:hidden">
-            <Input
-              startContent={<IoMdSearch />}
-              isClearable
-              className="w-full"
-              classNames={{
-                input: "w-full",
-                mainWrapper: "w-full",
-              }}
-              placeholder="Search..."
-            />
-          </NavbarContent> */}
           {
             !window.location.pathname.includes('/admin') && (
               <NavbarContent className="max-md:hidden" justify="start">
@@ -102,35 +90,19 @@ export const NavbarLayout = () => {
               </NavbarContent>
             )
           }
-
-
-          <NavbarContent justify="end">
-            <NavbarItem className="cursor-pointer" isActive={pathname === '/'} aria-current={pathname === '/' ? 'page' : undefined}>
-              <Link className="max-md:hidden" color={pathname === '/' ? 'primary' : 'foreground'} onClick={() => navigate('/')}>
-                Inicio
-              </Link>
-              {/* En modo mobile el campo se transforma en un icono */}
-              <div className="md:hidden" onClick={() => navigate('/')}>
-                <IoHome className={pathname === '/' ? 'text-primary' : 'text-default-500'} size={20} />
-              </div>
-            </NavbarItem>
-            <NavbarItem className="cursor-pointer" isActive={pathname.includes('/campos')} aria-current={pathname.includes('/campos') ? 'page' : undefined}>
-              <Link className="max-md:hidden" color={pathname.includes('/campos') ? 'primary' : 'foreground'} onClick={() => navigate('/campos')}>
-                Campos
-              </Link>
-              <div className="md:hidden" onClick={() => navigate('/campos')}>
-                <TbSoccerField className={pathname.includes('/campos') ? 'text-primary' : 'text-default-500'} size={20} />
-              </div>
-            </NavbarItem>
-            <NavbarItem className="cursor-pointer" isActive={pathname.includes('/planes')} aria-current={pathname.includes('/planes') ? 'page' : undefined}>
-              <Link className="max-md:hidden" color={pathname.includes('/planes') ? 'primary' : 'foreground'} onClick={() => navigate('/planes')}>
-                Planes
-              </Link>
-              <div className="md:hidden" onClick={() => navigate('/planes')}>
-                <MdWorkspacePremium className={pathname.includes('/planes') ? 'text-primary' : 'text-default-500'} size={20} />
-              </div>
-            </NavbarItem>
+          <NavbarContent className="w-full">
+            <Input
+              startContent={<IoMdSearch />}
+              isClearable
+              className="w-full"
+              classNames={{
+                input: "w-full",
+                mainWrapper: "w-full",
+              }}
+              placeholder="Buscar..."
+            />
           </NavbarContent>
+          
           <NavbarContent
             justify="end"
             className="w-fit data-[justify=end]:flex-grow-0"
@@ -140,7 +112,9 @@ export const NavbarLayout = () => {
               <span>Feedback?</span>
             </div>
 
+            <CartModal />
             <NotificationsDropdown />
+
 
             <div className="max-md:hidden">
               <FaCircleQuestion className="text-default-500" size={20} />

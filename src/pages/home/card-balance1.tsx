@@ -8,8 +8,8 @@ export const CardBalance1 = () => {
         <div className="flex gap-2.5">
           <FaUsers />
           <div className="flex flex-col">
-            <span className="text-white">Nuestros clientes</span>
-            <span className="text-white text-xs">1311 Usuarios</span>
+            <span className="text-white">Beneficios</span>
+            <span className="text-white text-xs">1311 UDS</span>
           </div>
         </div>
         <div className="flex gap-2.5 py-2 items-center">
@@ -22,7 +22,7 @@ export const CardBalance1 = () => {
               <span className="font-semibold text-success text-xs">{"↓"}</span>
               <span className="text-xs text-white">100,930</span>
             </div>
-            <span className="text-white text-xs">BS</span>
+            <span className="text-white text-xs">Bs</span>
           </div>
 
           <div>

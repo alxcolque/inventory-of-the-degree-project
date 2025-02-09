@@ -7,12 +7,13 @@ export const CardBalance3 = () => {
     <Card className="xl:max-w-sm bg-success rounded-xl shadow-md px-3 w-full">
       <CardBody className="py-5">
         <div className="flex gap-2.5">
-          <RiCommunityFill />
+          <RiCommunityFill className="text-white" size={20} />
           <div className="flex flex-col">
-            <span className="text-white">Campos Activos</span>
-            <span className="text-white text-xs">1311 Campos</span>
+            <span className="text-white">Ventas</span>
+            <span className="text-white text-xs">1311 UDS</span>
           </div>
         </div>
+
         <div className="flex gap-2.5 py-2 items-center">
           <span className="text-white text-xl font-semibold">$3,910</span>
           <span className="text-danger text-xs">- 4.5%</span>

@@ -3,33 +3,13 @@ import { CardBalance2 } from "./card-balance2";
 import { CardBalance3 } from "./card-balance3";
 import { CardAgents } from "./card-agents";
 import { CardTransactions } from "./card-transactions";
-import { Link } from "@nextui-org/react";
-import { DynamicBreadcrumbs, DynamicTable } from "../../components";
+import { Button, Input, Link } from "@nextui-org/react";
+import { DynamicBreadcrumbs } from "../../components";
+import { AllItems } from "./all-items";
 //import { faker } from '@faker-js/faker';
+
+
 export const HomeIndex = () => {
-
-
-  const headers = [
-    { name: 'NOMBRE', uid: 'name' },
-    { name: 'PLAN', uid: 'plan' },
-    { name: 'FECHA', uid: 'date' },
-    { name: 'MONTO', uid: 'amount' },
-    { name: 'ESTADO', uid: 'status' },
-    { name: 'ACCIONES', uid: 'actions-s' }
-  ];
-  const data = [
-    //lista 15 datos aleatorios
-    { id: 1, name: 'John Doe', plan: 'Plan 1', date: '2021-01-01', amount: 100, status: 'active' },
-    { id: 2, name: 'Jane Doe', plan: 'Plan 2', date: '2021-01-02', amount: 200, status: 'inactive' },
-    { id: 3, name: 'Jim Beam', plan: 'Plan 3', date: '2021-01-03', amount: 300, status: 'active' },
-    { id: 4, name: 'John Doe', plan: 'Plan 1', date: '2021-01-01', amount: 100, status: 'active' },
-    { id: 5, name: 'Jane Doe', plan: 'Plan 2', date: '2021-01-02', amount: 200, status: 'inactive' },
-    { id: 6, name: 'Jim Beam', plan: 'Plan 3', date: '2021-01-03', amount: 300, status: 'active' },
-    { id: 7, name: 'John Doe', plan: 'Plan 1', date: '2021-01-01', amount: 100, status: 'active' },
-    { id: 8, name: 'Jane Doe', plan: 'Plan 2', date: '2021-01-02', amount: 200, status: 'inactive' },
-    { id: 9, name: 'Jim Beam', plan: 'Plan 3', date: '2021-01-03', amount: 300, status: 'active' },
-    { id: 10, name: 'John Doe', plan: 'Plan 1', date: '2021-01-01', amount: 100, status: 'active' },
-  ];
 
   return (
     <div className="h-full lg:px-6">
@@ -74,19 +54,198 @@ export const HomeIndex = () => {
       {/* Table Latest Users */}
       <div className="flex flex-col justify-center w-full py-5 px-4 lg:px-0  max-w-[90rem] mx-auto gap-3">
         <div className="flex  flex-wrap justify-between">
-          <h3 className="text-center text-xl font-semibold">Contratos más recientes</h3>
+          <h3 className="text-center text-xl font-semibold">Mi stock</h3>
+          {/* Buscar stock por nombre */}
+          <div className="flex justify-center">
+            <Input
+              placeholder="Buscar stock"
+              className="cursor-pointer"
+            />
+          </div>
           <Link
             href="/accounts"
             color="primary"
+
             className="cursor-pointer"
+
           >
             Ver todas
           </Link>
         </div>
 
-        <DynamicTable stringSearch={'name'} onCreate={() => { }} data={data as any} columns={headers} onEdit={() => { }} onDelete={() => { }} onView={() => { }} />
+        {/* Botones horizontales para listar categorias para filtro, scroll horizontal */}
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+          <Button>Todos</Button>
+          <Button>Electrónicos</Button>
+          <Button>Ropa</Button>
+          <Button>Accesorios</Button>
+          <Button>Otros</Button>
 
+        </div>
+        {/* All items */}
+        <AllItems />
+        {/* Tabla de stock con sus subcategorias */}
+        <div className="flex flex-col gap-2">
+          <h5 className="text-center text-md font-semibold">Celulares</h5>
+          {/* Tabla de stock de celulares */}
+          <div className="table-responsive">
+            <table className="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Imagen</th>
+                  <th>Nombre</th>
+                  <th>Stock</th>
+                  <th>Precio Unitario</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>
+                    <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="imagen" />
+                  </td>
+                  <td>Celular Samsung Galaxy S20</td>
+                  <td>10</td>
+                  <td>1000</td>
+                  <td>
+                    <Button>Editar</Button>
+                    <Button>Eliminar</Button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>
+                    <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="imagen" />
+                  </td>
+                  <td>Celular Samsung Galaxy S22</td>
+                  <td>10</td>
+                  <td>1000</td>
+                  <td>
+                    <Button>Editar</Button>
+                    <Button>Eliminar</Button>
+                  </td>
+
+
+                </tr>
+              </tbody>
+            </table>
+
+          </div>
+          <h5 className="text-center text-md font-semibold">Tablets</h5>
+          <div className="table-responsive">
+            <table className="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Imagen</th>
+                  <th>Nombre</th>
+                  <th>Stock</th>
+                  <th>Precio Unitario</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>
+                    <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="imagen" />
+                  </td>
+                  <td>Tablet Samsung Galaxy Tab S20</td>
+                  <td>10</td>
+                  <td>1000</td>
+                  <td>
+                    <Button>Editar</Button>
+                    <Button>Eliminar</Button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+          </div>
+          <h5 className="text-center text-md font-semibold">Computadoras</h5>
+          <div className="table-responsive">
+            <table className="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Imagen</th>
+                  <th>Nombre</th>
+                  <th>Stock</th>
+                  <th>Precio Unitario</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>
+                    <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="imagen" />
+                  </td>
+                  <td>Asus Zenbook</td>
+                  <td>10</td>
+                  <td>1000</td>
+                  <td>
+                    <Button>Editar</Button>
+                    <Button>Eliminar</Button>
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+          <h5 className="text-center text-md font-semibold">Accesorios</h5>
+          <div className="table-responsive">
+            <table className="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Imagen</th>
+                  <th>Nombre</th>
+                  <th>Stock</th>
+                  <th>Precio Unitario</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>
+                    <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="imagen" />
+                  </td>
+                  <td>Audífonos Samsung Galaxy Buds</td>
+                  <td>10</td>
+                  <td>1000</td>
+                  <td>
+                    <Button>Editar</Button>
+                    <Button>Eliminar</Button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>
+                    <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="imagen" />
+                  </td>
+                  <td>Audífonos Samsung Galaxy Buds Pro</td>
+                  <td>10</td>
+                  <td>1000</td>
+                  <td>
+                    <Button>Editar</Button>
+                    <Button>Eliminar</Button>
+                  </td>
+                </tr>
+
+
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        
       </div>
     </div>
+
   )
 }

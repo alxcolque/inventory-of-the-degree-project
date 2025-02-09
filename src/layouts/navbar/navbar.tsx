@@ -30,7 +30,7 @@ export const NavbarWrapper = () => {
               input: "w-full",
               mainWrapper: "w-full",
             }}
-            placeholder="Search..."
+            placeholder="Search...2"
           />
         </NavbarContent>
         <NavbarContent

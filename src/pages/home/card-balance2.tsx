@@ -6,12 +6,13 @@ export const CardBalance2 = () => {
     <Card className="xl:max-w-sm bg-default-50 rounded-xl shadow-md px-3 w-full">
       <CardBody className="py-5">
         <div className="flex gap-2.5">
-          <RiCommunityFill  />
+          <RiCommunityFill className="text-default-900" size={20} />
           <div className="flex flex-col">
-            <span className="text-default-900">Nuevos Campos</span>
-            <span className="text-default-900 text-xs">+2400 Campos</span>
+            <span className="text-default-900">Compras</span>
+            <span className="text-default-900 text-xs">+2400 UDS</span>
           </div>
         </div>
+
         <div className="flex gap-2.5 py-2 items-center">
           <span className="text-default-900 text-xl font-semibold">
             $12,138
