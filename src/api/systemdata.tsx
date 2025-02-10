@@ -7,9 +7,10 @@ export const dataLogin =
             email: 'admin@admin.com',
             password: 'admin123',
             username: 'admin_alec',
-            avatar: 'https://i.pravatar.cc/150?img=1',
+            avatar: `https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}`,
             roles: ['admin'],
             permissions: ['list', 'create']
+
         },
         token: '123456'
     }

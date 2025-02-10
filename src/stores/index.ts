@@ -10,7 +10,7 @@ export { useCategoriesStore } from "./categories/categories.store";
 
 export { useProductsStore } from "./products/products.store";
 
-export { useInventoriesStore } from "./inventories/inventories.store";
+export { useShopsStore } from "./inventories/shops.store";
 
 export { useOrdersStore } from "./orders/orders.store";
 

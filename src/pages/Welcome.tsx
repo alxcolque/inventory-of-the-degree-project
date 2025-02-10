@@ -63,10 +63,13 @@ export const Welcome = () => {
   const shops = useShopsStore(state => state.shops);
   const getShops = useShopsStore(state => state.getShops);
   const [isLoading, setIsLoading] = useState(true);
+  const authStatus = useAuthStore(state => state.authStatus);
   useEffect(() => {
       getShops(token as string);
       setIsLoading(false);
   }, []);
+
+
 
   return (
     <div className="my-0 px-4 md:px-6 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -106,15 +109,14 @@ export const Welcome = () => {
                 <p>{shop.address}</p>
               </CardBody>
               <Divider />
+              {authStatus === 'auth' && (
               <CardFooter>
 
                 <Button color="danger" variant="flat" onPress={() => navigate(`/tienda/${shop.slug}`)}>
                   Visitar tienda
                 </Button>
               </CardFooter>
-
-
-
+              )}
             </Card>
           ))
         )}

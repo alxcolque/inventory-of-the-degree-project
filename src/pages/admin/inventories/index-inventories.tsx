@@ -1,132 +1,189 @@
 
-import { useEffect, useState } from "react";
-import { DynamicBreadcrumbs, DynamicTable, FormModal } from "../../../components"
-import { useNavigate } from "react-router-dom";
+
 import { Button } from "@nextui-org/react";
-import { useAuthStore, useInventoriesStore } from "../../../stores";
+import { DynamicBreadcrumbs } from "../../../components/ui/dynamic-breadcrumbs";
+import { useAuthStore } from "../../../stores";
 
 export const IndexInventories = () => {
     const token = useAuthStore(state => state.token);
+    console.log(token);
 
-    const [selectedRowData, setSelectedRowData] = useState<Record<string, any> | null>(null);
-    const [isEditing, setIsEditing] = useState<boolean>(false);
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-    /* Eliminando  */
-    const [deleteCountdown, setDeleteCountdown] = useState<number | null>(null);
-    const [deleteRowId, setDeleteRowId] = useState<number | null>(null);
-    /* inventories */
-    const inventories = useInventoriesStore(state => state.inventories);
-    const getInventories = useInventoriesStore(state => state.getInventories);
-
-    const navigate = useNavigate();
-    const handleFetchInventories = async () => {
-        if (inventories.length === 0) {
-            await getInventories(token!);
-        }
-    }
-    useEffect(() => {
-        handleFetchInventories();
-
-        if (deleteCountdown !== null && deleteCountdown > 0) {
-            const timer = setTimeout(() => {
-                setDeleteCountdown(deleteCountdown - 1);
-            }, 1000);
-            return () => clearTimeout(timer); // Limpia el temporizador
-        } else if (deleteCountdown === 0) {
-            handleConfirmDelete(); // Elimina permanentemente cuando llega a 0
-        }
-    }, [deleteCountdown]);
-
-    const headers = [
-        { name: 'PRODUCTO', uid: 'productId' },
-        { name: 'TIENDA', uid: 'shopId' },
-        { name: 'PROVEEDOR', uid: 'supplierId' },
-        { name: 'STOCK', uid: 'stock' },
-        { name: 'FECHA DE REPOSICIÓN', uid: 'restockDate' },
-        { name: 'ACCIONES', uid: 'actions' }
-    ];
-    const fields = [
-        { name: 'productId', label: 'Producto', type: 'text', placeholder: 'Producto' },
-        { name: 'shopId', label: 'Tienda', type: 'text', placeholder: 'Tienda' },
-        { name: 'supplierId', label: 'Proveedor', type: 'text', placeholder: 'Proveedor' },
-        { name: 'stock', label: 'Stock', type: 'text', placeholder: 'Stock' },
-        { name: 'restockDate', label: 'Fecha de Reposición', type: 'date', placeholder: 'Fecha de Reposición' },
-    ];
-    const handleFormSubmit = async (formData: Record<string, any>) => {
-
-        if (isEditing) {
-            //await udpateUser(formData.id, formData.name, permissions, token!);
-        } else {
-            //await addUser(formData.name, permissions, token!);
-        }
-        setIsModalOpen(false); // Cerrar el modal
-        console.log(formData)
-    };
-    //Define controles para abrir el modal de agregar rol
-    // Función para abrir el modal con datos vacíos (creación)
-    const handleNewInventoryClick = () => {
-        setSelectedRowData(null);  // Limpiar los datos
-        setIsEditing(false);       // No estamos editando, estamos creando
-        setIsModalOpen(true);      // Abrir el modal
-    };
-    // Función para abrir el modal con datos de un inventario seleccionado (edición)
-    const handleEditClick = (rowData: Record<string, any>) => {
-        //console.log(rowData);
-        setSelectedRowData(rowData);  // Cargar datos del inventario seleccionado
-        setIsEditing(true);           // Estamos en modo edición
-        setIsModalOpen(true);         // Abrir el modal
-    };
-    /* Eliminando  */
-    // Función para iniciar el contador de eliminación
-    const handleDeleteClick = (id: number) => {
-        //console.log(id);
-        setDeleteRowId(id);
-        setDeleteCountdown(10); // Inicia el temporizador de 10 segundos
-    };
-
-    // Función para cancelar la eliminación
-    const handleCancelDelete = () => {
-        setDeleteRowId(null);
-        setDeleteCountdown(null); // Resetea el temporizador
-    };
-
-    // Función para realizar la eliminación definitiva
-    const handleConfirmDelete = async () => {
-        //setRows(rows.filter(row => row.id !== deleteRowId)); // Elimina el registro de los datos
-        //await deleteRole(deleteRowId!, token!); // Elimina el registro de la base de datos
-        setDeleteRowId(null);
-        setDeleteCountdown(null); // Resetea el temporizador
-    };
-    // Redirigir al hacer clic en "Ver"
-    const handleViewClick = (id: number) => {
-        navigate(`/admin/roles/${id}`); // Redirigir a la página con el ID del usuario
-    };
     return (
         <>
-            <FormModal
-                fields={fields}
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                onSubmit={handleFormSubmit}
-                initialValues={selectedRowData || {}}  // Pasar los valores seleccionados o vacío si es nuevo
-            />
             <div className="my-2 px-4 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
                 <DynamicBreadcrumbs />
-                <h2>Inventarios</h2>
-                <DynamicTable stringSearch={''} onCreate={handleNewInventoryClick} data={inventories} columns={headers} onEdit={ handleEditClick } onDelete={handleDeleteClick} onView={handleViewClick} />
-                {deleteRowId != null ? (
-                    /* Una pequeña alerta fixed para eliminar con contador en la parte superior, tiene el boton cancelar la eliminacion */
-                    <div className="fixed top-6 left-0 right-0 bg-red-500 text-white p-2 text-center z-50">
-                        <p>¿Estás seguro de eliminar este rol?</p>
-                        <Button color="danger" onPress={handleConfirmDelete}>Sí, eliminar</Button>
-                        <Button color="danger" onPress={handleCancelDelete}>Cancelar</Button>
-                        <p>Se eliminará en {deleteCountdown} segundos</p>
+                <h2>Inventario de almacén</h2>
+                {/* boton para registrar stock */}
+                <Button color="primary" variant="shadow">Registrar Stock</Button>
+                {/* Botones horizontales para listar categorias para filtro, scroll horizontal */}
+                <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+                    <Button>Todos</Button>
+
+                    <Button>Electrónicos</Button>
+                    <Button>Ropa</Button>
+                    <Button>Accesorios</Button>
+                    <Button>Otros</Button>
+
+                </div>
+                {/* Tabla de stock con sus subcategorias */}
+                <div className="flex flex-col gap-2">
+                    <h5 className="text-center text-md font-semibold">Celulares</h5>
+                    {/* Tabla de stock de celulares */}
+                    <div className="table-responsive">
+                        <table className="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Imagen</th>
+                                    <th>Nombre</th>
+                                    <th>Stock</th>
+                                    <th>Precio Unitario</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>
+                                        <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="imagen" />
+                                    </td>
+                                    <td>Celular Samsung Galaxy S20</td>
+                                    <td>10</td>
+                                    <td>1000</td>
+                                    <td>
+                                        <Button>Editar</Button>
+                                        <Button>Eliminar</Button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>
+                                        <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="imagen" />
+                                    </td>
+                                    <td>Celular Samsung Galaxy S22</td>
+                                    <td>10</td>
+                                    <td>1000</td>
+                                    <td>
+                                        <Button>Editar</Button>
+                                        <Button>Eliminar</Button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
+                    <h5 className="text-center text-md font-semibold">Tablets</h5>
+                    <div className="table-responsive">
+                        <table className="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Imagen</th>
+                                    <th>Nombre</th>
+                                    <th>Stock</th>
+                                    <th>Precio Unitario</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>
+                                        <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="imagen" />
+                                    </td>
+                                    <td>Tablet Samsung Galaxy Tab S20</td>
+                                    <td>10</td>
+                                    <td>1000</td>
+                                    <td>
+                                        <Button>Editar</Button>
+                                        <Button>Eliminar</Button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-                ) : ('')}
+                    </div>
+                    <h5 className="text-center text-md font-semibold">Computadoras</h5>
+                    <div className="table-responsive">
+                        <table className="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Imagen</th>
+                                    <th>Nombre</th>
+                                    <th>Stock</th>
+                                    <th>Precio Unitario</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>
+                                        <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="imagen" />
+                                    </td>
+                                    <td>Asus Zenbook</td>
+                                    <td>10</td>
+                                    <td>1000</td>
+                                    <td>
+                                        <Button>Editar</Button>
+                                        <Button>Eliminar</Button>
+                                    </td>
+                                </tr>
 
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5 className="text-center text-md font-semibold">Accesorios</h5>
+                    <div className="table-responsive">
+                        <table className="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Imagen</th>
+                                    <th>Nombre</th>
+                                    <th>Stock</th>
+                                    <th>Precio Unitario</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>
+                                        <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="imagen" />
+                                    </td>
+                                    <td>Audífonos Samsung Galaxy Buds</td>
+                                    <td>10</td>
+                                    <td>1000</td>
+                                    <td>
+                                        <Button>Editar</Button>
+                                        <Button>Eliminar</Button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>
+                                        <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="imagen" />
+                                    </td>
+                                    <td>Audífonos Samsung Galaxy Buds Pro</td>
+                                    <td>10</td>
+                                    <td>1000</td>
+                                    <td>
+                                        <Button>Editar</Button>
+                                        <Button>Eliminar</Button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </>
+
+
+
+
     )
+
 }

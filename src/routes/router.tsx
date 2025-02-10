@@ -26,7 +26,8 @@ import {
   SettingsPage,
   Terms,
 } from "../pages/admin";
-import { IndexSale, ShopHome, ShopIndex} from "../pages/shop";
+import { IndexSale, ShopHome} from "../pages/shop";
+
 
 
 //instanciar usuarios roles y permisos
@@ -63,10 +64,11 @@ const router = createBrowserRouter([
         children: [
           {
             path: "",
-            element: <ShopIndex />,
+            element: <Welcome />,
             errorElement: <ErrorPage />, // Página 404
           },
           /* home shop */
+
           {
             path: ":slug",
             element: <ShopHome />,

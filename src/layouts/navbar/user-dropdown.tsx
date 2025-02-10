@@ -60,11 +60,7 @@ export const UserDropdown = () => {
             <span className="capitalize text-xs">{user?.roles}</span>
           </Chip>
         </DropdownItem>
-        <DropdownItem key='billetera' onPress={() => navigate('/billetera')}>Billetera</DropdownItem>
-        <DropdownItem key='reservas' onPress={() => navigate('/reservas/mis-reservas')} >Mis reservas</DropdownItem>
-        <DropdownItem key='favoritos' onPress={() => navigate('/campos/favoritos')}>Mis Favoritos</DropdownItem>
-        <DropdownItem key='campos' onPress={() => navigate('/campos/mis-campos')}>Mis campos</DropdownItem>
-        <DropdownItem key='planes' onPress={() => navigate('/planes/mis-planes')}>Mis planes</DropdownItem>
+        <DropdownItem key='home' onPress={() => navigate('/')}>Mis tiendas</DropdownItem>
         <DropdownItem
           key='logout'
           color='danger'
