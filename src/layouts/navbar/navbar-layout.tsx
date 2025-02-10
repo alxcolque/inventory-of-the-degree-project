@@ -51,6 +51,7 @@ export const NavbarLayout = () => {
           position: 'absolute',
         }}
       />
+      {/* overflow-x-hidden */}
       <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
         <Navbar
           isBordered
@@ -58,6 +59,7 @@ export const NavbarLayout = () => {
           classNames={{
             wrapper: "w-full max-w-full",
           }}
+
         >
           <NavbarContent className="md:hidden">
             {

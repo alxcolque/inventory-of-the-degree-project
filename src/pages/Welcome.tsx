@@ -1,4 +1,4 @@
-import { useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import { Button, Card, CardBody, CardFooter, CardHeader, Divider, Image, Skeleton } from "@nextui-org/react";
 import { FooterLayout } from "../layouts";
 import { useAuthStore } from "../stores";
@@ -57,7 +57,7 @@ import { useShopsStore } from "../stores/shops/shops.store";
   },
 ]; */
 export const Welcome = () => {
-  
+
   const token = useAuthStore(state => state.token);
   const navigate = useNavigate();
   const shops = useShopsStore(state => state.shops);
@@ -65,8 +65,8 @@ export const Welcome = () => {
   const [isLoading, setIsLoading] = useState(true);
   const authStatus = useAuthStore(state => state.authStatus);
   useEffect(() => {
-      getShops(token as string);
-      setIsLoading(false);
+    getShops(token as string);
+    setIsLoading(false);
   }, []);
 
 
@@ -85,7 +85,7 @@ export const Welcome = () => {
 
         ) : (
           shops.map((shop) => (
-              <Card className="max-w-[400px]" key={shop.id}>
+            <Card className="max-w-[400px]" key={shop.id}>
 
 
               <CardHeader className="flex gap-3">
@@ -110,12 +110,12 @@ export const Welcome = () => {
               </CardBody>
               <Divider />
               {authStatus === 'auth' && (
-              <CardFooter>
+                <CardFooter>
 
-                <Button color="danger" variant="flat" onPress={() => navigate(`/tienda/${shop.slug}`)}>
-                  Visitar tienda
-                </Button>
-              </CardFooter>
+                  <Button color="danger" variant="flat" onPress={() => navigate(`/tienda/${shop.slug}`)}>
+                    Visitar tienda
+                  </Button>
+                </CardFooter>
               )}
             </Card>
           ))
@@ -125,11 +125,11 @@ export const Welcome = () => {
       <FooterLayout />
 
     </div>
-      
+
 
 
   )
-  
+
 }
 export const UserPage = () => {
   return (

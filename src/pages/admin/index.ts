@@ -20,3 +20,8 @@ export { IndexSubcategories } from "./subcategories/index-subcategories";
 export { IndexCustomers } from "./customers/index-customers";
 
 export { IndexSuppliers } from "./suppliers/index-suppliers";
+
+export { InputForm } from "./inventories/input-form";
+export { OutputForm } from "./inventories/output-form";
+export { CardexProduct } from "./inventories/cardex-product";
+

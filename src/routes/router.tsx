@@ -25,6 +25,9 @@ import {
   IndexUsers,
   SettingsPage,
   Terms,
+  InputForm,
+  OutputForm,
+  CardexProduct,
 } from "../pages/admin";
 import { IndexSale, ShopHome} from "../pages/shop";
 
@@ -139,9 +142,41 @@ const router = createBrowserRouter([
               </ProtectedRoute>
             ),
           },
-          /* orders */
+          /* input form */
           {
+            path: "inventories/input",
+            element: (
+              <ProtectedRoute roles={["admin"]}>
+                <InputForm />
+              </ProtectedRoute>
+            ),
+          },
+          /* output form */
+          {
+            path: "inventories/output",
+            element: (
+              <ProtectedRoute roles={["admin"]}>
+                <OutputForm />
+              </ProtectedRoute>
+            ),
+          },
+          /* cardex product */
+          {
+            path: "inventories/cardex/:id",
+            element: (
+              <ProtectedRoute roles={["admin"]}>
+                <CardexProduct />
+              </ProtectedRoute>
+            ),
+          },
+
+          /* orders */
+
+          {
+
+
             path: "orders",
+
             element: (
               <ProtectedRoute roles={["admin"]}>
                 <IndexOrders />

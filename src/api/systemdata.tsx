@@ -321,5 +321,12 @@ export const orders = [
         status: "pending"
     }
 ]
-
-
+/* Stock warehouse */
+export const stockWarehouse = [
+    {
+        id: 1,
+        productId: 1,
+        shopId: 1,
+        stock: 100,
+    }
+]
