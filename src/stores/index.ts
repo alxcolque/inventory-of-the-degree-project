@@ -18,3 +18,5 @@ export { useOrdersStore } from "./orders/orders.store";
 export { useCustomerStore } from "./customer/customer.store";
 
 export { useSupplierStore } from "./suppliers/suppliers.store";
+
+export { useWarehouseStore } from "./inventories/warehouse.store";

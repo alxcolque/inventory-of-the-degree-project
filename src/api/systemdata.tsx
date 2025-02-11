@@ -1,19 +1,19 @@
 
 export const dataLogin =
-    {
-        user: {
-            id: 1,
-            name: 'Alex admin',
-            email: 'admin@admin.com',
-            password: 'admin123',
-            username: 'admin_alec',
-            avatar: `https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}`,
-            roles: ['admin'],
-            permissions: ['list', 'create']
+{
+    user: {
+        id: 1,
+        name: 'Alex admin',
+        email: 'admin@admin.com',
+        password: 'admin123',
+        username: 'admin_alec',
+        avatar: `https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}`,
+        roles: ['admin'],
+        permissions: ['list', 'create']
 
-        },
-        token: '123456'
-    }
+    },
+    token: '123456'
+}
 
 export const company = {
     id: 1,
@@ -75,7 +75,7 @@ export const shops = [
 
 
     }
-] 
+]
 //Data for categories
 export const categories = [
     {
@@ -321,12 +321,239 @@ export const orders = [
         status: "pending"
     }
 ]
+/* ADMIN DATA */
 /* Stock warehouse */
 export const stockWarehouse = [
     {
         id: 1,
-        productId: 1,
-        shopId: 1,
-        stock: 100,
+        name: "Celulares",
+        slug: "celulares",
+        category: "Electronica",
+        color: "#ed4040",
+        product: [
+            {
+                id: 1,
+
+                name: "Samsung A10",
+                slug: "samsung-a10",
+                price: 1000,
+                description: "Samsung A10 description",
+                image: `https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}`,
+                quantity: 100,
+                unit: "unit",
+                restockDate: new Date(),
+                brand: "Samsung",
+
+            },
+            {
+                id: 2,
+                name: "Samsung A20",
+                slug: "samsung-a20",
+                price: 100,
+                description: "Samsung A20 description",
+                image: `https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}`,
+                quantity: 100,
+                unit: "unit",
+                restockDate: new Date(),
+                brand: "Samsung",
+            },
+            {
+                id: 3,
+                name: "iPhone 15",
+                slug: "iphone-15",
+                price: 100,
+                description: "iPhone 15 description",
+                image: `https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}`,
+                quantity: 100,
+                unit: "unit",
+                restockDate: new Date(),
+                brand: "Apple",
+            },
+            {
+                id: 4,
+                name: "iPhone 14",
+                slug: "iphone-14",
+                price: 100,
+                description: "iPhone 14 description",
+                image: `https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}`,
+                quantity: 100,
+                unit: "unit",
+                restockDate: new Date(),
+                brand: "Apple",
+            }
+        ]
+    },
+    {
+        id: 1,
+        name: "Computadoras",
+        slug: "computadoras",
+        category: "Electronica",
+        color: "#ed4040",
+
+        product: [
+            {
+                id: 1,
+                name: "Lenovo A10",
+                slug: "lenovo-a10",
+                price: 1000,
+                description: "Lenovo A10 description",
+                image: `https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}`,
+                quantity: 100,
+                unit: "unit",
+                restockDate: new Date(),
+                brand: "Lenovo",
+
+
+            },
+            {
+                id: 2,
+                name: "hp pavilion",
+                slug: "hp-pavilion",
+                price: 100,
+                description: "hp pavilion description",
+                image: `https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}`,
+                quantity: 100,
+                unit: "unit",
+
+                restockDate: new Date(),
+                brand: "hp",
+
+            },
+            {
+                id: 3,
+                name: "Dell Inspiron",
+                slug: "dell-inspiron",
+                price: 100,
+                description: "Dell Inspiron description",
+                image: `https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}`,
+                quantity: 100,
+                unit: "unit",
+                restockDate: new Date(),
+                brand: "Dell",
+
+            },
+            {
+                id: 4,
+                name: "MacBook Pro",
+                slug: "macbook-pro",
+                price: 100,
+                description: "MacBook Pro description",
+                image: `https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}`,
+                quantity: 100,
+
+                unit: "unit",
+                restockDate: new Date(),
+                brand: "Apple",
+            }
+        ]
+    },
+    {
+        id: 3,
+        name: "Router",
+        slug: "router",
+        category: "Electronica",
+        color: "#ed4040",
+        product: [
+            {
+                id: 1,
+
+                name: "tplink",
+                slug: "tplink",
+                price: 100,
+                description: "tplink description",
+                image: `https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}`,
+                quantity: 100,
+                unit: "unit",
+
+                restockDate: new Date(),
+                brand: "tplink",
+
+            },
+            {
+                id: 2,
+                name: "D-Link",
+                slug: "d-link",
+                price: 100,
+                description: "D-Link description",
+                image: `https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}`,
+                quantity: 100,
+                unit: "unit",
+                restockDate: new Date(),
+                brand: "D-Link",
+            },
+            {
+                id: 3,
+                name: "Cisco",
+                slug: "cisco",
+                price: 100,
+                description: "Cisco description",
+                image: `https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}`,
+                quantity: 100,
+                unit: "unit",
+                restockDate: new Date(),
+                brand: "Cisco",
+            }
+        ]
+    },
+    {
+        id: 4,
+        name: "Accesorios",
+        slug: "accesorios",
+        category: "Electronica",
+        color: "#ed4040",
+        product: [
+            {
+                id: 1,
+                name: "Audifonos",
+                slug: "audifonos",
+                price: 100,
+                description: "Audifonos description",
+
+                image: `https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}`,
+                quantity: 100,
+                unit: "unit",
+                restockDate: new Date(),
+                brand: "Sony",
+            },
+            {
+                id: 2,
+                name: "Mouse",
+                slug: "mouse",
+                price: 100,
+                description: "Mouse description",
+                image: `https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}`,
+                quantity: 100,
+                unit: "unit",
+                restockDate: new Date(),
+                brand: "Logitech",
+            },
+            {
+                id: 3,
+                name: "Teclado",
+                slug: "teclado",
+                price: 100, 
+                description: "Teclado description",
+                image: `https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}`,
+                quantity: 100,
+                unit: "unit",
+                restockDate: new Date(),
+                brand: "Logitech",
+            },
+            {
+                id: 4,
+                name: "Mouse",
+                slug: "mouse",
+                price: 100,
+                description: "Mouse description",
+                image: `https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}`,
+                quantity: 100,
+                unit: "unit",
+                restockDate: new Date(),
+                brand: "Logitech",
+            }
+        ]
     }
+
+
+
 ]

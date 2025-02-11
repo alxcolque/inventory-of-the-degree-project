@@ -42,3 +42,5 @@ export type { ISubcategoriesResponse } from './subcategories/subcategories-respo
 export type { ICustomerResponse } from './customer/customer-response';
 
 export type { ISupplierResponse } from './suppliers/supplier-response';
+
+export type { IListWarehouseResponse } from './inventories/warehouse/list-warehouse-response';
