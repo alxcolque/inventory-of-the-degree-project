@@ -1,12 +1,14 @@
 
 
-import { Button, Card, CardBody, Chip, DatePicker, DateValue, Dropdown, DropdownTrigger, DropdownMenu, Image, Input, DropdownItem, Spinner } from "@nextui-org/react";
+import { Button, Card, CardBody, Chip, DatePicker, DateValue, Dropdown, DropdownTrigger, DropdownMenu, Image, Input, DropdownItem, Spinner, Checkbox } from "@nextui-org/react";
 import { DynamicBreadcrumbs } from "../../../components/ui/dynamic-breadcrumbs";
 import { useAuthStore, useWarehouseStore } from "../../../stores";
 import { useEffect, useState } from "react";
 import { FaEye, FaPencil, FaPlus, FaTrash } from "react-icons/fa6";
 import { RiMoreFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
+import { OutputForm } from "./output-form";
+import { IProduct } from "../../../interface/inventories/warehouse/list-warehouse-response";
 
 export const IndexInventories = () => {
     const navigate = useNavigate();
@@ -21,6 +23,40 @@ export const IndexInventories = () => {
     const handleChangeDate = (date: DateValue | null) => {
         setDate(date);
     }
+    /* Estado para seleccionar todos los productos */
+    const [selectedProducts, setSelectedProducts] = useState<IProduct[]>([]);
+    /* Estado para seleccionar todos los productos */
+    
+    const handleProductSelection = (product: IProduct, isChecked: boolean) => {
+        if (isChecked) {
+            setSelectedProducts([...selectedProducts, product]);
+            /* Almacenar en localsotrage */
+            localStorage.setItem("selectedProducts", JSON.stringify(selectedProducts));
+        }
+        else {
+            setSelectedProducts(selectedProducts.filter(p => p.id !== product.id));
+            /* Eliminar en localsotrage */
+            localStorage.removeItem("selectedProducts");
+            
+        }
+    }
+    /* modal para registrar salida de productos */
+    const [isOpen, setIsOpen] = useState(false);
+    const handleOpen = () => {
+        setIsOpen(true);
+    }
+    const handleClose = () => {
+        setIsOpen(false);
+    }
+
+
+    console.log(selectedProducts);
+    /* Estado para controlar si existe seleccion de productos */
+    const [isSelected, setIsSelected] = useState(false);
+    /* Funcion para controlar si existe seleccion de productos */
+    const handleSelectedProducts = () => {
+        setIsSelected(selectedProducts.length > 0);
+    }
 
     useEffect(() => {
         if (token) {
@@ -28,8 +64,9 @@ export const IndexInventories = () => {
             getWarehouseProducts(token);
             setIsLoading(false);
         }
+        handleSelectedProducts();
 
-    }, [token]);
+    }, [token, selectedProducts]);
 
     return (
         <>
@@ -72,113 +109,105 @@ export const IndexInventories = () => {
 
                 </div>
                 <div className="flex flex-col gap-2">
-                    <h5 className="text-md font-bold">TODOS LOS PRODUCTOS</h5>
+                    <div className="flex flex-row items-center gap-2">
+                        <h5 className="text-md font-bold">TODOS LOS PRODUCTOS</h5>
+                    </div>
                     {isLoading && <Spinner />}
                     {warehouseProducts.map((subcategory) => (
                         <div className="flex flex-col gap-2">
                             <h5 className="text-md font-semibold">{subcategory.name}</h5>
-                            {/* Cards de celulares */}
+                            {/* Cards de productos */}
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
                                 {subcategory.product.map((product) => (
-                                <Card
-                                    isBlurred
-                                    className="border-none bg-background/60 dark:bg-default-100/50 max-w-[610px]"
-                                    shadow="sm"
-                                >
-                                    <CardBody>
-                                        <div className="grid grid-cols-6 md:grid-cols-12 gap-6 md:gap-4 items-center justify-center">
-                                            <div className="relative col-span-6 md:col-span-4">
-                                                <Image
-                                                    alt="Album cover"
-                                                    className="object-cover"
-                                                    shadow="md"
-                                                    src={product.image}
-                                                    width={100}
-                                                    height={100}
+                                    <Card
+                                        isBlurred
+                                        className="border-none bg-background/60 dark:bg-default-100/50 max-w-[610px]"
+                                        shadow="sm"
+                                    >
+                                        <CardBody>
+                                            <div className="grid grid-cols-6 md:grid-cols-12 gap-6 md:gap-4 items-center justify-center">
+                                                <div className="relative col-span-6 md:col-span-4">
+                                                    <Image
+                                                        alt="Album cover"
+                                                        className="object-cover"
+                                                        shadow="md"
+                                                        src={product.image}
+                                                        width={100}
+                                                        height={100}
 
 
-                                                />
-                                            </div>
+                                                    />
+                                                </div>
 
-                                            <div className="flex flex-col col-span-6 md:col-span-8">
-                                                <div className="flex justify-between items-start">
-                                                    <div className="flex flex-col gap-0 w-full">
-                                                        <div className="flex flex-row justify-between items-center">
-                                                            <h3 className="text-large font-medium">{product.name}</h3>
-                                                            <Dropdown>
-                                                                <DropdownTrigger>
+                                                <div className="flex flex-col col-span-6 md:col-span-8">
+                                                    <div className="flex justify-between items-start">
+                                                        <div className="flex flex-col gap-0 w-full">
+                                                            <div className="flex flex-row justify-between items-center">
+                                                                <h3 className="text-large font-medium">{product.name}</h3>
+                                                                <Checkbox className="checkboxProduct" radius="none" color="primary" isSelected={selectedProducts.some(p => p.id === product.id)} onChange={(e) => handleProductSelection(product, e.target.checked)}></Checkbox>
+                                                                <Dropdown>
+                                                                    <DropdownTrigger>
 
-                                                                    <Button
-                                                                        isIconOnly
+                                                                        <Button
+                                                                            isIconOnly
 
-                                                                        className="text-default-900/60 data-[hover]:bg-foreground/10 -translate-y-2 translate-x-2"
-                                                                        radius="full"
-                                                                        variant="light"
-                                                                    >
-                                                                        <RiMoreFill size={25} />
-                                                                    </Button>
+                                                                            className="text-default-900/60 data-[hover]:bg-foreground/10 -translate-y-2 translate-x-2"
+                                                                            radius="full"
+                                                                            variant="light"
+                                                                        >
+                                                                            <RiMoreFill size={25} />
+                                                                        </Button>
 
-                                                                </DropdownTrigger>
-                                                                <DropdownMenu aria-label="Dropdown menu with icons" variant="faded">
+                                                                    </DropdownTrigger>
+                                                                    <DropdownMenu aria-label="Dropdown menu with icons" variant="faded">
 
-                                                                    <DropdownItem
-                                                                        key="edit"
-                                                                        startContent={<FaPencil />}
-                                                                    >
-                                                                        Editar
-                                                                    </DropdownItem>
+                                                                        <DropdownItem
+                                                                            key="edit"
+                                                                            startContent={<FaPencil />}
+                                                                        >
+                                                                            Editar
+                                                                        </DropdownItem>
 
-                                                                    <DropdownItem
-                                                                        key="delete"
-                                                                        className="text-danger"
-                                                                        color="danger"
-                                                                        startContent={<FaTrash />}
-                                                                    >
-                                                                        Eliminar
-                                                                    </DropdownItem>
-
-
-                                                                </DropdownMenu>
-                                                            </Dropdown>
-                                                        </div>
-                                                        <div className="flex flex-row gap-2">
-                                                            <Chip className="font-small" color="warning" variant="bordered">
-                                                                {subcategory.category}
-                                                            </Chip>
-                                                            <span className="text-sm text-foreground/90">{product.brand}</span>
+                                                                        <DropdownItem
+                                                                            key="delete"
+                                                                            className="text-danger"
+                                                                            color="danger"
+                                                                            startContent={<FaTrash />}
+                                                                        >
+                                                                            Eliminar
+                                                                        </DropdownItem>
 
 
-                                                        </div>
-                                                        {/* cantidad y precio */}
-                                                        <div className="flex flex-row gap-2">
-                                                            <span className="text-sm text-foreground/90 font-bold text-red-500">Bs {product.price}</span>
-                                                            <span className="text-sm text-foreground/90"> cantidad: {product.quantity}</span>
+                                                                    </DropdownMenu>
+                                                                </Dropdown>
+                                                            </div>
+                                                            <div className="flex flex-row gap-2">
+                                                                <Chip className="font-small" color="warning" variant="bordered">
+                                                                    {subcategory.category}
+                                                                </Chip>
+                                                                <span className="text-sm text-foreground/90">{product.brand}</span>
+
+
+                                                            </div>
+                                                            {/* cantidad y precio */}
+                                                            <div className="flex flex-row gap-2">
+                                                                <span className="text-sm text-foreground/90 font-bold text-red-500">Bs {product.price}</span>
+                                                                <span className="text-sm text-foreground/90"> cantidad: {product.quantity}</span>
+                                                            </div>
                                                         </div>
                                                     </div>
 
+                                                    <div className="flex flex-row gap-2 mt-2 justify-end">
+                                                        <Button size="sm" color="primary" variant="bordered" isIconOnly>
+                                                            <FaEye />
+                                                        </Button>
+                                                        <Button size="sm" color="success" variant="bordered">Agregar Stock</Button>
 
-
-
-
+                                                    </div>
                                                 </div>
-
-                                                <div className="flex flex-row gap-2 mt-2 justify-end">
-                                                    <Button size="sm" color="primary" variant="shadow" isIconOnly>
-                                                        <FaEye />
-                                                    </Button>
-
-
-
-                                                    <Button size="sm" color="success" variant="bordered">Agregar Stock</Button>
-
-                                                </div>
-
-
-
                                             </div>
-                                        </div>
 
-                                    </CardBody>
+                                        </CardBody>
                                     </Card>
                                 ))}
                             </div>
@@ -187,6 +216,13 @@ export const IndexInventories = () => {
                     ))}
                 </div>
             </div>
+            {/* Boton flotante para registrar entrada, posicionar en la parte inferior derecha */}
+            {isSelected && (
+                <div className="fixed bottom-0 right-0 m-4">
+                    <Button color="primary" startContent={<FaPlus />} variant="shadow" onClick={handleOpen}>Registrar Salida</Button>
+                </div>
+            )}
+            <OutputForm isOpen={isOpen} setIsOpen={setIsOpen} />
 
         </>
 

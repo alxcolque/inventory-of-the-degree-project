@@ -392,7 +392,7 @@ export const stockWarehouse = [
 
         product: [
             {
-                id: 1,
+                id: 5,
                 name: "Lenovo A10",
                 slug: "lenovo-a10",
                 price: 1000,
@@ -406,7 +406,7 @@ export const stockWarehouse = [
 
             },
             {
-                id: 2,
+                id: 6,
                 name: "hp pavilion",
                 slug: "hp-pavilion",
                 price: 100,
@@ -420,7 +420,7 @@ export const stockWarehouse = [
 
             },
             {
-                id: 3,
+                id: 7,
                 name: "Dell Inspiron",
                 slug: "dell-inspiron",
                 price: 100,
@@ -433,7 +433,7 @@ export const stockWarehouse = [
 
             },
             {
-                id: 4,
+                id: 8,
                 name: "MacBook Pro",
                 slug: "macbook-pro",
                 price: 100,
@@ -455,7 +455,7 @@ export const stockWarehouse = [
         color: "#ed4040",
         product: [
             {
-                id: 1,
+                id: 9,
 
                 name: "tplink",
                 slug: "tplink",
@@ -470,7 +470,7 @@ export const stockWarehouse = [
 
             },
             {
-                id: 2,
+                id: 10,
                 name: "D-Link",
                 slug: "d-link",
                 price: 100,
@@ -482,7 +482,7 @@ export const stockWarehouse = [
                 brand: "D-Link",
             },
             {
-                id: 3,
+                id: 11,
                 name: "Cisco",
                 slug: "cisco",
                 price: 100,
@@ -503,7 +503,7 @@ export const stockWarehouse = [
         color: "#ed4040",
         product: [
             {
-                id: 1,
+                id: 12,
                 name: "Audifonos",
                 slug: "audifonos",
                 price: 100,
@@ -516,7 +516,7 @@ export const stockWarehouse = [
                 brand: "Sony",
             },
             {
-                id: 2,
+                id: 13,
                 name: "Mouse",
                 slug: "mouse",
                 price: 100,
@@ -528,7 +528,7 @@ export const stockWarehouse = [
                 brand: "Logitech",
             },
             {
-                id: 3,
+                id: 14,
                 name: "Teclado",
                 slug: "teclado",
                 price: 100, 
@@ -540,7 +540,7 @@ export const stockWarehouse = [
                 brand: "Logitech",
             },
             {
-                id: 4,
+                id: 15,
                 name: "Mouse",
                 slug: "mouse",
                 price: 100,
