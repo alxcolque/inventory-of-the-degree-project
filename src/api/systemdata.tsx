@@ -566,7 +566,31 @@ export const stockWarehouse = [
             }
         ]
     }
-
-
-
+]
+/* Sales */
+export const sales = [
+    {
+        id: 1,
+        customer: "Juan Perez",
+        shop: "Lenovo Oruro",
+        total: 100,
+        status: "pending",
+        date: "12/12/2024"
+    },
+    {
+        id: 2,
+        customer: "Pame",
+        shop: "Lenovo Oruro",
+        total: 100,
+        status: "approved",
+        date: "12/12/2024"
+    },
+    {
+        id: 3,
+        customer: "Marleny",
+        shop: "Lenovo Oruro",
+        total: 100,
+        status: "rejected",
+        date: "12/12/2024"
+    }
 ]

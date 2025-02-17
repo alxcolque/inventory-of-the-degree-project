@@ -1,11 +1,11 @@
 import { create, StateCreator } from "zustand";
-import { ICategoriesResponse } from "../../interface";
+import { ICategoryResponse } from "../../interface";
 import { isAxiosError } from "axios";
 import { toast } from "sonner";
 import { categories } from "../../api/systemdata";
 
 interface CategoriesState {
-  categories: ICategoriesResponse[];
+  categories: ICategoryResponse[];
 }
 interface Actions{
     getCategories: (token: string) => void;

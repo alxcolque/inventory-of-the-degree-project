@@ -1,11 +1,12 @@
 import { create, StateCreator } from "zustand";
-import { IOrdersResponse } from "../../interface";
+import { IOrdersResponse, ISaleResponse } from "../../interface";
 import { isAxiosError } from "axios";
 import { toast } from "sonner";
-import { orders } from "../../api/systemdata";
+import { orders, sales } from "../../api/systemdata";
 
 interface OrdersState {
   orders: IOrdersResponse[];
+  sales: ISaleResponse[];
 }
 interface Actions{
     getOrders: (token: string) => void;
@@ -13,6 +14,7 @@ interface Actions{
 
 const storeApi: StateCreator<OrdersState & Actions> = (set) => ({
   orders: [],
+  sales: [],
   getOrders: async (token: string) => {
     // todo:: get inventories from api
     try {   
@@ -24,6 +26,18 @@ const storeApi: StateCreator<OrdersState & Actions> = (set) => ({
         const response = orders;
         console.log(token);
         set({ orders: response as any });
+    } catch (error) {
+        if (isAxiosError(error)) {
+            toast.error(error.response?.data.message);
+        }
+    }
+  },
+  getSales: async (token: string) => {
+    // todo:: get inventories from api
+    console.log(token);
+    try {
+        const response = sales;
+        set({ sales: response as any });
     } catch (error) {
         if (isAxiosError(error)) {
             toast.error(error.response?.data.message);

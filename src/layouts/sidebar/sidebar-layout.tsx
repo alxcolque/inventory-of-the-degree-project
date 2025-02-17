@@ -90,7 +90,7 @@ export const SidebarLayout = () => {
               />
               {/* Inventory */}
               <SidebarItem
-                isActive={pathname === "/admin/inventories"}
+                isActive={pathname === "/admin/inventories" || pathname === "/admin/inventories/input"}
                 title="Inventario"
                 icon={<FaBox className="text-default-500" size={20} />}
                 href="/admin/inventories"
@@ -98,7 +98,7 @@ export const SidebarLayout = () => {
               {/* Orders */}
               <SidebarItem
                 isActive={pathname === "/admin/orders"}
-                title="Pedidos"
+                title="Ventas"
                 icon={<FaBox className="text-default-500" size={20} />}
                 href="/admin/orders"
               />

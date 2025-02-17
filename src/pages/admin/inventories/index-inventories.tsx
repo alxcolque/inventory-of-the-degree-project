@@ -2,7 +2,7 @@
 
 import { Button, Card, CardBody, Chip, DatePicker, DateValue, Dropdown, DropdownTrigger, DropdownMenu, Image, Input, DropdownItem, Spinner, Checkbox } from "@nextui-org/react";
 import { DynamicBreadcrumbs } from "../../../components/ui/dynamic-breadcrumbs";
-import { useAuthStore, useWarehouseStore } from "../../../stores";
+import { useAuthStore, useCategoriesStore, useWarehouseStore } from "../../../stores";
 import { useEffect, useState } from "react";
 import { FaEye, FaPencil, FaPlus, FaTrash } from "react-icons/fa6";
 import { RiMoreFill } from "react-icons/ri";
@@ -20,6 +20,8 @@ export const IndexInventories = () => {
     const warehouseProducts = useWarehouseStore(state => state.warehouseProducts);
     const getWarehouseProducts = useWarehouseStore(state => state.getWarehouseProducts);
     const [date, setDate] = useState<DateValue | null>();
+    const categories = useCategoriesStore(state => state.categories);
+    const getCategories = useCategoriesStore(state => state.getCategories);
     const handleChangeDate = (date: DateValue | null) => {
         setDate(date);
     }
@@ -40,8 +42,8 @@ export const IndexInventories = () => {
     const handleOpen = () => {
         setIsOpen(true);
     }
-    const handleClose = (isClose: boolean) => {
-        setIsOpen(isClose);
+    const handleClose = () => {
+        //setIsOpen(isClose);
     }
 
 
@@ -60,6 +62,7 @@ export const IndexInventories = () => {
             setIsLoading(false);
         }
         handleSelectedProducts();
+        getCategories(token!);
 
     }, [token, selectedProducts]);
 
@@ -96,11 +99,9 @@ export const IndexInventories = () => {
                 <div className="flex gap-2 overflow-x-auto scrollbar-hide">
 
                     <Button>Todos</Button>
-
-                    <Button>Electrónicos</Button>
-                    <Button>Ropa</Button>
-                    <Button>Accesorios</Button>
-                    <Button>Otros</Button>
+                    {categories.map((category) => (
+                        <Button key={category.id}>{category.name}</Button>
+                    ))}
 
                 </div>
                 <div className="flex flex-col gap-2">
@@ -217,7 +218,7 @@ export const IndexInventories = () => {
                     <Button color="primary" startContent={<FaPlus />} variant="shadow" onClick={handleOpen}>Registrar Salida</Button>
                 </div>
             )}
-            <OutputForm isOpen={isOpen} setIsOpen={setIsOpen} onClose={() => handleClose(true)} products={selectedProducts}/>
+            <OutputForm isOpen={isOpen} setIsOpen={setIsOpen} onClose={() => handleClose()} products={selectedProducts}/>
 
         </>
 

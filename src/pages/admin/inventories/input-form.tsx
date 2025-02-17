@@ -3,8 +3,9 @@ import { Input, SelectItem, Select } from "@nextui-org/react"
 import { DynamicBreadcrumbs } from "../../../components/ui/dynamic-breadcrumbs"
 import { useEffect } from "react"
 import { useAuthStore, useProductsStore, useSupplierStore } from "../../../stores"
-
+import { useNavigate } from "react-router-dom";
 export const InputForm = () => {
+    const navigate = useNavigate();
     const token = useAuthStore(state => state.token);
     const products = useProductsStore(state => state.products);
     const getProducts = useProductsStore(state => state.getProducts);
@@ -14,6 +15,10 @@ export const InputForm = () => {
         getProducts(token as string);
         getSuppliers(token as string);
     }, []);
+
+    const handleRegisterInput = () => {
+        navigate("/admin/inventories");
+    }
 
     return (
         <div className="my-2 px-4 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -69,7 +74,7 @@ export const InputForm = () => {
                     />
                 </div>
             </div>
-            <Button className="w-fit" color="primary" variant="shadow">Registrar</Button>
+            <Button onPress={handleRegisterInput} className="w-fit" color="primary" variant="shadow">Registrar</Button>
         </div>
     )
 }
