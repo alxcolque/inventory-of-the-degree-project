@@ -5,10 +5,10 @@ import { toast } from "sonner";
 
 import { suppliers } from "../../api/systemdata";
 
-import { ISuppliersResponse } from "../../interface/suppliers/suppliers-response";
+import { ISupplierResponse } from "../../interface/suppliers/supplier-response";
 
 interface SuppliersState {
-  suppliers: ISuppliersResponse[];
+  suppliers: ISupplierResponse[];
 }
 interface Actions {
   getSuppliers: (token: string) => void;

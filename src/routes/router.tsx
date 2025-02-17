@@ -156,7 +156,7 @@ const router = createBrowserRouter([
             path: "inventories/output",
             element: (
               <ProtectedRoute roles={["admin"]}>
-                <OutputForm />
+                <OutputForm isOpen={false} setIsOpen={() => {}} onClose={() => {}} products={[]} />
               </ProtectedRoute>
             ),
           },

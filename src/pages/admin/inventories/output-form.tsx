@@ -1,11 +1,14 @@
-import { Input, Modal, ModalBody, ModalContent, ModalHeader, Select, SelectItem, TableCell, TableHeader, Table, TableColumn, TableBody, TableRow, Tooltip, User, Chip, ModalFooter, Button, Spinner } from "@nextui-org/react";
-import { useCallback, useEffect, useState } from "react";
+import { Input, Modal, ModalBody, ModalContent, ModalHeader, Select, SelectItem, TableCell, TableHeader, Table, TableColumn, TableBody, TableRow, Tooltip, User, ModalFooter, Button, Spinner} from "@nextui-org/react";
+import { useEffect, useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import { useAuthStore } from "../../../stores/auth/auth.store";
+import { useShopsStore } from "../../../stores/shops/shops.store";
 
 interface OutputFormProps {
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
+    onClose: (isClose: boolean) => void;
+    products: any[];
 }
 export const columns = [
     { name: "Nombre", uid: "name" },
@@ -63,81 +66,35 @@ export const columns = [
 ]; */
 
 
-export const OutputForm = ({ isOpen, setIsOpen }: OutputFormProps) => {
+export const OutputForm = ({ isOpen, setIsOpen, onClose, products }: OutputFormProps) => {
     const handleClose = () => {
         setIsOpen(false);
+        onClose(true);
     }
     const token = useAuthStore(state => state.token);
-    const [products, setProducts] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
-    const getProducts = () => { 
-        const selectedProducts = localStorage.getItem("selectedProducts");
-        if (selectedProducts) {
-            setProducts(JSON.parse(selectedProducts));
+    const shops = useShopsStore(state => state.shops);
+    //const getShops = useShopsStore(state => state.getShops);
+    const [currentProducts, setCurrentProducts] = useState<any[]>([]);
+    const handleOutput = () => {
+        //console.log(currentProducts);
+        onClose(true);
+    }
+    //Remover producto de la lista de productos
+    console.log(token);
+    const removeThisProduct = (id: number) => {
+        if (currentProducts.length > 0) {
+            console.log(id);
+            const newProducts = currentProducts.filter(product => product.id !== id);
+            setCurrentProducts(newProducts);
         }
     }
-    const handleRemoveProduct = (id: number) => {
-        const newProducts = products.filter(product => product.id !== id);
-        setProducts(newProducts);
-        localStorage.setItem("selectedProducts", JSON.stringify(newProducts));
-    }
-
-
     useEffect(() => {
-        if (token) {
-            setIsLoading(true);
-            getProducts();
-            setIsLoading(false);
-        }
-    }, [token]);
-    console.log(products);
-
-    const renderCell = useCallback((user: any, columnKey: any) => {
-        const cellValue = user[columnKey];
-
-        switch (columnKey) {
-            case "name":
-                return (
-                    <User
-                        avatarProps={{ radius: "lg", src: user.image }}
-                        description={user.stock}
-                        name={cellValue}
-                    >
-                        {user.name}
-                    </User>
-                );
-            case "stock":
-                return (
-                    <div className="flex flex-col">
-                        <p className="text-bold text-sm capitalize text-default-400">{user.stock}</p>
-                    </div>
-                );
-            case "price":
-                return (
-                    <div className="flex flex-col">
-                        <Input type="number" className="max-w-20" size="sm" defaultValue={user.price} placeholder="Precio" />
-                    </div>
-                );
-            case "quantity":
-                return (
-                    <div className="flex flex-col">
-                        <Input type="number" className="max-w-20" size="sm" defaultValue="1" placeholder="Cantidad" />
-                    </div>
-                );
-            case "actions":
-                return (
-                    <div className="relative flex items-center gap-2">
-                        <Tooltip color="danger" content="Quitar producto">
-                            <span className="text-lg text-danger cursor-pointer active:opacity-50" onClick={() => handleRemoveProduct(user.id)}>
-                                <FaTimes />
-                            </span>
-                        </Tooltip>
-                    </div>
-                );
-            default:
-                return cellValue;
-        }
-    }, []);
+        setIsLoading(true);
+        setCurrentProducts(products);
+        setIsLoading(false);
+    }, [currentProducts]);
+    
     return (
         /* modal para registrar salida de productos */
         <Modal isOpen={isOpen} size="2xl" onClose={handleClose}>
@@ -146,34 +103,60 @@ export const OutputForm = ({ isOpen, setIsOpen }: OutputFormProps) => {
                     <h3>Registrar Salida</h3>
                 </ModalHeader>
                 <ModalBody>
-                    {isLoading && <Spinner />}
-                    {products.length > 0 && (
+                    {isLoading ? (
+                        <Spinner />
+                    ) : (
                         <Table aria-label="Example table with custom cells">
                             <TableHeader columns={columns}>
-                            {(column) => (
-                                <TableColumn key={column.uid} align={column.uid === "actions" ? "center" : "start"}>
-                                    {column.name}
-                                </TableColumn>
-                            )}
-                        </TableHeader>
-                        <TableBody items={products}>
-                            {(item) => (
-                                <TableRow key={item.id}>
-                                    {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
-                                </TableRow>
-                            )}
+                                {(column) => (
+                                    <TableColumn key={column.uid} align={column.uid === "actions" ? "center" : "start"}>
+                                        {column.name}
+                                    </TableColumn>
+                                )}
+                            </TableHeader>
+                            <TableBody items={currentProducts}>
+                                {products.map((product) => (
+                                    <TableRow key={product.id}>
+                                        <TableCell>
+                                            <User
+                                                avatarProps={{ radius: "lg", src: product.image }}
+                                                description={product.stock}
+                                                name={product.name}
+                                            >
+                                                {product.name}
+                                            </User>
+                                        </TableCell>
+                                        <TableCell>
+                                            <p className="text-bold text-sm capitalize text-default-400">{product.stock}</p>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Input type="number" className="max-w-20" size="sm" defaultValue={product.price} placeholder="Precio" />
+                                        </TableCell>
+                                        <TableCell>
+                                            <Input type="number" className="max-w-20" size="sm" defaultValue="1" placeholder="Cantidad" />
+                                        </TableCell>
+                                        <TableCell>
+                                            <Tooltip color="danger" content="Quitar producto">
+                                                <span className="text-lg text-danger cursor-pointer active:opacity-50" onClick={() => removeThisProduct(product.id)}>
+                                                    <FaTimes />
+                                                </span>
+                                            </Tooltip>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
                             </TableBody>
+
                         </Table>
                     )}
                 </ModalBody>
                 <ModalFooter>
                     {/* Select para elegir tiendas */}
                     <Select label="Tienda" size="sm">
-                        <SelectItem key="1" value="1">Tienda 1</SelectItem>
-                        <SelectItem key="2" value="2">Tienda 2</SelectItem>
-                        <SelectItem key="3" value="3">Tienda 3</SelectItem>
+                        {shops.map((shop) => (
+                            <SelectItem key={shop.id} value={shop.id}>{shop.name}</SelectItem>
+                        ))}
                     </Select>
-                    <Button color="primary">Registrar Salida</Button>
+                    <Button color="primary" onPress={handleOutput}>Registrar Salida</Button>
                 </ModalFooter>
             </ModalContent>
         </Modal>

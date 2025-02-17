@@ -1,12 +1,12 @@
 import { isAxiosError } from "axios";
 import { toast } from "sonner";
 import { create, StateCreator } from "zustand";
-import { IProductsResponse } from "../../interface";
+import { IProductResponse } from "../../interface";
 import { products } from "../../api/systemdata";
 
 
 interface ProductState {
-    products: IProductsResponse[];
+    products: IProductResponse[];
 }
 interface Action {
     getProducts: (token: string) => Promise<void>;

@@ -30,14 +30,9 @@ export const IndexInventories = () => {
     const handleProductSelection = (product: IProduct, isChecked: boolean) => {
         if (isChecked) {
             setSelectedProducts([...selectedProducts, product]);
-            /* Almacenar en localsotrage */
-            localStorage.setItem("selectedProducts", JSON.stringify(selectedProducts));
         }
         else {
             setSelectedProducts(selectedProducts.filter(p => p.id !== product.id));
-            /* Eliminar en localsotrage */
-            localStorage.removeItem("selectedProducts");
-            
         }
     }
     /* modal para registrar salida de productos */
@@ -45,12 +40,12 @@ export const IndexInventories = () => {
     const handleOpen = () => {
         setIsOpen(true);
     }
-    const handleClose = () => {
-        setIsOpen(false);
+    const handleClose = (isClose: boolean) => {
+        setIsOpen(isClose);
     }
 
 
-    console.log(selectedProducts);
+    //console.log(selectedProducts);
     /* Estado para controlar si existe seleccion de productos */
     const [isSelected, setIsSelected] = useState(false);
     /* Funcion para controlar si existe seleccion de productos */
@@ -222,7 +217,7 @@ export const IndexInventories = () => {
                     <Button color="primary" startContent={<FaPlus />} variant="shadow" onClick={handleOpen}>Registrar Salida</Button>
                 </div>
             )}
-            <OutputForm isOpen={isOpen} setIsOpen={setIsOpen} />
+            <OutputForm isOpen={isOpen} setIsOpen={setIsOpen} onClose={() => handleClose(true)} products={selectedProducts}/>
 
         </>
 
