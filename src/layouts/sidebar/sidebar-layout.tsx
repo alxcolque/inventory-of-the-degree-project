@@ -41,6 +41,13 @@ export const SidebarLayout = () => {
                 isActive={pathname === "/admin"}
                 href="/admin"
               />
+              {/* Inventory */}
+              <SidebarItem
+                isActive={pathname === "/admin/inventories" || pathname === "/admin/inventories/input"}
+                title="Inventario"
+                icon={<FaBox className="text-default-500" size={20} />}
+                href="/admin/inventories"
+              />
               <SidebarItem
                 title="Tiendas"
                 icon={<FaStore className="text-default-500" size={20} />}
@@ -88,20 +95,14 @@ export const SidebarLayout = () => {
                 icon={<FaBox className="text-default-500" size={20} />}
                 href="/admin/products"
               />
-              {/* Inventory */}
-              <SidebarItem
-                isActive={pathname === "/admin/inventories" || pathname === "/admin/inventories/input"}
-                title="Inventario"
-                icon={<FaBox className="text-default-500" size={20} />}
-                href="/admin/inventories"
-              />
+              
               {/* Orders */}
-              <SidebarItem
+              {/* <SidebarItem
                 isActive={pathname === "/admin/orders"}
                 title="Ventas"
                 icon={<FaBox className="text-default-500" size={20} />}
                 href="/admin/orders"
-              />
+              /> */}
 
             </SidebarMenu>
           </div>

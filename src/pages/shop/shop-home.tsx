@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useAuthStore } from "../../stores";
 import { useShopsStore } from "../../stores/shops/shops.store";
 import { useEffect } from "react";
+import { DynamicBreadcrumbs } from "../../components";
 
 export const ShopHome = () => {
     const token = useAuthStore(state => state.token);
@@ -14,7 +15,9 @@ export const ShopHome = () => {
     }, []);
 
     return (
-        <div>
+        <div className="my-2 px-4 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col">
+            <DynamicBreadcrumbs />
+            <h2>Usuarios</h2>
             <p>{shop.name}</p>
             <p>{shop.slug}</p>
             <p>{shop.address}</p>
