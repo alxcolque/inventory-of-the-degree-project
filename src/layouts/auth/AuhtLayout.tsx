@@ -58,13 +58,7 @@ export const AuhtLayout = () => {
           </div>
 
           <div className='z-10'>
-            <h1 className='font-bold text-[45px]'>Crea tu cuenta</h1>
-            <div className='font-light text-slate-400 mt-4'>
-              ¡Crea tu cuenta y comienza a disfrutar de los beneficios de nuestra plataforma!
-              Regístrate para obtener acceso a todas las funciones de la aplicación.
-              <p>Si ya tienes una cuenta, puedes iniciar sesión.</p>
-
-            </div>
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcST2whUe0PoOjsDMBVMtKvkWDevIWbahsnfjg&s" alt="" />
           </div>
         </div>
       </div>

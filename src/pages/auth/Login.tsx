@@ -1,4 +1,4 @@
-import { Button, Input, Link } from "@nextui-org/react"
+import { Button, Input } from "@nextui-org/react"
 import { useState } from "react";
 import { toast } from "sonner";
 import { useAuthStore } from "../../stores";
@@ -53,13 +53,6 @@ export const Login = () => {
           Ingresar
         </Button>
       </form>
-
-      <div className='font-light text-slate-400 mt-4 text-sm'>
-        No tienes cuenta?{" "}
-        <Link href='/register' className='font-bold'>
-          Regístrate aquí
-        </Link>
-      </div>
     </>
   )
 }
