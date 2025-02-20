@@ -4,11 +4,15 @@ import { Table, TableHeader, TableCell, TableBody, TableRow, TableColumn, User, 
 import { sales } from "../../../api/systemdata";
 import { FaArrowLeft, FaEye } from "react-icons/fa6";
 
+import { useNavigate, useParams } from "react-router-dom";
+
 interface Props {
     onClose: () => void;
 }   
 
 export const IndexSale = ({ onClose }: Props) => {
+    const { slug } = useParams();
+    const navigate = useNavigate();
     const columns = [
         { name: 'NOMBRE', uid: 'customer' },
         { name: 'TIENDA', uid: 'shop' },
@@ -19,13 +23,13 @@ export const IndexSale = ({ onClose }: Props) => {
     ];
 
     return (
-        <>
+        <div className="w-full">
             {/* Boton atras */}
-            <div className="flex flex-row justify-between items-center">
+            <div className="flex flex-row gap-2">
+                <Button color="primary" size="sm" startContent={<FaArrowLeft size={18} />} variant="shadow" onPress={() => onClose()}></Button>
                 <h2>Ventas</h2>
-                <Button color="primary" startContent={<FaArrowLeft size={18} />} variant="shadow" onPress={() => onClose()}></Button>
             </div>
-            <Table aria-label="Example table with custom cells">
+            <Table aria-label="Example table with custom cells" className="mt-4">
                 <TableHeader columns={columns}>
                     {(column) => (
                         <TableColumn key={column.uid} align={column.uid === "actions" ? "center" : "start"}>
@@ -61,7 +65,7 @@ export const IndexSale = ({ onClose }: Props) => {
                             </TableCell>
                             <TableCell>
                                 <Tooltip color="primary" content="Ver detalle de venta">
-                                    <span className="text-lg text-primary cursor-pointer active:opacity-50">
+                                    <span className="text-lg text-primary cursor-pointer active:opacity-50" onClick={() => navigate(`/tienda/${slug}/venta/${sale.id}`)}>
                                         <FaEye />
                                     </span>
                                 </Tooltip>
@@ -70,6 +74,6 @@ export const IndexSale = ({ onClose }: Props) => {
                     ))}
                 </TableBody>
             </Table>
-        </>
+        </div>
     )
 }

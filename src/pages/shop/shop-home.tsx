@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useMediaQuery } from "@react-hook/media-query";
 import { Accordion, AccordionItem, Button, Card, CardBody, CardHeader, Chip, DatePicker, DateValue, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Image, Input, Skeleton, Spacer, Spinner } from "@nextui-org/react";
 import { TbDotsVertical } from "react-icons/tb";
-import { FaStarHalfAlt } from "react-icons/fa";
+import { FaShoppingCart, FaStarHalfAlt } from "react-icons/fa";
 import { FaEye, FaPencil, FaTrash } from "react-icons/fa6";
 import { RiMoreFill } from "react-icons/ri";
 import { IndexSale } from "./sales/index-sale";
@@ -62,9 +62,9 @@ export const ShopHome = () => {
 
       <div className="flex flex-col w-full lg:flex-row gap-4">
         {/* Primera Sección 80% de ancho de columna en desktop y 100% en tablet y mobile */}
-        <div className="w-full flex flex-col lg:flex-row md:w-full lg:w-3/4 gap-4">
+        <div className="w-full flex flex-col lg:flex-row md:w-full gap-4">
           {/* seccion 1 30% de ancho de columna en desktop y 100% en tablet y mobile */}
-          <div className="w-full flex flex-col lg:w-1/3">
+          <div className="w-full flex flex-col lg:w-1/4">
 
             {isLoading &&
               <div className="w-full h-[300px]">
@@ -124,7 +124,7 @@ export const ShopHome = () => {
                       </div>
                       <Spacer y={0.5} />
                       {/* Boton para ventas */}
-                      <Button onClick={() => setIsSale(true)} className="w-full">Ventas</Button>
+                      <Button color={isSale ? 'primary' : 'default'} startContent={<FaShoppingCart />} onClick={() => setIsSale(true)} className="w-full">Ventas</Button>
                     </>
                   </AccordionItem>
                 </Accordion>
@@ -162,7 +162,7 @@ export const ShopHome = () => {
               </div>
 
               {/* Botones horizontales para listar categorias para filtro, scroll horizontal */}
-              <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+              <div className="flex gap-2 overflow-x-auto scrollbar-hide mt-3">
 
                 <Button>Todos</Button>
                 {categories.map((category) => (
