@@ -28,7 +28,7 @@ export const IndexInventories = () => {
     /* Estado para seleccionar todos los productos */
     const [selectedProducts, setSelectedProducts] = useState<IProduct[]>([]);
     /* Estado para seleccionar todos los productos */
-    
+
     const handleProductSelection = (product: IProduct, isChecked: boolean) => {
         if (isChecked) {
             setSelectedProducts([...selectedProducts, product]);
@@ -218,7 +218,7 @@ export const IndexInventories = () => {
                     <Button color="primary" startContent={<FaPlus />} variant="shadow" onClick={handleOpen}>Registrar Salida</Button>
                 </div>
             )}
-            <OutputForm isOpen={isOpen} setIsOpen={setIsOpen} onClose={() => handleClose()} products={selectedProducts}/>
+            <OutputForm isOpen={isOpen} setIsOpen={setIsOpen} onClose={() => handleClose()} products={selectedProducts} />
 
         </>
 

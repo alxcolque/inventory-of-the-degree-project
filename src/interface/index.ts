@@ -46,3 +46,5 @@ export type { ISupplierResponse } from './suppliers/supplier-response';
 export type { IListWarehouseResponse } from './inventories/warehouse/list-warehouse-response';
 
 export type { ISaleResponse } from './orders/sale-response';
+
+export type { IListStoreResponse } from './inventories/store/list-store-response';
