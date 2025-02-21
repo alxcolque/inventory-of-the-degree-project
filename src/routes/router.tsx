@@ -29,7 +29,7 @@ import {
   OutputForm,
   CardexProduct,
 } from "../pages/admin";
-import { DetailSale, ShopHome} from "../pages/shop";
+import { DetailSale, KardexProduct, ShopHome} from "../pages/shop";
 
 
 
@@ -80,6 +80,11 @@ const router = createBrowserRouter([
           {
             path: "/tienda/:slug/venta/:id",
             element: <DetailSale />,
+          },
+          /* kardex product */
+          {
+            path: "/tienda/:slug/:slug",
+            element: <KardexProduct />,
           },
         ],
       },

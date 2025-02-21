@@ -840,3 +840,26 @@ export const sales = [
         date: "12/12/2024"
     }
 ]
+export const brands = [
+    {
+        id: 1,
+        name: "Lenovo",
+        slug: "lenovo",
+        logo: `https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}`,
+        logo_key: null
+    },
+    {
+        id: 2,
+        name: "Samsung",
+        slug: "samsung",
+        logo: `https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}`,
+        logo_key: null
+    },
+    {
+        id: 3,
+        name: "HP",
+        slug: "hp",
+        logo: `https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}`,
+        logo_key: null
+    }
+]

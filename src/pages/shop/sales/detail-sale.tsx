@@ -6,17 +6,33 @@ export const DetailSale = () => {
 
     const navigate = useNavigate();
     const { slug } = useParams();
+    const handlePrint = () => {
+        /* Imprimir solo la seccion de my-sale-detail */
+        const printContent = document.querySelector(".my-sale-detail");
+        /* Abrir nueva ventana */
+        const WindowPrt = window.open('', '', 'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0');
+        if(WindowPrt){
+            WindowPrt.document.write(printContent!.innerHTML);
+            WindowPrt.document.close();
+            WindowPrt.focus();
+            WindowPrt.print();
+            WindowPrt.close();
+        }
+
+    }
 
     return (
         <div>
             {/* Tabla con detalle de ventas */}
-            <div className="flex justify-center">
+            <div className="flex justify-center my-sale-detail">
                 <div className="max-w-3xl bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                     <div className="flex items-center justify-center mb-4">
                         <img
                             src="https://img.lovepik.com/element/45011/0959.png_860.png"
                             alt="Logo"
                             className="h-16 w-auto"
+                            width={200}
+                            height={200}
                         />
                     </div>
                     {/* Titulo */}
@@ -89,12 +105,12 @@ export const DetailSale = () => {
 
             </div>
             {/* Botones para imprimir o descargar */}
-            <div className="flex justify-center">
+            <div className="flex justify-center no-print">
                 {/* Boton atras */}
                 <Button className="mr-4" variant="solid" color="primary" onPress={() => navigate(`/tienda/${slug}`)}>
                     Atras
                 </Button>
-                <Button className="mr-4" onPress={() => window.print()} variant="solid" color="secondary">
+                <Button className="mr-4" onPress={handlePrint} variant="solid" color="secondary">
                     Imprimir
                 </Button>
                 <Button variant="solid" color="danger">

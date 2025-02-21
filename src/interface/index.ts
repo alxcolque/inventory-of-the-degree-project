@@ -48,3 +48,6 @@ export type { IListWarehouseResponse } from './inventories/warehouse/list-wareho
 export type { ISaleResponse } from './orders/sale-response';
 
 export type { IListStoreResponse } from './inventories/store/list-store-response';
+
+export type { IBrandsResponse } from './brands/brands-response';
+export type { IBrandResponse } from './brands/brand-response';
