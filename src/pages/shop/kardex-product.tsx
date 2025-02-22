@@ -1,36 +1,36 @@
 
-import { getKeyValue, Pagination, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
-import { useMemo, useState } from "react";
+//import { getKeyValue, Pagination, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
+//import { useMemo, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 export const users = [
     {
-      key: "1",
-      name: "Tony Reichert",
-      role: "CEO",
-      status: "Active",
+        key: "1",
+        name: "Tony Reichert",
+        role: "CEO",
+        status: "Active",
     },
     {
-      key: "2",
-      name: "Zoey Lang",
-      role: "Technical Lead",
-      status: "Paused",
+        key: "2",
+        name: "Zoey Lang",
+        role: "Technical Lead",
+        status: "Paused",
     }
-  ];
-  
+];
+
 export const KardexProduct = () => {
     const navigate = useNavigate();
-    const [page, setPage] = useState(1);
-  const rowsPerPage = 4;
+    //const [page, setPage] = useState(1);
+    //const rowsPerPage = 4;
 
-  const pages = Math.ceil(users.length / rowsPerPage);
+    //const pages = Math.ceil(users.length / rowsPerPage);
 
-  const items = useMemo(() => {
-    const start = (page - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
+    /* const items = useMemo(() => {
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
 
-    return users.slice(start, end);
-  }, [page, users]);
+        return users.slice(start, end);
+    }, [page, users]); */
     return (
         <div className="my-2 px-4 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
             {/* Atras */}

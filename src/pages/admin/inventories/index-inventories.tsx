@@ -1,6 +1,6 @@
 
 
-import { Button, Card, CardBody, Chip, DatePicker, DateValue, Dropdown, DropdownTrigger, DropdownMenu, Image, Input, DropdownItem, Spinner, Checkbox } from "@nextui-org/react";
+import { Button, Card, CardBody, Chip, Dropdown, DropdownTrigger, DropdownMenu, Image, Input, DropdownItem, Spinner, Checkbox } from "@nextui-org/react";
 import { DynamicBreadcrumbs } from "../../../components/ui/dynamic-breadcrumbs";
 import { useAuthStore, useCategoriesStore, useWarehouseStore } from "../../../stores";
 import { useEffect, useState } from "react";
@@ -9,6 +9,7 @@ import { RiMoreFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { OutputForm } from "./output-form";
 import { IProduct } from "../../../interface/inventories/warehouse/list-warehouse-response";
+import { ModalBrands } from "../../../components/modal/modal-brands";
 
 export const IndexInventories = () => {
     const navigate = useNavigate();
@@ -19,12 +20,13 @@ export const IndexInventories = () => {
     const [isLoading, setIsLoading] = useState(false);
     const warehouseProducts = useWarehouseStore(state => state.warehouseProducts);
     const getWarehouseProducts = useWarehouseStore(state => state.getWarehouseProducts);
-    const [date, setDate] = useState<DateValue | null>();
     const categories = useCategoriesStore(state => state.categories);
     const getCategories = useCategoriesStore(state => state.getCategories);
+    const [isModalBrandsOpen, setIsModalBrandsOpen] = useState(false);
+    /* const [date, setDate] = useState<DateValue | null>();
     const handleChangeDate = (date: DateValue | null) => {
         setDate(date);
-    }
+    } */
     /* Estado para seleccionar todos los productos */
     const [selectedProducts, setSelectedProducts] = useState<IProduct[]>([]);
     /* Estado para seleccionar todos los productos */
@@ -75,6 +77,8 @@ export const IndexInventories = () => {
                     <h2>Inventario de almacén</h2>
                     <Button color="primary" startContent={<FaPlus />} variant="shadow" onClick={() => navigate("/admin/inventories/input")}>Registrar Entrada</Button>
                 </div>
+                {/* Modal para brands */}
+                <ModalBrands isOpen={isModalBrandsOpen} onClose={() => { setIsModalBrandsOpen(false) }} brand={[]} />
                 <div className="flex flex-wrap items-center gap-2">
                     {/* busqueda */}
                     <div className="flex flex-row items-center gap-2">
@@ -82,17 +86,17 @@ export const IndexInventories = () => {
                         <Button color="primary" variant="shadow">Buscar</Button>
                     </div>
                     {/* Boton de marca */}
-                    <Button color="primary" variant="shadow">Marca</Button>
+                    <Button color="primary" variant="shadow" onClick={() => setIsModalBrandsOpen(true)}>Marca</Button>
                     {/* date picker */}
 
                     {/* FEcha actual */}
-                    <div className="flex flex-row items-center gap-2">
+                    {/* <div className="flex flex-row items-center gap-2">
 
                         <DatePicker
                             onChange={handleChangeDate}
                             value={date}
                         />
-                    </div>
+                    </div> */}
                 </div>
 
                 {/* Botones horizontales para listar categorias para filtro, scroll horizontal */}
@@ -130,8 +134,6 @@ export const IndexInventories = () => {
                                                         src={product.image}
                                                         width={100}
                                                         height={100}
-
-
                                                     />
                                                 </div>
 
@@ -172,8 +174,6 @@ export const IndexInventories = () => {
                                                                         >
                                                                             Eliminar
                                                                         </DropdownItem>
-
-
                                                                     </DropdownMenu>
                                                                 </Dropdown>
                                                             </div>
@@ -182,8 +182,6 @@ export const IndexInventories = () => {
                                                                     {subcategory.category}
                                                                 </Chip>
                                                                 <span className="text-sm text-foreground/90">{product.brand}</span>
-
-
                                                             </div>
                                                             {/* cantidad y precio */}
                                                             <div className="flex flex-row gap-2">
@@ -197,7 +195,7 @@ export const IndexInventories = () => {
                                                         <Button size="sm" color="primary" variant="bordered" isIconOnly>
                                                             <FaEye />
                                                         </Button>
-                                                        <Button size="sm" color="success" variant="bordered">Agregar Stock</Button>
+                                                        <Button size="sm" color="success" variant="bordered" onClick={() => navigate("/admin/inventories/input")}>Agregar Stock</Button>
 
                                                     </div>
                                                 </div>

@@ -3,7 +3,7 @@ import { useAuthStore, useCategoriesStore, useStockStore } from "../../stores";
 import { useShopsStore } from "../../stores/shops/shops.store";
 import { useEffect, useState } from "react";
 import { useMediaQuery } from "@react-hook/media-query";
-import { Accordion, AccordionItem, Button, Card, CardBody, CardHeader, Chip, DatePicker, DateValue, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Image, Input, Popover, PopoverContent, PopoverTrigger, Skeleton, Spacer, Spinner } from "@nextui-org/react";
+import { Accordion, AccordionItem, Button, Card, CardBody, CardHeader, Chip, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Image, Input, Popover, PopoverContent, PopoverTrigger, Skeleton, Spacer, Spinner } from "@nextui-org/react";
 import { TbDotsVertical } from "react-icons/tb";
 import { FaShoppingCart, FaStarHalfAlt } from "react-icons/fa";
 import { FaEye, FaPencil, FaTrash } from "react-icons/fa6";
@@ -18,10 +18,10 @@ export const ShopHome = () => {
   const { slug } = useParams();
   const [isLoading, setIsLoading] = useState(true);
 
-  const [date, setDate] = useState<DateValue | null>();
+  /* const [date, setDate] = useState<DateValue | null>();
   const handleChangeDate = (date: DateValue | null) => {
     setDate(date);
-  }
+  } */
   const categories = useCategoriesStore(state => state.categories);
   const getCategories = useCategoriesStore(state => state.getCategories);
   const products = useStockStore(state => state.products);
