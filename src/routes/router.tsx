@@ -27,7 +27,6 @@ import {
   Terms,
   InputForm,
   OutputForm,
-  CardexProduct,
 } from "../pages/admin";
 import { DetailSale, KardexProduct, ShopHome} from "../pages/shop";
 
@@ -147,6 +146,15 @@ const router = createBrowserRouter([
               </ProtectedRoute>
             ),
           },
+          /* Kardex */
+          {
+            path: "inventories/:slug",
+            element: (
+              <ProtectedRoute roles={["admin"]}>
+                <KardexProduct />
+              </ProtectedRoute>
+            ),
+          },
           /* input form */
           {
             path: "inventories/input",
@@ -170,7 +178,7 @@ const router = createBrowserRouter([
             path: "inventories/cardex/:id",
             element: (
               <ProtectedRoute roles={["admin"]}>
-                <CardexProduct />
+                <KardexProduct />
               </ProtectedRoute>
             ),
           },

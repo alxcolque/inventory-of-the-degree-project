@@ -23,5 +23,4 @@ export { IndexSuppliers } from "./suppliers/index-suppliers";
 
 export { InputForm } from "./inventories/input-form";
 export { OutputForm } from "./inventories/output-form";
-export { CardexProduct } from "./inventories/cardex-product";
-
+export { KardexProduct } from "./inventories/kardex-product";
