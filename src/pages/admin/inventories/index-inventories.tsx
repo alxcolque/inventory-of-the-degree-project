@@ -192,10 +192,9 @@ export const IndexInventories = () => {
                                                     </div>
 
                                                     <div className="flex flex-row gap-2 mt-2 justify-end">
-                                                            <FaEye />
                                                             {/* Boton que redirija a /admin/invetories/nombre-del-producto */}
 
-                                                        <Button size="sm" color="success" variant="bordered" onClick={() => navigate(`/admin/inventories/${product.slug}`)}>Ver Kardex</Button>
+                                                        <Button size="sm" isIconOnly  color="primary" variant="bordered" onClick={() => navigate(`/admin/inventories/${product.slug}`)}> <FaEye /> </Button>
                                                         <Button size="sm" color="success" variant="bordered" onClick={() => navigate("/admin/inventories/input")}>Agregar Stock</Button>
 
                                                     </div>
