@@ -148,7 +148,7 @@ export const ShopHome = () => {
                   {/* busqueda */}
                   <div className="flex flex-row items-center gap-2">
                     <Input type="text" placeholder="Buscar producto" />
-                    <Button color="primary" variant="shadow">Buscar</Button>
+                    <Button color="primary" variant="shadow">Buscar...</Button>
                   </div>
                   {/* Boton de marca */}
                   <Button color="primary" variant="shadow" onClick={() => { setIsModalBrandsOpen(true) }}>Marca</Button>
