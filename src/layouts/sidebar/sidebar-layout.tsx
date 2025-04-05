@@ -63,35 +63,35 @@ export const SidebarLayout = () => {
               />
 
               <SidebarItem
-                isActive={pathname === "/admin/categories"}
+                isActive={pathname === "/admin/categories" || pathname === `/admin/categories/${id}`}
                 title="Categorias"
                 icon={<TbCategoryPlus className="text-default-500" size={20} />}
                 href="/admin/categories"
               />
               {/* Subcategories */}
               <SidebarItem
-                isActive={pathname === "/admin/subcategories"}
+                isActive={pathname === "/admin/subcategories" || pathname === `/admin/subcategories/${id}`}
                 title="Subcategorias"
                 icon={<TbCategoryPlus className="text-default-500" size={20} />}
                 href="/admin/subcategories"
               />
               {/* Customers */}
               <SidebarItem
-                isActive={pathname === "/admin/customers"}
+                isActive={pathname === "/admin/customers" || pathname === `/admin/customers/${id}`}
                 title="Clientes"
                 icon={<FaUsers className="text-default-500" size={20} />}
                 href="/admin/customers"
               />
               {/* Suppliers */}
               <SidebarItem
-                isActive={pathname === "/admin/suppliers"}
+                isActive={pathname === "/admin/suppliers" || pathname === `/admin/suppliers/${id}`}
                 title="Proveedores"
                 icon={<FaUsers className="text-default-500" size={20} />}
                 href="/admin/suppliers"
               />
               {/* Products */}
               <SidebarItem
-                isActive={pathname === "/admin/products"}
+                isActive={pathname === "/admin/products" || pathname === `/admin/products/${id}`}
                 title="Productos"
                 icon={<FaBox className="text-default-500" size={20} />}
                 href="/admin/products"

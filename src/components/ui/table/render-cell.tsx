@@ -74,7 +74,7 @@ export const RenderCell = ({ item, columnKey, onEdit, onDelete, onView }: Props)
   }
 
   /* Si la cadena contiene 'image' */
-  if (columnKey.toString().includes('image') || columnKey.toString().includes('thumbnail') || columnKey.toString().includes('avatar'))  {
+  if (columnKey.toString().includes('image') || columnKey.toString().includes('thumbnail') || columnKey.toString().includes('avatar') || columnKey.toString().includes('icon'))  {
     return (
       <Image className="responsive-image" src={cellValue? cellValue : 'https://placehold.co/60x60'} width={60} height={60} alt="Imagen" />
     );

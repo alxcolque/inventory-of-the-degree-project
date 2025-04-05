@@ -1,9 +1,9 @@
 
 import { useEffect, useState } from "react";
-import { DynamicBreadcrumbs, DynamicTable, FormModal } from "../../../components"
+import { AlertDelete, DynamicBreadcrumbs, DynamicTable, FormModal } from "../../../components"
 import { useNavigate } from "react-router-dom";
-import { Button } from "@nextui-org/react";
 import { useAuthStore, useCategoriesStore } from "../../../stores";
+import { ICategoryResponse } from "../../../interface";
 
 export const IndexCategories = () => {
     const token = useAuthStore(state => state.token);
@@ -18,6 +18,9 @@ export const IndexCategories = () => {
     /* categories */
     const categories = useCategoriesStore(state => state.categories);
     const getCategories = useCategoriesStore(state => state.getCategories);
+    const createCategory = useCategoriesStore(state => state.createCategory);
+    const updateCategory = useCategoriesStore(state => state.updateCategory);
+    const deleteCategory = useCategoriesStore(state => state.deleteCategory);
 
     const navigate = useNavigate();
     const handleFetchCategories = async () => {
@@ -39,24 +42,24 @@ export const IndexCategories = () => {
     }, [deleteCountdown]);
 
     const headers = [
+        { name: 'ICONO', uid: 'icon' },
         { name: 'NOMBRE', uid: 'name' },
         { name: 'SLUG', uid: 'slug' },
         { name: 'COLOR', uid: 'color' },
-        { name: 'ICONO', uid: 'icon' },
         { name: 'ACCIONES', uid: 'actions' }
     ];
     const fields = [
         { name: 'name', label: 'Nombre', type: 'text', placeholder: 'Nombre de la categoría' },
-        { name: 'slug', label: 'Slug', type: 'text', placeholder: 'Slug de la categoría' },
-        { name: 'color', label: 'Color', type: 'text', placeholder: 'Color de la categoría' },
-        { name: 'icon', label: 'Icono', type: 'text', placeholder: 'Icono de la categoría' },
+        //{ name: 'slug', label: 'Slug', type: 'text', placeholder: 'Slug de la categoría' },
+        { name: 'color', label: 'Color', type: 'color', placeholder: 'Color de la categoría' },
+        { name: 'icon', label: 'Icono', type: 'file', placeholder: 'Icono de la categoría' },
     ];
     const handleFormSubmit = async (formData: Record<string, any>) => {
 
         if (isEditing) {
-            //await udpateUser(formData.id, formData.name, permissions, token!);
+            await updateCategory(formData.id, formData as ICategoryResponse, token!);
         } else {
-            //await addUser(formData.name, permissions, token!);
+            await createCategory(formData as ICategoryResponse, token!);
         }
         setIsModalOpen(false); // Cerrar el modal
         console.log(formData)
@@ -92,13 +95,15 @@ export const IndexCategories = () => {
     // Función para realizar la eliminación definitiva
     const handleConfirmDelete = async () => {
         //setRows(rows.filter(row => row.id !== deleteRowId)); // Elimina el registro de los datos
-        //await deleteRole(deleteRowId!, token!); // Elimina el registro de la base de datos
-        setDeleteRowId(null);
-        setDeleteCountdown(null); // Resetea el temporizador
+        if (deleteRowId) {
+            await deleteCategory(deleteRowId, token!);
+            setDeleteRowId(null);
+            setDeleteCountdown(null); // Resetea el temporizador
+        }
     };
     // Redirigir al hacer clic en "Ver"
     const handleViewClick = (id: number) => {
-        navigate(`/admin/roles/${id}`); // Redirigir a la página con el ID del usuario
+        navigate(`/admin/categories/${id}`); // Redirigir a la página con el ID del usuario
     };
     return (
         <>
@@ -111,16 +116,10 @@ export const IndexCategories = () => {
             />
             <div className="my-2 px-4 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
                 <DynamicBreadcrumbs />
-                <h2>Usuarios</h2>
+                <h2>Categorías</h2>
                 <DynamicTable stringSearch={'name'} onCreate={handleNewCategoryClick} data={categories} columns={headers} onEdit={ handleEditClick } onDelete={handleDeleteClick} onView={handleViewClick} />
                 {deleteRowId != null ? (
-                    /* Una pequeña alerta fixed para eliminar con contador en la parte superior, tiene el boton cancelar la eliminacion */
-                    <div className="fixed top-6 left-0 right-0 bg-red-500 text-white p-2 text-center z-50">
-                        <p>¿Estás seguro de eliminar este rol?</p>
-                        <Button color="danger" onPress={handleConfirmDelete}>Sí, eliminar</Button>
-                        <Button color="danger" onPress={handleCancelDelete}>Cancelar</Button>
-                        <p>Se eliminará en {deleteCountdown} segundos</p>
-                    </div>
+                    <AlertDelete handleConfirmDelete={handleConfirmDelete} handleCancelDelete={handleCancelDelete} deleteCountdown={deleteCountdown} />
 
                 ) : ('')}
 
