@@ -27,6 +27,7 @@ import {
   Terms,
   InputForm,
   OutputForm,
+  ShowShops,
 } from "../pages/admin";
 import { DetailSale, KardexProduct, ShopHome} from "../pages/shop";
 
@@ -116,6 +117,14 @@ const router = createBrowserRouter([
             element: (
               <ProtectedRoute roles={["admin"]}>
                 <IndexShops />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "stores/:id",
+            element: (
+              <ProtectedRoute roles={["admin"]}>
+                <ShowShops />
               </ProtectedRoute>
             ),
           },

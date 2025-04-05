@@ -12,12 +12,16 @@ export const IndexShops = () => {
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
+    const [rows, setRows] = useState<Record<string, any>[]>([]);
     /* Eliminando  */
     const [deleteCountdown, setDeleteCountdown] = useState<number | null>(null);
     const [deleteRowId, setDeleteRowId] = useState<number | null>(null);
     /* shops */
     const shops = useShopsStore(state => state.shops);
     const getShops = useShopsStore(state => state.getShops);
+    const addShop = useShopsStore(state => state.addShop);
+    const deleteShop = useShopsStore(state => state.deleteShop);
+    const updateShop = useShopsStore(state => state.updateShop);
 
     const navigate = useNavigate();
     const handleFetchShops = async () => {
@@ -39,29 +43,28 @@ export const IndexShops = () => {
     }, [deleteCountdown]);
 
     const headers = [
+        { name: 'IMAGEN', uid: 'front_image' },
         { name: 'NOMBRE', uid: 'name' },
         { name: 'LOCALIZACION', uid: 'location' },
         { name: 'DIRECCION', uid: 'address' },
         { name: 'TELEFONO', uid: 'phone' },
-        { name: 'FRONT', uid: 'shop_front' },
         { name: 'ACCIONES', uid: 'actions' }
     ];
     const fields = [
         { name: 'name', label: 'Nombre', type: 'text', placeholder: 'Nombre de la tienda' },
-        { name: 'location', label: 'Localización', type: 'text', placeholder: 'Localización de la tienda' },
+        { name: 'location', label: 'Localización', type: 'text', placeholder: 'Localización de la tienda latitud, longitud' },
         { name: 'address', label: 'Dirección', type: 'text', placeholder: 'Dirección de la tienda' },
         { name: 'phone', label: 'Teléfono', type: 'text', placeholder: 'Teléfono de la tienda' },
-        { name: 'shop_front', label: 'Frontal', type: 'text', placeholder: 'Frontal de la tienda' },
+        { name: 'front_image', label: 'Imagen', type: 'file', placeholder: 'Imagen de la tienda' },
     ];
     const handleFormSubmit = async (formData: Record<string, any>) => {
-
         if (isEditing) {
-            //await udpateUser(formData.id, formData.name, permissions, token!);
+            await updateShop(formData as [], selectedRowData?.id, token!);
         } else {
-            //await addUser(formData.name, permissions, token!);
+            await addShop(formData as [], token!);
         }
         setIsModalOpen(false); // Cerrar el modal
-        console.log(formData)
+        //console.log(formData)
     };
     //Define controles para abrir el modal de agregar rol
     // Función para abrir el modal con datos vacíos (creación)
@@ -93,14 +96,14 @@ export const IndexShops = () => {
 
     // Función para realizar la eliminación definitiva
     const handleConfirmDelete = async () => {
-        //setRows(rows.filter(row => row.id !== deleteRowId)); // Elimina el registro de los datos
-        //await deleteRole(deleteRowId!, token!); // Elimina el registro de la base de datos
+        setRows(rows.filter(row => row.id !== deleteRowId)); // Elimina el registro de los datos
+        await deleteShop(deleteRowId!, token!); // Elimina el registro de la base de datos
         setDeleteRowId(null);
         setDeleteCountdown(null); // Resetea el temporizador
     };
     // Redirigir al hacer clic en "Ver"
     const handleViewClick = (id: number) => {
-        navigate(`/admin/roles/${id}`); // Redirigir a la página con el ID del usuario
+        navigate(`/admin/stores/${id}`); // Redirigir a la página con el ID de la tienda
     };
     return (
         <>
@@ -113,14 +116,16 @@ export const IndexShops = () => {
             />
             <div className="my-2 px-4 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
                 <DynamicBreadcrumbs />
-                <h2>Usuarios</h2>
+                <h2>Tiendas</h2>
                 <DynamicTable stringSearch={'name'} onCreate={handleNewShopClick} data={shops} columns={headers} onEdit={ handleEditClick } onDelete={handleDeleteClick} onView={handleViewClick} />
                 {deleteRowId != null ? (
                     /* Una pequeña alerta fixed para eliminar con contador en la parte superior, tiene el boton cancelar la eliminacion */
-                    <div className="fixed top-6 left-0 right-0 bg-red-500 text-white p-2 text-center z-50">
-                        <p>¿Estás seguro de eliminar este rol?</p>
-                        <Button color="danger" onPress={handleConfirmDelete}>Sí, eliminar</Button>
-                        <Button color="danger" onPress={handleCancelDelete}>Cancelar</Button>
+                    <div className="fixed right-0 left-0 top-6 z-50 gap-2 p-2 text-center text-white bg-red-500">
+                        <p>¿Estás seguro de eliminar esta tienda?</p>
+                        <div className="flex gap-2 justify-center">
+                            <Button color="danger" onPress={handleConfirmDelete}>Sí, eliminar</Button>
+                            <Button color="primary" onPress={handleCancelDelete}>Cancelar</Button>
+                        </div>
                         <p>Se eliminará en {deleteCountdown} segundos</p>
                     </div>
 

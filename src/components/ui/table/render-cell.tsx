@@ -1,4 +1,4 @@
-import { Tooltip, Chip, Button } from "@nextui-org/react";
+import { Tooltip, Chip, Button, Image } from "@nextui-org/react";
 import React from "react";
 import { FaEye, FaPencil, FaRegTrashCan } from "react-icons/fa6";
 
@@ -47,7 +47,7 @@ export const RenderCell = ({ item, columnKey, onEdit, onDelete, onView }: Props)
         color="danger"
       >
         <Button
-          onPress={() => handleDeleteClick(item)}
+          onPress={() => handleDeleteClick(item.id)}
           isIconOnly
           color='primary'
           variant='light'
@@ -63,13 +63,20 @@ export const RenderCell = ({ item, columnKey, onEdit, onDelete, onView }: Props)
     return (
       <Tooltip content="Detalles">
         <Button
-          onPress={() => handleViewClick(item)}
+          onPress={() => handleViewClick(item.id)}
           isIconOnly
           color='primary'
           variant='light'
           startContent={<FaEye size={18}
             fill="#979797" />} />
       </Tooltip>
+    );
+  }
+
+  /* Si la cadena contiene 'image' */
+  if (columnKey.toString().includes('image') || columnKey.toString().includes('thumbnail')) {
+    return (
+      <Image className="responsive-image" src={cellValue? cellValue : 'https://placehold.co/60x60'} width={60} height={60} alt="Imagen" />
     );
   }
 

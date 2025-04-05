@@ -1,10 +1,10 @@
 import { create, StateCreator } from "zustand"
 import { appDB } from "../../api";
-import { IUser } from "../../interface";
+import { ILoginResponse, IUser } from "../../interface";
 import { toast } from "sonner";
 import { isAxiosError } from "axios";
 import { persist } from "zustand/middleware";
-import { dataLogin } from "../../api/systemdata";
+//import { dataLogin } from "../../api/systemdata";
 
 interface AuhtState {
     user: undefined | IUser,
@@ -28,23 +28,15 @@ const storeApi: StateCreator<AuhtState & Actions> = (set, get) => ({
     authStatus: 'pending',
     login: async (email: string, password: string) => {
         try {
-            //const { data } = await appDB.post<ILoginResponse>('/auth/login', { email, password });
+            const { data } = await appDB.post<ILoginResponse>('/auth/login', { email, password });
             //parse object to json
-            if (email === 'admin@admin.com' && password === 'admin123') {
-                const data = dataLogin;
-                //CAMBIAR ESTADO
-                set(() => ({
-                    user: data.user,
-                    token: data.token,
-                    authStatus: 'auth'
-                }));
-                toast.success(`Bienvenido ${data.user.name}`);
-            }
-            else {
-                toast.error('Error', {
-                    description: 'Credenciales incorrectas'
-                });
-            }
+            set(() => ({
+                user: data.user,
+                token: data.token,
+                authStatus: 'auth'
+            }));
+            toast.success(`Bienvenido ${data.user.name}`);
+            
         }
         catch (error) {
             set(() => ({

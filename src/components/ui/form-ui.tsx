@@ -3,7 +3,7 @@ import { Input, Checkbox, Textarea, Select, SelectItem} from '@nextui-org/react'
 interface IFormField {
     name: string;
     label: string;
-    type: 'text' | 'email' | 'number' | 'textarea' | 'checkbox' | 'select' | 'color' | 'password' | 'radio';
+    type: string;
     options?: string[];  // Opciones para el campo select, si aplica
     placeholder?: string;
     defaultValue?: any;   // Valor por defecto
@@ -57,6 +57,14 @@ export const FormUI: React.FC<IFormInputProps> = ({ fields, formData, onChange }
                                 </SelectItem>
                             ))}
                         </Select>
+                    ) : field.type === 'file' ? (
+                        <Input
+                            label={field.label}
+                            type="file"
+                            onChange={(e) => onChange(field.name, e.target.files?.[0])}
+                            fullWidth
+                            accept='image/*'
+                        />
                     ) : null}
                 </div>
             ))}

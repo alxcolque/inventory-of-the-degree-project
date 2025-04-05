@@ -5,6 +5,5 @@ export interface IShopResponse {
     location: string;
     address: string;
     phone: string;
-    storeFront: string;
-    storeFront_key: string;
+    front_image: string;
 }

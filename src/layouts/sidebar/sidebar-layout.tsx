@@ -6,11 +6,12 @@ import { SidebarMenu } from "./sidebar-menu";
 import { useSidebarContext } from "../layout-context";
 
 import { FaBox, FaHouse, FaStore, FaUsers } from 'react-icons/fa6'
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation, useParams } from "react-router-dom";
 import { useAuthStore } from "../../stores";
 import { TbCategoryPlus } from "react-icons/tb";
 
 export const SidebarLayout = () => {
+  const { id } = useParams();
   const pathname = useLocation().pathname;
   const { collapsed, setCollapsed } = useSidebarContext();
   const authStatus = useAuthStore(state => state.authStatus);
@@ -51,7 +52,7 @@ export const SidebarLayout = () => {
               <SidebarItem
                 title="Tiendas"
                 icon={<FaStore className="text-default-500" size={20} />}
-                isActive={pathname === "/admin/stores"}
+                isActive={pathname === "/admin/stores" || pathname === `/admin/stores/${id}`}
                 href="/admin/stores"
               />
               <SidebarItem

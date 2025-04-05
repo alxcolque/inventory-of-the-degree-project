@@ -15,11 +15,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ roles, permissions, chi
   }
 
   if (roles && !roles.some((role) => hasRole(role))) {
-    return <Navigate to="/home" />;
+    return <Navigate to="/" />; // /home
   }
 
   if (permissions && !permissions.some((permission) => hasPermission(permission))) {
-    return <Navigate to="/home" />;
+    return <Navigate to="/" />; // /home
   }
 
   return <>{children}</>;

@@ -16,7 +16,7 @@ interface Props {
 
 export const DynamicTable = ({ stringSearch, onCreate, data, columns, onEdit, onDelete, onView }: Props) => {
 
-  const itemsPerPage = 5; // Número de elementos por página
+  const itemsPerPage = 10; // Número de elementos por página
   const [currentPage, setCurrentPage] = useState(1); // Estado para la página actual
   const [searchQuery, setSearchQuery] = useState(''); // Estado para el campo de búsqueda
 
