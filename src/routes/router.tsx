@@ -28,6 +28,7 @@ import {
   InputForm,
   OutputForm,
   ShowShops,
+  ShowUsers,
 } from "../pages/admin";
 import { DetailSale, KardexProduct, ShopHome} from "../pages/shop";
 
@@ -108,6 +109,14 @@ const router = createBrowserRouter([
             element: (
               <ProtectedRoute roles={["admin"]}>
                 <IndexUsers />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "users/:id",
+            element: (
+              <ProtectedRoute roles={["admin"]}>
+                <ShowUsers />
               </ProtectedRoute>
             ),
           },

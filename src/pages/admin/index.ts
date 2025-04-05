@@ -25,3 +25,4 @@ export { InputForm } from "./inventories/input-form";
 export { OutputForm } from "./inventories/output-form";
 export { KardexProduct } from "./inventories/kardex-product";
 export { ShowShops } from "./shops/show-shops";
+export { ShowUsers } from "./users/show-users";

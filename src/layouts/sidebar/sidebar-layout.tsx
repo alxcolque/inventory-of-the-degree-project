@@ -56,7 +56,7 @@ export const SidebarLayout = () => {
                 href="/admin/stores"
               />
               <SidebarItem
-                isActive={pathname === "/admin/users"}
+                isActive={pathname === "/admin/users" || pathname === `/admin/users/${id}`}
                 title="Usuarios"
                 icon={<FaUsers className="text-default-500" size={20} />}
                 href="/admin/users"

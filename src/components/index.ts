@@ -15,3 +15,5 @@ export { RichTextEditor } from './ui/rich-text-editor';
 export { RichTextDisplay } from './ui/rich-text-display';
 
 export { CountdownTimer } from './ui/count-down-timer';
+
+export { AlertDelete } from './ui/alert-delete';

@@ -52,6 +52,11 @@ export const FormModal = ({ fields, isOpen, onClose, onSubmit, initialValues = {
     const handleChange = (name: string, value: any) => {
         /* El campo image se maneja en el componente FormUI */
         if (value instanceof File) {
+            /* La image no debe pesar mas de 2mb */
+            if (value.size > 2 * 1024 * 1024) {
+                toast.error('La imagen no debe pesar mas de 2mb');
+                return;
+            }
             /* Controlar que el archivo sea una imagen */
             const acceptedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/gif'];
             //console.log('value', value);
@@ -78,6 +83,7 @@ export const FormModal = ({ fields, isOpen, onClose, onSubmit, initialValues = {
         initialValues.id ? formData['id'] = initialValues.id : null;
         await onSubmit(formData);  // Simulando una operación asíncrona
         setIsLoading(false);
+        
         onClose();  // Cerrar el modal
     };
 

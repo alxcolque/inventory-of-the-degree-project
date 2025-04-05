@@ -1,29 +1,42 @@
 import { useEffect, useState } from "react";
-import { DynamicBreadcrumbs, DynamicTable, FormModal } from "../../../components"
-import { users } from "../../../components/ui/table/data";
+import { AlertDelete, DynamicBreadcrumbs, DynamicTable, FormModal } from "../../../components"
+//import { users } from "../../../components/ui/table/data";
 //import { useAuthStore } from "../../../stores";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@nextui-org/react";
+import { useAuthStore } from "../../../stores/auth/auth.store";
+import { userStore } from "../../../stores/users/users.store";
 
 export const IndexUsers = () => {
-    //const token = useAuthStore(state => state.token);
-
+    const token = useAuthStore(state => state.token);
     const [selectedRowData, setSelectedRowData] = useState<Record<string, any> | null>(null);
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+    const [rows, setRows] = useState<Record<string, any>[]>([]);
+    /* User data */
+    const users = userStore(state => state.users);
+    const getUsers = userStore(state => state.getUsers);
+    /* Insert user */
+    const createUser = userStore(state => state.createUser);
+    /* Update user */
+    const updateUser = userStore(state => state.updateUser);
+    /* Delete user */
+    const deleteUser = userStore(state => state.deleteUser);
+
 
     /* Eliminando  */
     const [deleteCountdown, setDeleteCountdown] = useState<number | null>(null);
     const [deleteRowId, setDeleteRowId] = useState<number | null>(null);
 
     const navigate = useNavigate();
-    const handleFetchRoles = async () => {
-        if (users.length === 0) {
-            //await getUsers(token!);
-        }
+    /* Get users */
+    const handleGetUsers = async () => {
+        await getUsers(token!);
     }
+
+
     useEffect(() => {
-        handleFetchRoles();
+        handleGetUsers();
 
         if (deleteCountdown !== null && deleteCountdown > 0) {
             const timer = setTimeout(() => {
@@ -36,31 +49,31 @@ export const IndexUsers = () => {
     }, [deleteCountdown]);
 
     const headers = [
+        { name: 'AVATAR', uid: 'avatar' },
         { name: 'NOMBRE', uid: 'name' },
         { name: 'ROL', uid: 'role' },
-        { name: 'TEAM', uid: 'team' },
         { name: 'EMAIL', uid: 'email' },
         { name: 'ESTADO', uid: 'status' },
         { name: 'ACCIONES', uid: 'actions' }
     ];
     const fields = [
-        { name: 'name', label: 'Name', type: 'text', placeholder: 'Enter your name', defaultValue: 'John Doe' },
-        { name: 'role', label: 'Role', type: 'select', options: ['admin', 'aser'], placeholder: 'Select your role' },
-        { name: 'team', label: 'Team', type: 'select', options: ['Marketing', 'Sales', 'Development', 'Support'], placeholder: 'Select your team' },
-        { name: 'status', label: 'Status', type: 'select', options: ['active', 'inactive'], placeholder: 'Select your status' },
-        { name: 'email', label: 'Email', type: 'email', placeholder: 'Enter your email' },
-        { name: 'age', label: 'Age', type: 'number', placeholder: 'Enter your age' },
-        { name: 'avatar', label: 'Avatar', type: 'file', placeholder: 'Enter your avatar' },
+        { name: 'name', label: 'Nombre', type: 'text', placeholder: 'Nombre'},
+        { name: 'username', label: 'Usuario', type: 'text', placeholder: 'Nombre de usuario' },
+        /* { name: 'role', label: 'Rol', type: 'select', options: ['admin', 'worker'], placeholder: 'Rol' }, */
+        { name: 'phone', label: 'Teléfono', type: 'text', placeholder: 'Teléfono' },
+        { name: 'ci', label: 'Cédula', type: 'text', placeholder: 'Cédula' },
+        { name: 'avatar', label: 'Avatar', type: 'file', placeholder: 'Avatar' },
+        { name: 'email', label: 'Email', type: 'email', placeholder: 'Email' },
+        { name: 'password', label: 'Contraseña', type: 'password', placeholder: 'Contraseña' },
     ];
     const handleFormSubmit = async (formData: Record<string, any>) => {
 
         if (isEditing) {
-            //await udpateUser(formData.id, formData.name, permissions, token!);
+            await updateUser(selectedRowData?.id, formData, token!);
         } else {
-            //await addUser(formData.name, permissions, token!);
+            await createUser(formData as [], token!);
         }
-        setIsModalOpen(false); // Cerrar el modal
-        console.log(formData)
+        //setIsModalOpen(false); // Cerrar el modal
     };
     //Define controles para abrir el modal de agregar rol
     // Función para abrir el modal con datos vacíos (creación)
@@ -92,14 +105,14 @@ export const IndexUsers = () => {
 
     // Función para realizar la eliminación definitiva
     const handleConfirmDelete = async () => {
-        //setRows(rows.filter(row => row.id !== deleteRowId)); // Elimina el registro de los datos
-        //await deleteRole(deleteRowId!, token!); // Elimina el registro de la base de datos
+        setRows(rows.filter(row => row.id !== deleteRowId)); // Elimina el registro de los datos
+        await deleteUser(deleteRowId!, token!); // Elimina el registro de la base de datos
         setDeleteRowId(null);
         setDeleteCountdown(null); // Resetea el temporizador
     };
     // Redirigir al hacer clic en "Ver"
     const handleViewClick = (id: number) => {
-        navigate(`/admin/roles/${id}`); // Redirigir a la página con el ID del usuario
+        navigate(`/admin/users/${id}`); // Redirigir a la página con el ID del usuario
     };
     return (
         <>
@@ -115,14 +128,7 @@ export const IndexUsers = () => {
                 <h2>Usuarios</h2>
                 <DynamicTable stringSearch={'name'} onCreate={handleNewClientClick} data={users} columns={headers} onEdit={ handleEditClick } onDelete={handleDeleteClick} onView={handleViewClick} />
                 {deleteRowId != null ? (
-                    /* Una pequeña alerta fixed para eliminar con contador en la parte superior, tiene el boton cancelar la eliminacion */
-                    <div className="fixed top-6 left-0 right-0 bg-red-500 text-white p-2 text-center z-50">
-                        <p>¿Estás seguro de eliminar este rol?</p>
-                        <Button color="danger" onPress={handleConfirmDelete}>Sí, eliminar</Button>
-                        <Button color="danger" onPress={handleCancelDelete}>Cancelar</Button>
-                        <p>Se eliminará en {deleteCountdown} segundos</p>
-                    </div>
-
+                   <AlertDelete handleConfirmDelete={handleConfirmDelete} handleCancelDelete={handleCancelDelete} deleteCountdown={deleteCountdown} />
                 ) : ('')}
 
             </div>
