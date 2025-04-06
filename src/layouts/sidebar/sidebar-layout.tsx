@@ -8,7 +8,7 @@ import { useSidebarContext } from "../layout-context";
 import { FaBox, FaHouse, FaStore, FaUsers } from 'react-icons/fa6'
 import { Navigate, useLocation, useParams } from "react-router-dom";
 import { useAuthStore } from "../../stores";
-import { TbCategoryPlus } from "react-icons/tb";
+import { TbBrandAppstore, TbCategoryPlus } from "react-icons/tb";
 
 export const SidebarLayout = () => {
   const { id } = useParams();
@@ -89,6 +89,14 @@ export const SidebarLayout = () => {
                 icon={<FaUsers className="text-default-500" size={20} />}
                 href="/admin/suppliers"
               />
+              {/* Brands */}
+              <SidebarItem
+                isActive={pathname === "/admin/brands" || pathname === `/admin/brands/${id}`}
+                title="Marcas"
+                icon={<TbBrandAppstore  className="text-default-500" size={20} />}
+                href="/admin/brands"
+              />
+              
               {/* Products */}
               <SidebarItem
                 isActive={pathname === "/admin/products" || pathname === `/admin/products/${id}`}

@@ -28,3 +28,4 @@ export { ShowShops } from "./shops/show-shops";
 export { ShowUsers } from "./users/show-users";
 export { ShowCategories } from "./categories/show.categories";
 export { ShowCustomers } from "./customers/show-customers";
+export { ShowSuppliers } from "./suppliers/show-suppliers";

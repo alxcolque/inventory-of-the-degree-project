@@ -4,5 +4,5 @@ export interface ISupplierResponse {
     email: string;
     phone: string;
     address: string;
-    ci: number;
+    cinit: number;
 }

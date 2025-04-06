@@ -2,8 +2,9 @@
 import { useEffect, useState } from "react";
 import { DynamicBreadcrumbs, DynamicTable, FormModal } from "../../../components"
 import { useNavigate } from "react-router-dom";
-import { Button } from "@nextui-org/react";
 import { useAuthStore,   useSupplierStore } from "../../../stores";
+import { ISupplierResponse } from "../../../interface/suppliers/supplier-response";
+import { AlertDelete } from '../../../components/ui/alert-delete';
 
 
 export const IndexSuppliers = () => {
@@ -19,6 +20,9 @@ export const IndexSuppliers = () => {
     /* suppliers */
     const suppliers = useSupplierStore(state => state.suppliers);
     const getSuppliers = useSupplierStore(state => state.getSuppliers);
+    const createSupplier = useSupplierStore(state => state.createSupplier);
+    const updateSupplier = useSupplierStore(state => state.updateSupplier);
+    const deleteSupplier = useSupplierStore(state => state.deleteSupplier);
 
     const navigate = useNavigate();
     const handleFetchSuppliers = async () => {
@@ -44,7 +48,7 @@ export const IndexSuppliers = () => {
     const headers = [
         { name: 'ID', uid: 'id' },
         { name: 'NOMBRE', uid: 'name' },
-        { name: 'CI', uid: 'ci_nit' },
+        { name: 'CI', uid: 'cinit' },
         { name: 'EMAIL', uid: 'email' },
         { name: 'TELEFONO', uid: 'phone' },
         { name: 'DIECCION', uid: 'address' },
@@ -52,7 +56,7 @@ export const IndexSuppliers = () => {
     ];
     const fields = [
         { name: 'name', label: 'Nombre', type: 'text', placeholder: 'Nombre del Proveedor' },
-        { name: 'ci', label: 'CI', type: 'text', placeholder: 'NIT del Proveedor' },
+        { name: 'cinit', label: 'CI', type: 'text', placeholder: 'NIT del Proveedor' },
         { name: 'email', label: 'Email', type: 'email', placeholder: 'Correo electronico del Proveedor' },
         { name: 'phone', label: 'Telefono', type: 'text', placeholder: 'Telefono del Proveedor' },
         { name: 'address', label: 'Direccion', type: 'text', placeholder: 'Direccion  del Proveedor' },
@@ -60,9 +64,9 @@ export const IndexSuppliers = () => {
     const handleFormSubmit = async (formData: Record<string, any>) => {
 
         if (isEditing) {
-            //await udpateUser(formData.id, formData.name, permissions, token!);
+            await updateSupplier(formData.id, formData as ISupplierResponse, token!);
         } else {
-            //await addUser(formData.name, permissions, token!);
+            await createSupplier(formData as ISupplierResponse, token!);
         }
         setIsModalOpen(false); // Cerrar el modal
         console.log(formData)
@@ -98,13 +102,13 @@ export const IndexSuppliers = () => {
     // Función para realizar la eliminación definitiva
     const handleConfirmDelete = async () => {
         //setRows(rows.filter(row => row.id !== deleteRowId)); // Elimina el registro de los datos
-        //await deleteRole(deleteRowId!, token!); // Elimina el registro de la base de datos
+        await deleteSupplier(deleteRowId!, token!); // Elimina el registro de la base de datos
         setDeleteRowId(null);
         setDeleteCountdown(null); // Resetea el temporizador
     };
     // Redirigir al hacer clic en "Ver"
     const handleViewClick = (id: number) => {
-        navigate(`/admin/roles/${id}`); // Redirigir a la página con el ID del usuario
+        navigate(`/admin/suppliers/${id}`); // Redirigir a la página con el ID del usuario
     };
     return (
         <>
@@ -122,10 +126,12 @@ export const IndexSuppliers = () => {
                 {deleteRowId != null ? (
                     /* Una pequeña alerta fixed para eliminar con contador en la parte superior, tiene el boton cancelar la eliminacion */
                     <div className="fixed top-6 left-0 right-0 bg-red-500 text-white p-2 text-center z-50">
-                        <p>¿Estás seguro de eliminar el Proveedor?</p>
-                        <Button color="danger" onPress={handleConfirmDelete}>Sí, eliminar</Button>
-                        <Button color="danger" onPress={handleCancelDelete}>Cancelar</Button>
-                        <p>Se eliminará en {deleteCountdown} segundos</p>
+                        <AlertDelete
+                            handleConfirmDelete={handleConfirmDelete}
+                            handleCancelDelete={handleCancelDelete}
+                            deleteCountdown={deleteCountdown}
+                            message={'¿Estás seguro de querer eliminar el Proveedor?'}
+                        />
                     </div>
 
                 ) : ('')}

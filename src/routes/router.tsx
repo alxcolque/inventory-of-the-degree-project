@@ -31,6 +31,7 @@ import {
   ShowUsers,
   ShowCategories,
   ShowCustomers,
+  ShowSuppliers,
 } from "../pages/admin";
 import { DetailSale, KardexProduct, ShopHome } from "../pages/shop";
 
@@ -260,7 +261,14 @@ const router = createBrowserRouter([
               </ProtectedRoute>
             ),
           },
-
+          {
+            path: "suppliers/:id",
+            element: (
+              <ProtectedRoute roles={["admin"]}>
+                <ShowSuppliers />
+              </ProtectedRoute>
+            ),
+          },
           {
             path: "company-terms/:id",
             element: (
