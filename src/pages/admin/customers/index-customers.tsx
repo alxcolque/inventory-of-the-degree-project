@@ -1,9 +1,9 @@
 
 import { useEffect, useState } from "react";
-import { DynamicBreadcrumbs, DynamicTable, FormModal } from "../../../components"
+import { AlertDelete, DynamicBreadcrumbs, DynamicTable, FormModal } from "../../../components"
 import { useNavigate } from "react-router-dom";
-import { Button } from "@nextui-org/react";
 import { useAuthStore,  useCustomerStore } from "../../../stores";
+import { ICustomersResponse } from "../../../interface/customer/customers-response";
 
 export const IndexCustomers = () => {
     const token = useAuthStore(state => state.token);
@@ -18,6 +18,9 @@ export const IndexCustomers = () => {
     /* customers */
     const customers = useCustomerStore(state => state.customers);
     const getCustomers = useCustomerStore(state => state.getCustomers);
+    const createCustomer = useCustomerStore(state => state.createCustomer);
+    const updateCustomer = useCustomerStore(state => state.updateCustomer);
+    const deleteCustomer = useCustomerStore(state => state.deleteCustomer);
 
     const navigate = useNavigate();
     const handleFetchCustomers = async () => {
@@ -38,20 +41,21 @@ export const IndexCustomers = () => {
         }
     }, [deleteCountdown]);
     
+    console.log(customers);
     
 
     const headers = [
         { name: 'ID', uid: 'id' },
         { name: 'NOMBRE', uid: 'name' },
-        { name: 'CI', uid: 'ci' },
-        { name: 'EMAIL', uid: ' email' },
+        { name: 'CI', uid: 'cinit' },
+        { name: 'EMAIL', uid: 'email' },
         { name: 'TELEFONO', uid: 'phone' },
         { name: 'DIECCION', uid: 'address' },
         { name: 'ACCIONES', uid: 'actions' }
     ];
     const fields = [
         { name: 'name', label: 'Nombre', type: 'text', placeholder: 'Nombre del cliente' },
-        { name: 'ci', label: 'CI', type: 'text', placeholder: 'Carnet de Identidad' },
+        { name: 'cinit', label: 'CI', type: 'text', placeholder: 'Carnet de Identidad' },
         { name: 'email', label: 'Email', type: 'email', placeholder: 'Correo electronico del cliente' },
         { name: 'phone', label: 'Telefono', type: 'text', placeholder: 'Telefono del Cliente' },
         { name: 'address', label: 'Direccion', type: 'text', placeholder: 'Direccion  del Cliente' },
@@ -59,12 +63,12 @@ export const IndexCustomers = () => {
     const handleFormSubmit = async (formData: Record<string, any>) => {
 
         if (isEditing) {
-            //await udpateUser(formData.id, formData.name, permissions, token!);
+            await updateCustomer(selectedRowData?.id!, formData as [], token!);
         } else {
-            //await addUser(formData.name, permissions, token!);
+            await createCustomer(formData as ICustomersResponse, token!);
         }
         setIsModalOpen(false); // Cerrar el modal
-        console.log(formData)
+        //console.log(formData)
     };
     //Define controles para abrir el modal de agregar rol
     // Función para abrir el modal con datos vacíos (creación)
@@ -98,12 +102,15 @@ export const IndexCustomers = () => {
     const handleConfirmDelete = async () => {
         //setRows(rows.filter(row => row.id !== deleteRowId)); // Elimina el registro de los datos
         //await deleteRole(deleteRowId!, token!); // Elimina el registro de la base de datos
-        setDeleteRowId(null);
-        setDeleteCountdown(null); // Resetea el temporizador
+        if (deleteRowId) {
+            await deleteCustomer(deleteRowId, token!);
+            setDeleteRowId(null);
+            setDeleteCountdown(null); // Resetea el temporizador
+        }
     };
     // Redirigir al hacer clic en "Ver"
     const handleViewClick = (id: number) => {
-        navigate(`/admin/roles/${id}`); // Redirigir a la página con el ID del usuario
+        navigate(`/admin/customers/${id}`); // Redirigir a la página con el ID del usuario
     };
     return (
         <>
@@ -119,13 +126,7 @@ export const IndexCustomers = () => {
                 <h2>Clientes</h2>
                 <DynamicTable stringSearch={'name'} onCreate={handleNewCategoryClick} data={customers} columns={headers} onEdit={ handleEditClick } onDelete={handleDeleteClick} onView={handleViewClick} />
                 {deleteRowId != null ? (
-                    /* Una pequeña alerta fixed para eliminar con contador en la parte superior, tiene el boton cancelar la eliminacion */
-                    <div className="fixed top-6 left-0 right-0 bg-red-500 text-white p-2 text-center z-50">
-                        <p>¿Estás seguro de eliminar el cliente?</p>
-                        <Button color="danger" onPress={handleConfirmDelete}>Sí, eliminar</Button>
-                        <Button color="danger" onPress={handleCancelDelete}>Cancelar</Button>
-                        <p>Se eliminará en {deleteCountdown} segundos</p>
-                    </div>
+                    <AlertDelete handleConfirmDelete={handleConfirmDelete} handleCancelDelete={handleCancelDelete} deleteCountdown={deleteCountdown} message={'¿Estás seguro de querer eliminar el cliente?'} />
 
                 ) : ('')}
 

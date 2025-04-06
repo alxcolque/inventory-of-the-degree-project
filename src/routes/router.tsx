@@ -8,7 +8,7 @@ import {
   HomeIndex,
   PrivacyPage,
   TermsPage,
-  
+
 } from "../pages";
 import { Layout } from "../layouts/layout";
 import ProtectedRoute from "./protected-routes";
@@ -30,8 +30,9 @@ import {
   ShowShops,
   ShowUsers,
   ShowCategories,
+  ShowCustomers,
 } from "../pages/admin";
-import { DetailSale, KardexProduct, ShopHome} from "../pages/shop";
+import { DetailSale, KardexProduct, ShopHome } from "../pages/shop";
 
 
 
@@ -49,7 +50,7 @@ const router = createBrowserRouter([
             element: <Welcome />,
             errorElement: <ErrorPage />, // Página 404
           },
-          
+
           {
             path: "/privacidad",
             element: <PrivacyPage />,
@@ -58,7 +59,7 @@ const router = createBrowserRouter([
             path: "/terminos",
             element: <TermsPage />,
           },
-          
+
         ],
 
       },
@@ -90,7 +91,7 @@ const router = createBrowserRouter([
           },
         ],
       },
-      
+
       //Routes auth Admin page
 
       {
@@ -196,7 +197,7 @@ const router = createBrowserRouter([
             path: "inventories/output",
             element: (
               <ProtectedRoute roles={["admin"]}>
-                <OutputForm isOpen={false} setIsOpen={() => {}} onClose={() => {}} products={[]} />
+                <OutputForm isOpen={false} setIsOpen={() => { }} onClose={() => { }} products={[]} />
               </ProtectedRoute>
             ),
           },
@@ -233,25 +234,33 @@ const router = createBrowserRouter([
               </ProtectedRoute>
             ),
           },
-           /* customers */
-           {
+          /* customers */
+          {
             path: "customers",
             element: (
               <ProtectedRoute roles={["admin"]}>
-                <IndexCustomers/>
+                <IndexCustomers />
               </ProtectedRoute>
             ),
           },
-           /* suppliers */
-           {
+          {
+            path: "customers/:id",
+            element: (
+              <ProtectedRoute roles={["admin"]}>
+                <ShowCustomers />
+              </ProtectedRoute>
+            ),
+          },
+          /* suppliers */
+          {
             path: "suppliers",
             element: (
               <ProtectedRoute roles={["admin"]}>
-                <IndexSuppliers/>
+                <IndexSuppliers />
               </ProtectedRoute>
             ),
           },
-          
+
           {
             path: "company-terms/:id",
             element: (
@@ -260,7 +269,7 @@ const router = createBrowserRouter([
               </ProtectedRoute>
             ),
           },
-          
+
           {
             path: "settings",
             element: (
@@ -284,6 +293,6 @@ const router = createBrowserRouter([
       },
     ],
   },
-  
+
 ]);
 export default router;
