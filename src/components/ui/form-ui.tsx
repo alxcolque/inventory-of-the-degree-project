@@ -4,7 +4,7 @@ interface IFormField {
     name: string;
     label: string;
     type: string;
-    options?: string[];  // Opciones para el campo select, si aplica
+    options?: { label: string; value: string }[];  // Opciones para el campo select, si aplica
     placeholder?: string;
     defaultValue?: any;   // Valor por defecto
 }
@@ -45,15 +45,17 @@ export const FormUI: React.FC<IFormInputProps> = ({ fields, formData, onChange }
                             {field.label}
                         </Checkbox>
                     ) : field.type === 'select' && field.options ? (
+                         /* warning: provide a visible label, you must specify an aria-label or aria-labelledby attribute for accessibility */
                         <Select
+                            aria-label={field.label}
                             placeholder={field.placeholder}
                             value={formData[field.name]}
-                            onChange={(value) => onChange(field.name, value)}
+                            onChange={(e) => onChange(field.name, e.target.value)}
                             fullWidth
                         >
                             {field.options.map((option) => (
-                                <SelectItem key={option} value={option}>
-                                    {option}
+                                <SelectItem key={option.value} value={option.value}>
+                                    {option.label}
                                 </SelectItem>
                             ))}
                         </Select>

@@ -79,6 +79,12 @@ export const RenderCell = ({ item, columnKey, onEdit, onDelete, onView }: Props)
       <Image className="responsive-image" src={cellValue? cellValue : 'https://placehold.co/60x60'} width={60} height={60} alt="Imagen" />
     );
   }
+  /* Si la cadena contiene 'color' */
+  if (columnKey.toString().includes('color'))  {
+    return (
+      <div className="w-fit" style={{ backgroundColor: cellValue }}>{cellValue}</div>
+    );
+  }
 
   switch (columnKey) {
     case "status":

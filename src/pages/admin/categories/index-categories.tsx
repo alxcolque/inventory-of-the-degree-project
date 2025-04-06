@@ -119,7 +119,7 @@ export const IndexCategories = () => {
                 <h2>Categorías</h2>
                 <DynamicTable stringSearch={'name'} onCreate={handleNewCategoryClick} data={categories} columns={headers} onEdit={ handleEditClick } onDelete={handleDeleteClick} onView={handleViewClick} />
                 {deleteRowId != null ? (
-                    <AlertDelete handleConfirmDelete={handleConfirmDelete} handleCancelDelete={handleCancelDelete} deleteCountdown={deleteCountdown} />
+                    <AlertDelete handleConfirmDelete={handleConfirmDelete} handleCancelDelete={handleCancelDelete} deleteCountdown={deleteCountdown} message={'¿Estás seguro de querer eliminar la categoría?'} />
 
                 ) : ('')}
 

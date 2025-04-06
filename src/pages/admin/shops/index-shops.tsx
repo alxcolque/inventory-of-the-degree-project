@@ -118,7 +118,7 @@ export const IndexShops = () => {
                 <h2>Tiendas</h2>
                 <DynamicTable stringSearch={'name'} onCreate={handleNewShopClick} data={shops} columns={headers} onEdit={ handleEditClick } onDelete={handleDeleteClick} onView={handleViewClick} />
                 {deleteRowId != null ? (
-                    <AlertDelete handleConfirmDelete={handleConfirmDelete} handleCancelDelete={handleCancelDelete} deleteCountdown={deleteCountdown} />
+                    <AlertDelete handleConfirmDelete={handleConfirmDelete} handleCancelDelete={handleCancelDelete} deleteCountdown={deleteCountdown} message={'¿Estás seguro de querer eliminar la tienda?'} />
                 ) : ('')}
 
             </div>
