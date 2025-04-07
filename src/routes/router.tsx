@@ -32,6 +32,8 @@ import {
   ShowCategories,
   ShowCustomers,
   ShowSuppliers,
+  IndexBrands,
+  ShowBrands,
 } from "../pages/admin";
 import { DetailSale, KardexProduct, ShopHome } from "../pages/shop";
 
@@ -157,6 +159,24 @@ const router = createBrowserRouter([
               </ProtectedRoute>
             ),
           },
+          /* brands */
+          {
+            path: "brands",
+            element: (
+              <ProtectedRoute roles={["admin"]}>
+                <IndexBrands />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "brands/:id",
+            element: (
+              <ProtectedRoute roles={["admin"]}>
+                <ShowBrands />
+              </ProtectedRoute>
+            ),
+          },
+
           /* products */
           {
             path: "products",
