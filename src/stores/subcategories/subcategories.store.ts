@@ -1,11 +1,11 @@
 import { create, StateCreator } from "zustand";
-import { ISubcategoriesResponse } from "../../interface";
+import { ISubcategoriesResponse, ISubcategoryResponse } from "../../interface";
 import { isAxiosError } from "axios";
 import { toast } from "sonner";
 import { appDB } from "../../api/appDB";
 
 interface SubcategoriesState {
-  subcategories: ISubcategoriesResponse[];
+  subcategories: ISubcategoryResponse[];
   subcategory: {};
 }
 interface Actions {

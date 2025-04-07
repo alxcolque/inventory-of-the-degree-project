@@ -22,3 +22,5 @@ export { useSupplierStore } from "./suppliers/suppliers.store";
 export { useWarehouseStore } from "./inventories/warehouse.store";
 
 export { useBrandsStore } from "./brands/brands.store";
+
+export { useSubcategoriesStore } from "./subcategories/subcategories.store";

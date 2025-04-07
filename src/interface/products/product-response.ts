@@ -4,6 +4,6 @@ export interface IProductResponse {
     slug: string;
     description: string;
     price: number;
-    image: string;
+    thumbnail: string;
     subcategoryId: string;
 }
