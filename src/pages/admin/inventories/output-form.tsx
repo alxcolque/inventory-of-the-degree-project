@@ -1,21 +1,42 @@
-import { Input, Modal, ModalBody, ModalContent, ModalHeader, Select, SelectItem, TableCell, TableHeader, Table, TableColumn, TableBody, TableRow, Tooltip, User, ModalFooter, Button, Spinner} from "@nextui-org/react";
+import {
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+  Select,
+  SelectItem,
+  TableCell,
+  TableHeader,
+  Table,
+  TableColumn,
+  TableBody,
+  TableRow,
+  Tooltip,
+  User,
+  ModalFooter,
+  Button,
+  Spinner,
+} from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import { useAuthStore } from "../../../stores/auth/auth.store";
 import { useShopsStore } from "../../../stores/shops/shops.store";
-
+import {
+    IProduct,
+  } from "../../../interface/inventories/warehouse/list-warehouse-response";
 interface OutputFormProps {
-    isOpen: boolean;
-    setIsOpen: (isOpen: boolean) => void;
-    onClose: (isClose: boolean) => void;
-    products: any[];
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+  onClose: (isClose: boolean) => void;
+  products: any[];
 }
 export const columns = [
-    { name: "Nombre", uid: "name" },
-    { name: "Stock", uid: "stock" },
-    { name: "Precio Venta", uid: "price" },
-    { name: "Cantidad", uid: "quantity" },
-    { name: "Acciones", uid: "actions" },
+  { name: "Nombre", uid: "name" },
+  { name: "Stock", uid: "stock" },
+  { name: "Precio Venta", uid: "price" },
+  { name: "Cantidad", uid: "quantity" },
+  { name: "Acciones", uid: "actions" },
 ];
 /* export const users = [
     {
@@ -65,100 +86,163 @@ export const columns = [
     },
 ]; */
 
+export const OutputForm = ({
+  isOpen,
+  setIsOpen,
+  onClose,
+  products,
+}: OutputFormProps) => {
+  const handleClose = () => {
+    setIsOpen(false);
+    onClose(true);
+  };
+  const token = useAuthStore((state) => state.token);
+  const [isLoading, setIsLoading] = useState(false);
+  const shops = useShopsStore((state) => state.shops);
+  const [shop, setShop] = useState("");
+  //const getShops = useShopsStore(state => state.getShops);
+  const [currentProducts, setCurrentProducts] = useState<IProduct[]>([]);
+  const [isSelectedShop, setIsSelectedShop] = useState(false);
+  
+  //obtener precio de venta y cantidad de la tabla
+  const data = useState<{
+    shop_id: string;
+    products: {
+      inventory_id: number;
+      sale_price: string;
+      quantity: string;
+    }[];
+  }[]>();
+  
+  //Remover producto de la lista de productos
+//console.log(token)
+  const removeThisProduct = (id: number) => {
+    //console.log(currentProducts);
+    if (currentProducts.length > 0) {
+      const newProducts = currentProducts.filter(
+        (product) => product.inventory_id !== id
+      );
+      setCurrentProducts(newProducts);
+    }
+    else{
+      setIsSelectedShop(false);
+    }
+  };
+  useEffect(() => {
+    setIsLoading(true);
+    setCurrentProducts(products);
+    setIsLoading(false);
+  }, [products]);
 
-export const OutputForm = ({ isOpen, setIsOpen, onClose, products }: OutputFormProps) => {
-    const handleClose = () => {
-        setIsOpen(false);
-        onClose(true);
+  const handleSelectedShop = (id: string) => {
+    if(currentProducts.length > 0) {
+      setShop(id);
+      setIsSelectedShop(true);
     }
-    const token = useAuthStore(state => state.token);
-    const [isLoading, setIsLoading] = useState(false);
-    const shops = useShopsStore(state => state.shops);
-    //const getShops = useShopsStore(state => state.getShops);
-    const [currentProducts, setCurrentProducts] = useState<any[]>([]);
-    const handleOutput = () => {
-        //console.log(currentProducts);
-        onClose(true);
+    else{
+      setIsSelectedShop(false);
     }
-    //Remover producto de la lista de productos
-    console.log(token);
-    const removeThisProduct = (id: number) => {
-        if (currentProducts.length > 0) {
-            console.log(id);
-            const newProducts = currentProducts.filter(product => product.id !== id);
-            setCurrentProducts(newProducts);
-        }
-    }
-    useEffect(() => {
-        setIsLoading(true);
-        setCurrentProducts(products);
-        setIsLoading(false);
-    }, [currentProducts]);
+  };
+  
+  const handleOutput = () => {
+    console.log(currentProducts);
     
-    return (
-        /* modal para registrar salida de productos */
-        <Modal isOpen={isOpen} size="2xl" onClose={handleClose}>
-            <ModalContent>
-                <ModalHeader>
-                    <h3>Registrar Salida</h3>
-                </ModalHeader>
-                <ModalBody>
-                    {isLoading ? (
-                        <Spinner />
-                    ) : (
-                        <Table aria-label="Example table with custom cells">
-                            <TableHeader columns={columns}>
-                                {(column) => (
-                                    <TableColumn key={column.uid} align={column.uid === "actions" ? "center" : "start"}>
-                                        {column.name}
-                                    </TableColumn>
-                                )}
-                            </TableHeader>
-                            <TableBody items={currentProducts}>
-                                {products.map((product) => (
-                                    <TableRow key={product.id}>
-                                        <TableCell>
-                                            <User
-                                                avatarProps={{ radius: "lg", src: product.image }}
-                                                description={product.stock}
-                                                name={product.name}
-                                            >
-                                                {product.name}
-                                            </User>
-                                        </TableCell>
-                                        <TableCell>
-                                            <p className="text-bold text-sm capitalize text-default-400">{product.stock}</p>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Input type="number" className="max-w-20" size="sm" defaultValue={product.price} placeholder="Precio" />
-                                        </TableCell>
-                                        <TableCell>
-                                            <Input type="number" className="max-w-20" size="sm" defaultValue="1" placeholder="Cantidad" />
-                                        </TableCell>
-                                        <TableCell>
-                                            <Tooltip color="danger" content="Quitar producto">
-                                                <span className="text-lg text-danger cursor-pointer active:opacity-50" onClick={() => removeThisProduct(product.id)}>
-                                                    <FaTimes />
-                                                </span>
-                                            </Tooltip>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-
-                        </Table>
-                    )}
-                </ModalBody>
-                <ModalFooter>
-                    {/* Select para elegir tiendas */}
-                    <Select label="Tienda" size="sm">
-                        {shops.map((shop) => (
-                            <SelectItem key={shop.id} value={shop.id}>{shop.name}</SelectItem>
-                        ))}
-                    </Select>
-                    <Button color="primary" onPress={handleOutput}>Registrar Salida</Button>
-                </ModalFooter>
-            </ModalContent>
-        </Modal>
-    )
-}
+    
+    onClose(true);
+  };
+  
+  return (
+    /* modal para registrar salida de productos */
+    <Modal isOpen={isOpen} size="2xl" onClose={handleClose}>
+      <ModalContent>
+        <ModalHeader>
+          <h3>Registrar Salida</h3>
+        </ModalHeader>
+        <ModalBody>
+          {isLoading ? (
+            <Spinner />
+          ) : (
+            <Table aria-label="Example table with custom cells">
+              <TableHeader columns={columns}>
+                {(column) => (
+                  <TableColumn
+                    key={column.uid}
+                    align={column.uid === "actions" ? "center" : "start"}
+                  >
+                    {column.name}
+                  </TableColumn>
+                )}
+              </TableHeader>
+              <TableBody items={currentProducts}>
+                {currentProducts.map((product: any) => (
+                  <TableRow key={product.id}>
+                    <TableCell>
+                      <User
+                        avatarProps={{ radius: "lg", src: product.thumbnail }}
+                        description={product.stock_quantity}
+                        name={product.name}
+                      >
+                        {product.name}
+                      </User>
+                    </TableCell>
+                    <TableCell>
+                      <p className="text-sm capitalize text-bold text-default-400">
+                        {product.stock_quantity}
+                      </p>
+                    </TableCell>
+                    <TableCell>
+                      <Input
+                        type="number"
+                        className="max-w-20"
+                        size="sm"
+                        defaultValue={product.price}
+                        placeholder="Precio"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Input
+                        type="number"
+                        className="max-w-20"
+                        size="sm"
+                        defaultValue="1"
+                        placeholder="Cantidad"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Tooltip color="danger" content="Quitar producto">
+                        <span
+                          className="text-lg cursor-pointer text-danger active:opacity-50"
+                          onClick={() =>
+                            removeThisProduct(product.inventory_id)
+                          }
+                        >
+                          <FaTimes />
+                        </span>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </ModalBody>
+        <ModalFooter>
+          {/* Select para elegir tiendas */}
+          <Select label="Tienda" size="sm"
+          isRequired
+          onChange={(e) => handleSelectedShop(e.target.value)}
+          >
+            {shops.map((shop) => (
+              <SelectItem key={shop.id} value={shop.id}>
+                {shop.name}
+              </SelectItem>
+            ))}
+          </Select>
+          <Button isDisabled={!isSelectedShop} color="primary" onPress={handleOutput}>
+            Registrar Salida
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+};

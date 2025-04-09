@@ -7,4 +7,6 @@ export interface IProductResponse {
     thumbnail: string;
     subcategoryId: string;
     brandId: string;
+    category: string;
+    subcategory: string;
 }

@@ -3,7 +3,7 @@ export interface IListWarehouseResponse {
     name: string;
     slug: string;
     category: string;
-    product: IProduct[];
+    products: IProduct[];
 }
 
 export interface IProduct {
@@ -12,9 +12,10 @@ export interface IProduct {
     slug: string;
     price: number;
     description: string;
-    image: string;
+    thumbnail: string;
     quantity: number;
     unit: string;
     restockDate: Date;
     brand: string;
+    inventory_id: number;
 }
