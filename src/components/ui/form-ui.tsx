@@ -37,6 +37,13 @@ export const FormUI: React.FC<IFormInputProps> = ({ fields, formData, onChange }
                             placeholder={field.placeholder}
                             fullWidth
                         />
+                    ) : field.type === 'phone' ? (
+                        <Input
+                            label={field.label}
+                            type="tel"
+                            value={formData[field.name]}
+                            onChange={(e) => onChange(field.name, e.target.value)}
+                        />
                     ) : field.type === 'checkbox' ? (
                         <Checkbox
                             isSelected={formData[field.name]}

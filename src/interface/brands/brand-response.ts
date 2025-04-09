@@ -4,4 +4,5 @@ export interface IBrandResponse {
     image: string;
     image_key: string | null;
     slug: string;
+    logo: string;
 }

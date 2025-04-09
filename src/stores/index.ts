@@ -24,3 +24,5 @@ export { useWarehouseStore } from "./inventories/warehouse.store";
 export { useBrandsStore } from "./brands/brands.store";
 
 export { useSubcategoriesStore } from "./subcategories/subcategories.store";
+
+export { useProductImagesStore } from "./products/product-images.store";

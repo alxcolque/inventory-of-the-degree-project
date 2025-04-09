@@ -68,6 +68,12 @@ export const IndexInventories = () => {
 
     }, [token, selectedProducts]);
 
+    /* Funcion para obtener las marcas */
+    const selectBrands = () => {
+        console.log("getBrands");
+    }
+
+
     return (
         <>
             <div className="my-2 px-4 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -78,7 +84,7 @@ export const IndexInventories = () => {
                     <Button color="primary" startContent={<FaPlus />} variant="shadow" onClick={() => navigate("/admin/inventories/input")}>Registrar Entrada</Button>
                 </div>
                 {/* Modal para brands */}
-                <ModalBrands isOpen={isModalBrandsOpen} onClose={() => { setIsModalBrandsOpen(false) }} brand={[]} />
+                <ModalBrands isOpen={isModalBrandsOpen} onClose={() => { setIsModalBrandsOpen(false) }} selectBrands={selectBrands} />
                 <div className="flex flex-wrap items-center gap-2">
                     {/* busqueda */}
                     <div className="flex flex-row items-center gap-2">

@@ -6,4 +6,5 @@ export interface IProductResponse {
     price: number;
     thumbnail: string;
     subcategoryId: string;
+    brandId: string;
 }

@@ -10,6 +10,7 @@ interface SubcategoriesState {
 }
 interface Actions {
   getSubcategories: (token: string) => void;
+  getSubcategoriesAndCategories: (token: string) => void;
   getSubcategory: (id: number, token: string) => void;
   createSubcategory: (subcategory: [], token: string) => void;
   updateSubcategory: (id: number, subcategory: ISubcategoriesResponse, token: string) => void;
@@ -23,6 +24,20 @@ const storeApi: StateCreator<SubcategoriesState & Actions> = (set, get) => ({
     // todo:: get categories from api
     try {
       const response = await appDB.get('/subcategories', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      set({ subcategories: response.data.subCategories as any });
+    } catch (error) {
+      if (isAxiosError(error)) {
+        toast.error(error.response?.data.message);
+      }
+    }
+  },
+  getSubcategoriesAndCategories: async (token: string) => {
+    try {
+      const response = await appDB.get('/subcategories-get/with-categories', {
         headers: {
           Authorization: `Bearer ${token}`
         }

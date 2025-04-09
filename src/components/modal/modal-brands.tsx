@@ -5,10 +5,10 @@ import { useAuthStore, useBrandsStore } from "../../stores";
 interface Props {
     isOpen: boolean;
     onClose: () => void;
-    brand: any[];
+    selectBrands: (brands: string[]) => void;
 }
 
-export const ModalBrands = ({ isOpen, onClose, brand }: Props) => {
+export const ModalBrands = ({ isOpen, onClose, selectBrands }: Props) => {
     //const [isLoading, setIsLoading] = useState(false);
     const brands = useBrandsStore(state => state.brands);
     const getBrands = useBrandsStore(state => state.getBrands);
@@ -27,9 +27,12 @@ export const ModalBrands = ({ isOpen, onClose, brand }: Props) => {
                 return [...prev, slug];
             }
         });
-        brand = selectedBrands;
     };
+    useEffect(() => {
+        selectBrands(selectedBrands);
+    }, [selectedBrands]);
 
+    console.log(selectedBrands);
 
     return (
         <Modal isOpen={isOpen} size="md" onClose={() => onClose()}>
@@ -48,7 +51,7 @@ export const ModalBrands = ({ isOpen, onClose, brand }: Props) => {
                                                 className="w-full object-cover h-[140px]"
                                                 radius="lg"
                                                 shadow="sm"
-                                                src={item.logo}
+                                                src={item.image}
                                                 width="100%"
                                             />
                                         </CardBody>

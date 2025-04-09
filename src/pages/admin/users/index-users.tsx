@@ -128,7 +128,7 @@ export const IndexUsers = () => {
                 <h2>Usuarios</h2>
                 <DynamicTable stringSearch={'name'} onCreate={handleNewClientClick} data={users} columns={headers} onEdit={ handleEditClick } onDelete={handleDeleteClick} onView={handleViewClick} />
                 {deleteRowId != null ? (
-                   <AlertDelete handleConfirmDelete={handleConfirmDelete} handleCancelDelete={handleCancelDelete} deleteCountdown={deleteCountdown} />
+                   <AlertDelete handleConfirmDelete={handleConfirmDelete} handleCancelDelete={handleCancelDelete} deleteCountdown={deleteCountdown} message={"¿Estás seguro de querer eliminar este usuario?"} />
                 ) : ('')}
 
             </div>

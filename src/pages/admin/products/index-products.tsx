@@ -26,7 +26,7 @@ export const IndexProducts = () => {
     const deleteProduct = useProductsStore(state => state.deleteProduct);
     /* Subcategories */
     const subcategories = useSubcategoriesStore(state => state.subcategories);
-    const getSubcategories = useSubcategoriesStore(state => state.getSubcategories);
+    const getSubcategories = useSubcategoriesStore(state => state.getSubcategoriesAndCategories);
     /* Brands */
     const brands = useBrandsStore(state => state.brands);
     const getBrands = useBrandsStore(state => state.getBrands);
@@ -100,16 +100,16 @@ export const IndexProducts = () => {
             placeholder: 'Selecciona una marca',
             options: optionsBrands
         },
-        { name: 'name', label: 'Nombre', type: 'text', placeholder: 'Nombre de la categoría' },
-        { name: 'description', label: 'Descripción', type: 'textarea', placeholder: 'Descripción de la categoría' },
-        { name: 'thumbnail', label: 'Imagen', type: 'file', placeholder: 'Imagen de la categoría' },
+        { name: 'name', label: 'Nombre', type: 'text', placeholder: 'Nombre del producto' },
+        { name: 'description', label: 'Descripción', type: 'textarea', placeholder: 'Descripción del producto' },
+        { name: 'thumbnail', label: 'Imagen', type: 'file', placeholder: 'Imagen del producto' },
     ];
     const handleFormSubmit = async (formData: Record<string, any>) => {
 
         if (isEditing) {
             await updateProduct(formData.id, formData as IProductResponse, token!);
         } else {
-            await createProduct(formData as IProductResponse, token!);
+            await createProduct(formData as [], token!);
         }
         setIsModalOpen(false); // Cerrar el modal
         //console.log(formData)
@@ -117,6 +117,7 @@ export const IndexProducts = () => {
     //Define controles para abrir el modal de agregar rol
     // Función para abrir el modal con datos vacíos (creación)
     const handleNewCategoryClick = () => {
+        
         setIsLoadingSubcategories(true);
         handleGetSubcategories();
         setIsLoadingSubcategories(false);

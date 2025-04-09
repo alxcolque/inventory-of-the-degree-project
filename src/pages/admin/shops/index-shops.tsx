@@ -53,7 +53,7 @@ export const IndexShops = () => {
         { name: 'name', label: 'Nombre', type: 'text', placeholder: 'Nombre de la tienda' },
         { name: 'location', label: 'Localización', type: 'text', placeholder: 'Localización de la tienda latitud, longitud' },
         { name: 'address', label: 'Dirección', type: 'text', placeholder: 'Dirección de la tienda' },
-        { name: 'phone', label: 'Teléfono', type: 'text', placeholder: 'Teléfono de la tienda' },
+        { name: 'phone', label: 'Teléfono', type: 'phone', placeholder: 'Teléfono de la tienda' },
         { name: 'front_image', label: 'Imagen', type: 'file', placeholder: 'Imagen de la tienda' },
     ];
     const handleFormSubmit = async (formData: Record<string, any>) => {

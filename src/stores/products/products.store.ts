@@ -7,19 +7,19 @@ import { appDB } from "../../api";
 
 interface ProductState {
     products: IProductResponse[];
-    product: IProductResponse;
+    product: {} | any;
 }
 interface Action {
     getProducts: (token: string) => Promise<void>;
     getProduct: (id: number, token: string) => Promise<void>;
-    createProduct: (product: IProductResponse, token: string) => Promise<void>;
-    updateProduct: (id: number, product: IProductResponse, token: string) => Promise<void>;
+    createProduct: (product: [], token: string) => Promise<void>;
+    updateProduct: (id: number, product: {}, token: string) => Promise<void>;
     deleteProduct: (id: number, token: string) => Promise<void>;
 }
 
 const storeApi: StateCreator<ProductState & Action> = (set, get) => ({
     products: [],
-    product: {} as IProductResponse,
+    product: {},
     getProducts: async (token: string) => {  
         try {
             const response = await appDB.get('/products', {
@@ -36,19 +36,19 @@ const storeApi: StateCreator<ProductState & Action> = (set, get) => ({
     },
     getProduct: async (id: number, token: string) => {
         try {
-            const response = appDB.get(`/products/${id}`, {
+            const response = await appDB.get(`/products/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            set({ product: response as any });
+            set({ product: response.data });
         } catch (error) {
             if (isAxiosError(error)) {
                 toast.error(error.response?.data.message);
             }
         }
     },
-    createProduct: async (product: IProductResponse, token: string) => {
+    createProduct: async (product: IProductResponse[], token: string) => {
         try {
             const response = await appDB.post('/products', product, {
                 headers: {
@@ -63,7 +63,7 @@ const storeApi: StateCreator<ProductState & Action> = (set, get) => ({
             }
         }
     },
-    updateProduct: async (id: number, product: IProductResponse, token: string) => {
+    updateProduct: async (id: number, product: {}, token: string) => {
         try {
             const response = await appDB.put(`/products/${id}`, product, {
                 headers: {
@@ -71,7 +71,7 @@ const storeApi: StateCreator<ProductState & Action> = (set, get) => ({
                 }
             });
             toast.success(response.data.message);
-            get().getProducts(token);
+            get().getProduct(id, token);
         } catch (error) {
             if (isAxiosError(error)) {
                 toast.error(error.response?.data.message);

@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 interface IFormField {
     name: string;
     label: string;
-    type: 'text' | 'email' | 'number' | 'textarea' | 'checkbox' | 'select' | 'color' | 'password' | 'radio' | 'file';
+    type: 'text' | 'email' | 'number' | 'textarea' | 'checkbox' | 'select' | 'color' | 'password' | 'radio' | 'file' | 'phone';
     options?: string[];  // Opciones para el campo select, si aplica
     placeholder?: string;
     defaultValue?: any;   // Valor por defecto
@@ -50,6 +50,17 @@ export const FormModal = ({ fields, isOpen, onClose, onSubmit, initialValues = {
     }, [formData, fields]);
     // Manejador de cambios para todos los inputs
     const handleChange = (name: string, value: any) => {
+        /* Si el campo es location se valida con regex latitude y longitude */
+        if (name === 'location') {
+            const regex = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)[ ,]+[-+]?(180(\.0+)?|((1[0-7]\d|[1-9]?\d)(\.\d+)?)$)/;
+            if (!regex.test(value)) {
+                toast.error('La ubicación no es válida');
+                /* Reseteamos el campo */
+                setFormData({ ...formData, [name]: '' });
+                return;
+            }
+        }
+        
         /* El campo image se maneja en el componente FormUI */
         if (value instanceof File) {
             /* La image no debe pesar mas de 2mb */

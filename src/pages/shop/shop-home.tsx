@@ -33,7 +33,7 @@ export const ShopHome = () => {
   const [isSale, setIsSale] = useState(false);
   useEffect(() => {
     setIsLoading(true);
-    getShop(token as string, slug as string);
+    getShop(Number(1), token as string);
     setIsLoading(false);
     getCategories(token!);
     getProducts(token!);
@@ -61,10 +61,14 @@ export const ShopHome = () => {
   //console.log(currentDate);
 
   //console.log(data);
+  /* Funcion para obtener las marcas */
+  const selectBrands = () => {
+    console.log("getBrands");
+}
   return (
     <div className="my-2 px-4 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
       {/* Modal para brands */}
-      <ModalBrands isOpen={isModalBrandsOpen} onClose={() => { setIsModalBrandsOpen(false) }} brand={[]} />
+      <ModalBrands isOpen={isModalBrandsOpen} onClose={() => { setIsModalBrandsOpen(false) }} selectBrands={selectBrands} />
       <div className="flex flex-col w-full lg:flex-row gap-4">
         {/* Primera Sección 80% de ancho de columna en desktop y 100% en tablet y mobile */}
         <div className="w-full flex flex-col lg:flex-row md:w-full gap-4">
