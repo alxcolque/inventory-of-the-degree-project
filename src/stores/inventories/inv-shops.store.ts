@@ -3,6 +3,7 @@ import { IListStoreResponse, IStoreInventoriesResponse } from "../../interface";
 import { isAxiosError } from "axios";
 import { toast } from "sonner";
 import { inventories, stockStore } from "../../api/systemdata";
+import { appDB } from "../../api";
 
 
 interface ShopsState {
@@ -13,6 +14,8 @@ interface ShopsState {
 interface Actions{
     getShops: (token: string) => void;
     getProducts: (token: string) => void;
+    /* DB */
+    createOutput: (data: any, token: string) => void;
 }
 
 
@@ -49,6 +52,22 @@ const storeApi: StateCreator<ShopsState & Actions> = (set) => ({
       const response = stockStore;
       console.log(token);
       set({ products: response as any });
+    } catch (error) {
+      if (isAxiosError(error)) {
+        toast.error(error.response?.data.message);
+      }
+    }
+  },
+  createOutput: async (data: any, token: string) => {
+    // todo:: create output from api
+    try {
+      const response = await appDB.post('/inventory-stores', data, { 
+        headers: { 
+            Authorization: `Bearer ${token}` 
+        } 
+      });
+      toast.success(response.data.message);
+      return response;
     } catch (error) {
       if (isAxiosError(error)) {
         toast.error(error.response?.data.message);

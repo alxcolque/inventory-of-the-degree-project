@@ -23,7 +23,7 @@ export { IndexSuppliers } from "./suppliers/index-suppliers";
 
 export { InputForm } from "./inventories/input-form";
 export { OutputForm } from "./inventories/output-form";
-export { KardexProduct } from "./inventories/kardex-product";
+export { KardexProductWarehouse } from "./inventories/kardex-product-warehouse";
 export { ShowShops } from "./shops/show-shops";
 export { ShowUsers } from "./users/show-users";
 export { ShowCategories } from "./categories/show.categories";

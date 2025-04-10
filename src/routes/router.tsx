@@ -35,6 +35,7 @@ import {
   IndexBrands,
   ShowBrands,
   ShowProducts,
+  KardexProductWarehouse,
 } from "../pages/admin";
 import { DetailSale, KardexProduct, ShopHome } from "../pages/shop";
 
@@ -209,7 +210,7 @@ const router = createBrowserRouter([
             path: "inventories/:slug",
             element: (
               <ProtectedRoute roles={["admin"]}>
-                <KardexProduct />
+                <KardexProductWarehouse />
               </ProtectedRoute>
             ),
           },
@@ -227,7 +228,7 @@ const router = createBrowserRouter([
             path: "inventories/output",
             element: (
               <ProtectedRoute roles={["admin"]}>
-                <OutputForm isOpen={false} setIsOpen={() => { }} onClose={() => { }} products={[]} />
+                <OutputForm isOpen={false} setIsOpen={() => { }} onClose={() => { }} product={null} />
               </ProtectedRoute>
             ),
           },

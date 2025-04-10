@@ -11,6 +11,9 @@ import {
   DropdownItem,
   Spinner,
   Checkbox,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
 } from "@nextui-org/react";
 import { DynamicBreadcrumbs } from "../../../components/ui/dynamic-breadcrumbs";
 import {
@@ -23,10 +26,9 @@ import { FaEye, FaPencil, FaPlus, FaTrash } from "react-icons/fa6";
 import { RiMoreFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { OutputForm } from "./output-form";
-import {
-  IProduct,
-} from "../../../interface/inventories/warehouse/list-warehouse-response";
+import { IProduct } from "../../../interface/inventories/warehouse/list-warehouse-response";
 import { ModalBrands } from "../../../components/modal/modal-brands";
+import { AlertDelete } from "../../../components";
 
 export const IndexInventories = () => {
   const navigate = useNavigate();
@@ -37,6 +39,11 @@ export const IndexInventories = () => {
   const [isLoading, setIsLoading] = useState(false);
   const categories = useCategoriesStore((state) => state.categories);
   const getCategories = useCategoriesStore((state) => state.getCategories);
+  const deleteProduct = useWarehouseStore(
+    (state) => state.deleteWarehouseProduct
+  );
+  const [deleteRowId, setDeleteRowId] = useState<number | null>(null);
+  const [deleteCountdown, setDeleteCountdown] = useState<number | null>(null);
   const warehouseProducts = useWarehouseStore(
     (state) => state.warehouseProducts
   );
@@ -49,37 +56,23 @@ export const IndexInventories = () => {
         setDate(date);
     } */
   /* Estado para seleccionar todos los productos */
-  const [selectedProducts, setSelectedProducts] = useState<IProduct[]>([]);
-  /* Estado para seleccionar todos los productos */
 
-  const handleProductSelection = (product: IProduct, isChecked: boolean) => {
-    if (isChecked) {
-      setSelectedProducts([...selectedProducts, product]);
-    } else {
-      setSelectedProducts(selectedProducts.filter((p) => p.inventory_id !== product.inventory_id));
-    }
-  };
   /* modal para registrar salida de productos */
   const [isOpen, setIsOpen] = useState(false);
-  const handleOpen = () => {
+  const [product, setProduct] = useState([] as any);
+  const handleOpenFormOutput = (product: []) => {
+    setProduct(product);
     setIsOpen(true);
   };
   const handleClose = () => {
-    //setIsOpen(isClose);
+    setIsOpen(false);
+    getWarehouseProducts("", token!);
   };
   /* Fetch Categories */
   const handleCategories = () => {
     setIsLoading(true);
     getCategories(token!);
     setIsLoading(false);
-  };
-
-  //console.log(selectedProducts);
-  /* Estado para controlar si existe seleccion de productos */
-  const [isSelected, setIsSelected] = useState(false);
-  /* Funcion para controlar si existe seleccion de productos */
-  const handleSelectedProducts = () => {
-    setIsSelected(selectedProducts.length > 0);
   };
 
   useEffect(() => {
@@ -89,8 +82,7 @@ export const IndexInventories = () => {
       setIsLoading(false);
     }
     handleCategories();
-    handleSelectedProducts();
-  }, [token, selectedProducts]);
+  }, [token]);
 
   console.log(warehouseProducts);
 
@@ -98,7 +90,38 @@ export const IndexInventories = () => {
   const selectBrands = () => {
     console.log("getBrands");
   };
+  /* Remove product in inventory */
 
+  useEffect(() => {
+    if (deleteCountdown !== null && deleteCountdown > 0) {
+      const timer = setTimeout(() => {
+        setDeleteCountdown(deleteCountdown - 1);
+      }, 1000);
+      return () => clearTimeout(timer); // Limpia el temporizador
+    } else if (deleteCountdown === 0) {
+      handleConfirmDelete(); // Elimina permanentemente cuando llega a 0
+    }
+  }, [deleteCountdown]);
+
+  const handleDeleteClick = (id: number) => {
+    //console.log(id);
+    setDeleteRowId(id);
+    setDeleteCountdown(10); // Inicia el temporizador de 10 segundos
+};
+  const handleConfirmDelete = async () => {
+    //setRows(rows.filter(row => row.id !== deleteRowId)); // Elimina el registro de los datos
+    //await deleteRole(deleteRowId!, token!); // Elimina el registro de la base de datos
+    if (deleteRowId) {
+      await deleteProduct(deleteRowId, token!);
+      setDeleteRowId(null);
+      setDeleteCountdown(null); // Resetea el temporizador
+    }
+  };
+  // Función para cancelar la eliminación
+  const handleCancelDelete = () => {
+    setDeleteRowId(null);
+    setDeleteCountdown(null); // Resetea el temporizador
+  };
   /* Filter */
   const handleFilter = async (type: string, slug: string) => {
     if (type === "brands") {
@@ -163,11 +186,11 @@ export const IndexInventories = () => {
           {/* FEcha actual */}
           {/* <div className="flex flex-row gap-2 items-center">
 
-                        <DatePicker
-                            onChange={handleChangeDate}
-                            value={date}
-                        />
-                    </div> */}
+            <DatePicker
+                onChange={handleChangeDate}
+                value={date}
+            />
+        </div> */}
         </div>
 
         {/* Botones horizontales para listar categorias para filtro, scroll horizontal */}
@@ -204,7 +227,10 @@ export const IndexInventories = () => {
                 {subcategories.subcategory}
               </h5>
               {/* Cards de productos */}
-              <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3" key={index}>
+              <div
+                className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3"
+                key={index}
+              >
                 {subcategories.products.map((product: any) => (
                   <Card
                     key={product.id}
@@ -232,20 +258,7 @@ export const IndexInventories = () => {
                                 <h3 className="font-medium text-large">
                                   {product.name}
                                 </h3>
-                                <Checkbox
-                                  className="checkboxProduct"
-                                  radius="none"
-                                  color="primary"
-                                  isSelected={selectedProducts.some(
-                                    (p) => p.inventory_id === product.inventory_id
-                                  )}
-                                  onChange={(e) =>
-                                    handleProductSelection(
-                                      product,
-                                      e.target.checked
-                                    )
-                                  }
-                                ></Checkbox>
+
                                 <Dropdown>
                                   <DropdownTrigger>
                                     <Button
@@ -264,15 +277,20 @@ export const IndexInventories = () => {
                                     <DropdownItem
                                       key="edit"
                                       startContent={<FaPencil />}
+                                      onPress={() =>
+                                        navigate("/admin/inventories/input")
+                                      }
                                     >
-                                      Editar
+                                      Agregar
                                     </DropdownItem>
 
                                     <DropdownItem
                                       key="delete"
                                       className="text-danger"
                                       color="danger"
+                                      variant="bordered"
                                       startContent={<FaTrash />}
+                                      onPress={() => handleDeleteClick(product.inventory_id)}
                                     >
                                       Eliminar
                                     </DropdownItem>
@@ -300,13 +318,16 @@ export const IndexInventories = () => {
                                 </span>
                                 <span className="text-sm text-foreground/90">
                                   {" "}
-                                  cantidad: {product.quantity}
+                                  cantidad: {product.stock_quantity}
                                 </span>
                               </div>
                             </div>
                           </div>
 
-                          <div className="flex flex-row gap-2 justify-end mt-2">
+                          <div
+                            className="flex flex-row gap-2 justify-end mt-2"
+                            key={product.id}
+                          >
                             {/* Boton que redirija a /admin/invetories/nombre-del-producto */}
 
                             <Button
@@ -318,18 +339,15 @@ export const IndexInventories = () => {
                                 navigate(`/admin/inventories/${product.slug}`)
                               }
                             >
-                              {" "}
-                              <FaEye />{" "}
+                              <FaEye />
                             </Button>
                             <Button
                               size="sm"
                               color="success"
                               variant="bordered"
-                              onClick={() =>
-                                navigate("/admin/inventories/input")
-                              }
+                              onClick={() => handleOpenFormOutput(product)}
                             >
-                              Agregar Stock
+                              Salida
                             </Button>
                           </div>
                         </div>
@@ -342,25 +360,22 @@ export const IndexInventories = () => {
           ))}
         </div>
       </div>
-      {/* Boton flotante para registrar entrada, posicionar en la parte inferior derecha */}
-      {isSelected && (
-        <div className="fixed right-0 bottom-0 m-4">
-          <Button
-            color="primary"
-            startContent={<FaPlus />}
-            variant="shadow"
-            onClick={handleOpen}
-          >
-            Registrar Salida
-          </Button>
-        </div>
-      )}
       <OutputForm
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         onClose={() => handleClose()}
-        products={selectedProducts}
+        product={product}
       />
+      {deleteRowId != null ? (
+        <AlertDelete
+          handleConfirmDelete={handleConfirmDelete}
+          handleCancelDelete={handleCancelDelete}
+          deleteCountdown={deleteCountdown}
+          message={"¿Estás seguro de querer eliminar el cliente?"}
+        />
+      ) : (
+        ""
+      )}
     </>
   );
 };
