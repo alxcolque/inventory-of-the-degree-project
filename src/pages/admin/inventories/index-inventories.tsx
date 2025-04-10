@@ -84,7 +84,7 @@ export const IndexInventories = () => {
     handleCategories();
   }, [token]);
 
-  console.log(warehouseProducts);
+  //console.log(warehouseProducts);
 
   /* Funcion para obtener las marcas */
   const selectBrands = () => {

@@ -8,6 +8,9 @@ import { appDB } from "../../api";
 interface ProductState {
     products: IProductResponse[];
     product: {} | any;
+    productImages: [] | any;
+    productInventoryStore: [] | any;
+    productInventoryWarehouse: [] | any;
 }
 interface Action {
     getProducts: (token: string) => Promise<void>;
@@ -21,6 +24,9 @@ interface Action {
 const storeApi: StateCreator<ProductState & Action> = (set, get) => ({
     products: [],
     product: {},
+    productImages: [],
+    productInventoryStore: [],
+    productInventoryWarehouse: [],
     getProducts: async (token: string) => {  
         try {
             const response = await appDB.get('/products', {
@@ -29,6 +35,7 @@ const storeApi: StateCreator<ProductState & Action> = (set, get) => ({
                 }
             });
             set({ products: response.data as any });
+
         } catch (error) {
             if (isAxiosError(error)) {
                 toast.error(error.response?.data.message);

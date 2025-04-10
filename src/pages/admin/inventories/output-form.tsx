@@ -70,7 +70,7 @@ export const OutputForm = ({
   useEffect(() => {
     setFormData({
       ...formData,
-      quantity: product.quantity,
+      quantity: "1",
       price: product.price,
     });
     //setIsSelectedShop(true);

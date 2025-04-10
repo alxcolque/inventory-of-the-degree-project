@@ -3,22 +3,12 @@ import { useParams } from "react-router-dom";
 import { DynamicBreadcrumbs } from "../../../components";
 import {
   useAuthStore,
-  useBrandsStore,
-  useProductImagesStore,
   useProductsStore,
-  useSubcategoriesStore,
 } from "../../../stores";
 import {
   Button,
   Image,
-  Input,
-  SelectItem,
-  Select,
   Spinner,
-  Textarea,
-  PopoverContent,
-  PopoverTrigger,
-  Popover,
 } from "@nextui-org/react";
 import { motion, AnimatePresence, wrap } from "framer-motion";
 import clsx from "clsx";
@@ -51,63 +41,56 @@ const swipePower = (offset: number, velocity: number) => {
 export const KardexProductWarehouse = () => {
   const { slug } = useParams();
   const token = useAuthStore((state) => state.token);
-  const product = useProductsStore((state) => state.product);
-  const getProduct = useProductsStore((state) => state.getProductBySlug);
-
-  const [isLoadingProductImages, setIsLoadingProductImages] =
-    useState<boolean>(false);
-  const productImages = useProductImagesStore(
-    (state) => state.productImages
-  ) as any[];
-  const getProductImages = useProductImagesStore(
-    (state) => state.getProductImages
-  );
   const [isLoading, setIsLoading] = useState(false);
+  const [product, setProduct] = useState<any>({});
+  /* Cannot read properties of undefined (reading 'length') */
+  const [productImages, setProductImages] = useState<any[]>([]);
+  const [productInventoryStore, setProductInventoryStore] = useState([]);
+  const [productInventoryWarehouse, setProductInventoryWarehouse] = useState<any[]>([]);
+  const data = useProductsStore((state) => state.product);
+  const getProduct = useProductsStore((state) => state.getProductBySlug);
 
   const handleGetProduct = async () => {
     if (slug && token) {
       await getProduct(slug, token);
-    }
-    handleGetProductImages(product.id);
-  };
-  const handleGetProductImages = (productId: number) => {
-    if (slug && token) {
-      setIsLoadingProductImages(true);
-      getProductImages(productId, token);
-      setIsLoadingProductImages(false);
+      setProduct(data.product);
+      setProductImages(data.productImages);
+      setProductInventoryStore(data.productInventoryStore);
+      setProductInventoryWarehouse(data.productInventoryWarehouse);
     }
   };
+
 
   useEffect(() => {
-    setIsLoading(true);
-    handleGetProduct();
     setIsLoading(false);
-    setIsLoadingProductImages(true);
-    getProductImages(product.id, token!);
-    setIsLoadingProductImages(false);
-  }, [slug, token]);
+    handleGetProduct();
+    setIsLoading(true);
+  }, []);
+
+  console.log(data);
+
 
   const [[page, direction], setPage] = useState([0, 0]);
-  const imageIndex = wrap(0, productImages.length ?? 0, page);
+  const imageIndex = wrap(0, productImages.length ?? [{}], page);
 
   const paginate = (newDirection: number) => {
     setPage([page + newDirection, newDirection]);
   };
 
-  //console.log(product);
-
   return (
     <div className="my-2 px-4 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
       <DynamicBreadcrumbs />
       {/* Dos columnas */}
-      <div className="flex flex-row gap-4 w-full">
-        
-        <div className="flex flex-col">
-          <div className="flex flex-col gap-4 justify-center items-center w-full h-full">
-            {/* Main Image Carousel */}
-            {!isLoadingProductImages && (
-              <>
-                {productImages.length > 0 && (
+      {!isLoading ? (
+        <Spinner />
+      ) : (
+        <div className="flex flex-row gap-4 w-full">
+
+          <div className="flex flex-col">
+            <div className="flex flex-col gap-4 justify-center items-center w-full h-full">
+              {/* Main Image Carousel */}
+              {productImages.length > 0 && (
+                <>
                   <div className="relative flex h-[400px] w-full max-w-4xl items-center overflow-hidden rounded-xl">
                     <AnimatePresence initial={false} custom={direction}>
                       <motion.div
@@ -141,12 +124,14 @@ export const KardexProductWarehouse = () => {
                         }}
                         className="absolute w-full h-full"
                       >
+                        {productImages.length > 0 && (
                         <Image
                           removeWrapper
                           alt={`Product Image ${imageIndex}`}
                           className="object-cover w-full h-full"
                           src={productImages[imageIndex].image}
                         />
+                        )}
                       </motion.div>
                     </AnimatePresence>
 
@@ -191,78 +176,102 @@ export const KardexProductWarehouse = () => {
                       </svg>
                     </Button>
                   </div>
-                )}
 
-                {/* Thumbnails Carousel */}
-                <div className="flex overflow-x-auto gap-3 px-1 py-2 w-full max-w-4xl scrollbar-hide">
-                  {productImages.map((img: any, index: number) => (
-                    <button
-                      key={index}
-                      onClick={() => setPage([index, index - imageIndex])}
-                      className={clsx(
-                        "h-20 w-24 flex-shrink-0 overflow-hidden rounded-md transition-all duration-300",
-                        {
-                          "ring-2 ring-orange-500": index === imageIndex,
-                        }
-                      )}
-                    >
-                      <div className="relative">
-                        <Image
-                          removeWrapper
-                          alt={`Thumbnail ${index}`}
-                          src={img.image}
-                          className="object-cover w-full h-full"
-                        />
-                      </div>
-                    </button>
+
+                  {/* Thumbnails Carousel */}
+                  <div className="flex overflow-x-auto gap-3 px-1 py-2 w-full max-w-4xl scrollbar-hide">
+                    {productImages.map((img: any, index: number) => (
+                      <button
+                        key={index}
+                        onClick={() => setPage([index, index - imageIndex])}
+                        className={clsx(
+                          "h-20 w-24 flex-shrink-0 overflow-hidden rounded-md transition-all duration-300",
+                          {
+                            "ring-2 ring-orange-500": index === imageIndex,
+                          }
+                        )}
+                      >
+                        <div className="relative">
+                          <Image
+                            removeWrapper
+                            alt={`Thumbnail ${index}`}
+                            src={img.image}
+                            className="object-cover w-full h-full"
+                          />
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+          <div className="flex flex-col gap-2">
+            <>
+              <div className="flex flex-col gap-2">
+                <img
+                  src={product?.thumbnail}
+                  alt={product?.name}
+                  height={100}
+                  width={100}
+                />
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                <h3 className="text-lg font-medium">Nombre: </h3>
+                <p>{product?.name}</p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <h3 className="text-lg font-medium">Descripción: </h3>
+                <p>{product?.description}</p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <h3 className="text-lg font-medium">Categoría: </h3>
+                <p
+                  style={{
+                    backgroundColor: product?.category ? product?.color : "",
+                  }}
+                >
+                  {product?.category}
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <h3 className="text-lg font-medium">Subcategoría: </h3>
+                <p>{product?.subcategory}</p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <h3 className="text-lg font-medium">Marca: </h3>
+                <p>{product?.brand}</p>
+              </div>
+              <div className="flex flex-col gap-2">
+                <h3 className="text-lg font-bold uppercase">Detalle de Precios y Stock</h3>
+                <div className="flex flex-wrap gap-2">
+                  {productInventoryWarehouse.map((inventory: any, index: number) => (
+                    <div key={index} className="flex flex-col gap-2">
+                      <p className="text-lg">Stock en Bodega: <b>{inventory.stock_quantity}</b></p>
+                      <hr className="w-full border-t border-gray-300" />
+                    </div>
                   ))}
                 </div>
-              </>
-            )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <h3 className="text-lg font-bold uppercase">Tiendas Distribuidas</h3>
+                <div className="flex flex-col wrap gap-2">
+                  {productInventoryStore.map((inventory: any, index: number) => (
+                    <div key={index} className="flex flex-col gap-2">
+                      <h4 className="text-md font-medium">{inventory.store.name}</h4>
+                      <p className="text-lg">Tienda: <b>{inventory.store}</b></p>
+                      <p className="text-sm">Stock en tienda: <b>{inventory.stock_quantity}</b></p>
+                      <hr className="w-full border-t border-gray-300" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
           </div>
-        </div>
-        <div className="flex flex-col gap-2">
-          <>
-          <div className="flex flex-col gap-2">
-              <img
-                src={product?.thumbnail}
-                alt={product?.name}
-                height={100}
-                width={100}
-              />
-            </div>
 
-            <div className="flex flex-wrap gap-2">
-              <h3 className="text-lg font-medium">Nombre: </h3>
-              <p>{product?.name}</p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <h3 className="text-lg font-medium">Descripción: </h3>
-              <p>{product?.description}</p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <h3 className="text-lg font-medium">Categoría: </h3>
-              <p
-                style={{
-                  backgroundColor: product?.category ? product?.color : "",
-                }}
-              >
-                {product?.category}
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <h3 className="text-lg font-medium">Subcategoría: </h3>
-              <p>{product?.subcategory}</p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <h3 className="text-lg font-medium">Marca: </h3>
-              <p>{product?.brand}</p>
-            </div>
-
-            
-          </>
         </div>
-      </div>
+      )}
     </div>
   );
 };
