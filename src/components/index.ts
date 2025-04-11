@@ -19,3 +19,5 @@ export { CountdownTimer } from './ui/count-down-timer';
 export { AlertDelete } from './ui/alert-delete';
 
 export { UploadFile } from './ui/upload-file';
+
+export { Receipt } from './receipt/receipt';

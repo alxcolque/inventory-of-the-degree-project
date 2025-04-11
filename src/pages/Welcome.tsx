@@ -94,7 +94,7 @@ export const Welcome = () => {
                   alt="heroui logo"
                   height={40}
                   radius="sm"
-                  src={shop.storeFront}
+                  src={shop.front_image}
                   width={40}
                 />
                 <div className="flex flex-col">

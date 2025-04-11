@@ -34,7 +34,7 @@ export const ShopHome = () => {
   const shop = useShopsStore(state => state.shop);
   const getShop = useShopsStore(state => state.getShopBySlug);
   const storeProducts = useStockStore(state => state.storeProducts);
-  const categories = useStockStore(state => state.categories);
+  const categories = useStockStore(state => state.categories) || [];
   const getProducts = useStockStore(state => state.getStoreProducts);
 
   const handleFetchShop = async () => {
@@ -79,6 +79,7 @@ export const ShopHome = () => {
     //console.log("getBrands");
   }
 
+  console.log(categories);
 
   /* Remove product in inventory */
 
@@ -175,7 +176,7 @@ export const ShopHome = () => {
                     alt="nextui logo"
                     height={40}
                     radius="sm"
-                    src={shop?.storeFront ?? `https://picsum.photos/seed/${Math.random()}/200/300`}
+                    src={shop?.front_image ?? `https://picsum.photos/seed/${Math.random()}/200/300`}
                     width={40}
                   />
                   <div
@@ -256,7 +257,8 @@ export const ShopHome = () => {
                 <div className="flex gap-2 overflow-x-auto scrollbar-hide mt-3">
 
                   <Button size="sm">Todos</Button>
-                  {categories.map((category: any) => (
+
+                  {isLoading ? <Spinner /> : Object.values(categories).map((category: any) => (
                     <Button
                       key={category.id}
                       size="sm"

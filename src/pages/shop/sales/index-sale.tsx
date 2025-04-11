@@ -1,10 +1,11 @@
 
-import { Table, TableHeader, TableCell, TableBody, TableRow, TableColumn, User, Tooltip, Chip, Button } from "@nextui-org/react";
+import { Table, TableHeader, TableCell, TableBody, TableRow, TableColumn, Tooltip, Chip, Button } from "@nextui-org/react";
 
-import { sales } from "../../../api/systemdata";
 import { FaArrowLeft, FaEye } from "react-icons/fa6";
 
 import { useNavigate, useParams } from "react-router-dom";
+import { useAuthStore, useOrdersStore } from "../../../stores";
+import { useEffect } from "react";
 
 interface Props {
     onClose: () => void;
@@ -13,15 +14,26 @@ interface Props {
 export const IndexSale = ({ onClose }: Props) => {
     const { slug } = useParams();
     const navigate = useNavigate();
+    const token = useAuthStore((state) => state.token);
+
+
+    const sales = useOrdersStore((state) => state.sales);
+    const getSalesInStore = useOrdersStore((state) => state.getSalesInStore);
+
+    useEffect(() => {
+        getSalesInStore(slug as string, token!);
+    }, []);
+
+
     const columns = [
         { name: 'NOMBRE', uid: 'customer' },
-        { name: 'TIENDA', uid: 'shop' },
         { name: 'TOTAL', uid: 'total' },
         { name: 'ESTADO', uid: 'status' },
         { name: 'FECHA', uid: 'date' },
         { name: 'ACCIONES', uid: 'actions' }
     ];
-
+    console.log(sales);
+    
     return (
         <div className="w-full">
             {/* Boton atras */}
@@ -41,22 +53,13 @@ export const IndexSale = ({ onClose }: Props) => {
                     {sales.map((sale) => (
                         <TableRow key={sale.id}>
                             <TableCell>
-                                <User
-                                    avatarProps={{ radius: "lg", src: `https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}` }}
-                                    description={sale.customer}
-                                    name={sale.customer}
-                                >
-                                    {sale.customer}
-                                </User>
-                            </TableCell>
-                            <TableCell>
-                                <p className="text-bold text-sm capitalize text-default-400">{sale.shop}</p>
+                                {sale.customer.name}
                             </TableCell>
                             <TableCell>
                                 <p className="text-bold text-sm capitalize text-default-400">{sale.total}</p>
                             </TableCell>
                             <TableCell>
-                                <Chip className="capitalize" color='warning' size="sm" variant="flat">
+                                <Chip className="capitalize" color='success' size="sm" variant="flat">
                                     {sale.status}
                                 </Chip>
                             </TableCell>
