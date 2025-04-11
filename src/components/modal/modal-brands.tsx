@@ -32,7 +32,7 @@ export const ModalBrands = ({ isOpen, onClose, selectBrands }: Props) => {
         selectBrands(selectedBrands);
     }, [selectedBrands]);
 
-    console.log(selectedBrands);
+    //console.log(selectedBrands);
 
     return (
         <Modal isOpen={isOpen} size="md" onClose={() => onClose()}>
@@ -43,8 +43,14 @@ export const ModalBrands = ({ isOpen, onClose, selectBrands }: Props) => {
                         <ModalBody>
                             <div className="gap-2 grid grid-cols-2 sm:grid-cols-4">
                                 {brands.map((item, index) => (
-                                    /* eslint-disable no-console */
-                                    <Card key={index} isPressable shadow="sm" onPress={() => console.log("item pressed")}>
+                                    <Card 
+                                    
+                                        key={index} 
+                                        isPressable 
+                                        shadow="sm" 
+                                        onPress={() => console.log("item pressed")}
+                                        
+                                    >
                                         <CardBody className="overflow-visible p-0">
                                             <Image
                                                 alt={item.name}
@@ -56,7 +62,11 @@ export const ModalBrands = ({ isOpen, onClose, selectBrands }: Props) => {
                                             />
                                         </CardBody>
                                         <CardFooter className="text-small justify-between">
-                                            <Checkbox checked={selectedBrands.includes(item.slug)} onChange={() => handleCheckboxChange(item.slug)} />
+                                            <Checkbox 
+                                                checked={selectedBrands.includes(item.slug)} 
+                                                onChange={() => handleCheckboxChange(item.slug)}
+                                                aria-label={`Seleccionar marca ${item.name}`}
+                                            />
                                             <b>{item.name}</b>
                                         </CardFooter>
                                     </Card>
@@ -64,10 +74,10 @@ export const ModalBrands = ({ isOpen, onClose, selectBrands }: Props) => {
                             </div>
                         </ModalBody>
                         <ModalFooter>
-                            <Button color="danger" variant="light" onPress={onClose}>
+                            <Button color="danger" variant="light" onPress={onClose} aria-label="Cerrar modal">
                                 Cerrar
                             </Button>
-                            <Button color="primary" onPress={onClose}>
+                            <Button color="primary" onPress={onClose} aria-label="Buscar marcas">
                                 Buscar
                             </Button>
                         </ModalFooter>

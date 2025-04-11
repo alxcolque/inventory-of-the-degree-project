@@ -1,57 +1,57 @@
 import { create, StateCreator } from "zustand";
-import { IListStoreResponse, IStoreInventoriesResponse } from "../../interface";
+import { IStoreInventoriesResponse } from "../../interface";
 import { isAxiosError } from "axios";
 import { toast } from "sonner";
-import { inventories, stockStore } from "../../api/systemdata";
 import { appDB } from "../../api";
 
 
 interface ShopsState {
   shops: IStoreInventoriesResponse[];
-  products: IListStoreResponse[];
+  products: [];
+  storeProducts: [];
+  categories: [];
 }
 
-interface Actions{
-    getShops: (token: string) => void;
-    getProducts: (token: string) => void;
-    /* DB */
-    createOutput: (data: any, token: string) => void;
+interface Actions {
+  getStoreProducts: (storeId: number, token: string) => void;
+  getProducts: (token: string) => void;
+  /* DB */
+  createOutput: (data: any, token: string) => void;
 }
 
 
 const storeApi: StateCreator<ShopsState & Actions> = (set) => ({
   shops: [],
   products: [],
-  getShops: async (token: string) => {
-
-    // todo:: get inventories from api
-    try {   
-        /* const response = await axios.get(`${import.meta.env.VITE_API_URL}/categories`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        }); */
-        const response = inventories;
-        console.log(token);
-        set({ shops: response as any });
-
-    } catch (error) {
-        if (isAxiosError(error)) {
-            toast.error(error.response?.data.message);
+  storeProducts: [],
+  categories: [],
+  getStoreProducts: async (storeId: number, token: string) => {
+    //console.log(storeId);
+    
+    try {
+      const response = await appDB.get(`/inventory-stores-get-by-store-id/${storeId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
         }
+      });
+      //console.log(response.data);
+      set({ storeProducts: response.data.products });
+      set({ categories: response.data.categories });
+    } catch (error) {
+      if (isAxiosError(error)) {
+        toast.error(error.response?.data.message || 'Error al obtener los productos de la tienda');
+      }
     }
   },
   getProducts: async (token: string) => {
     // todo:: get products from api
     try {
-      /* const response = await axios.get(`${import.meta.env.VITE_API_URL}/categories`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        }); */
-      const response = stockStore;
-      console.log(token);
-      set({ products: response as any });
+      const response = await appDB.get('/inventory-stores', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      set({ products: response.data.products });
     } catch (error) {
       if (isAxiosError(error)) {
         toast.error(error.response?.data.message);
@@ -61,13 +61,13 @@ const storeApi: StateCreator<ShopsState & Actions> = (set) => ({
   createOutput: async (data: any, token: string) => {
     // todo:: create output from api
     try {
-      const response = await appDB.post('/inventory-stores', data, { 
-        headers: { 
-            Authorization: `Bearer ${token}` 
-        } 
+      const response = await appDB.post('/sales', data, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
       toast.success(response.data.message);
-      return response;
+      //return response;
     } catch (error) {
       if (isAxiosError(error)) {
         toast.error(error.response?.data.message);

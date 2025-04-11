@@ -3,113 +3,193 @@ import {
   Modal,
   ModalBody,
   ModalContent,
+  ModalFooter,
   ModalHeader,
   Select,
   SelectItem,
+  Table,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
+  User,
 } from "@nextui-org/react";
-import { useState } from "react";
-import { FaShoppingCart } from "react-icons/fa";
-
+import { useEffect, useState } from "react";
+import { FaShoppingCart, FaTimes, FaTrash } from "react-icons/fa";
+import { useCustomerStore } from '../../stores/customer/customer.store';
+import { useAuthStore } from '../../stores/auth/auth.store';
+import { useStockStore } from "../../stores/inventories/inv-shops.store";
 export const CartModal = () => {
+  const token = useAuthStore((state) => state.token);
+  const user = useAuthStore((state) => state.user);
+  const [selectedCustomer, setSelectedCustomer] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [cart, setCart] = useState([]);
+  const [notifyCart, setNotifyCart] = useState<number>(0);
+
+  /* Obtener cliente */
+  const customers = useCustomerStore((state) => state.customers);
+  const getCustomers = useCustomerStore((state) => state.getCustomers);
+  const createOutput = useStockStore((state) => state.createOutput);
+  const handleCustomer = async () => {
+    await getCustomers(token!);
+  }
+
+  useEffect(() => {
+    handleCustomer();
+  }, []);
+
+  console.log(customers);
+
+
+  useEffect(() => {
+    const cart = localStorage.getItem('cart');
+    if (cart) {
+      setCart(JSON.parse(cart));
+      setNotifyCart(cart.length);
+    }
+  }, []);
+
+  /* Funcion para limpiar el carrito */
+  const clearCart = () => {
+    console.log("Limpiando carrito");
+    localStorage.removeItem('cart');
+    setCart([]);
+    setNotifyCart(0);
+    setIsOpen(false);
+  }
+  const openCart = () => {
+    setIsOpen(true);
+    const cart = localStorage.getItem('cart');
+    if (cart) {
+      setCart(JSON.parse(cart));
+      setNotifyCart(cart.length);
+    }
+  }
+  const removeItem = (inventory_id: number) => {
+    const cart = localStorage.getItem('cart');
+    if (cart) {
+      const newCart = JSON.parse(cart).filter((item: any) => item.inventory_id !== inventory_id);
+      localStorage.setItem('cart', JSON.stringify(newCart));
+      setCart(newCart);
+      setNotifyCart(newCart.length);
+    }
+  }
+  const handleCheckout = async () => {
+    const cart = localStorage.getItem('cart');
+    console.log(cart, selectedCustomer);
+    const data = {
+      customer_id: selectedCustomer,
+      total: cart ? JSON.parse(cart).reduce((acc: number, item: any) => acc + item.price * item.quantity, 0) : 0,
+      seller_id: user?.id,
+      store_id: localStorage.getItem('shopId'),
+      status: 'completado',
+      products: cart ? JSON.parse(cart) : [],
+    }
+    //console.log(data);
+    await createOutput(data, token!);
+
+    clearCart();
+    //console.log(response);
+  }
+
+
   return (
     <>
-      <div>
-        <Button isIconOnly variant="light" onPress={() => setIsOpen(true)}>
-        <FaShoppingCart className="absolute text-default-500" size={20}/>
+      <div className="relative" key={notifyCart}>
+        <Button isIconOnly variant="light" onPress={openCart} aria-label="Carrito de compras">
+          <FaShoppingCart className="absolute text-default-500" size={20} />
           <span className="relative -top-1 -right-2 w-4 h-4 bg-danger-500 rounded-full flex items-center justify-center text-xs text-white font-semibold">
-            3</span>
+            {notifyCart}
+          </span>
 
 
         </Button>
       </div>
       <Modal isOpen={isOpen} onOpenChange={setIsOpen}>
-        <ModalContent>
-
-
+        <ModalContent className="max-w-[600px]">
           <ModalHeader>
-            <h1 className="text-2xl font-bold">Carrito</h1>
-
+            <h1 className="text-2xl font-bold">Cotización</h1>
           </ModalHeader>
           <ModalBody>
-            <table>
-              <thead>
-                <tr>
-                  <th>Producto</th>
-                  <th>Cantidad</th>
-                  <th>Precio</th>
-                  <th>SubTotal</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <img src="https://picsum.photos/seed/1/200/300" alt="Product" className="w-10 h-10" />
-                    <span className="text-sm font-semibold">Producto 1</span>
-                  </td>
-                  <td className="text-center">1</td>
-                  <td className="text-center">100</td>
-                  <td className="text-center">100</td>
+            {/* Mostrar los productos del carrito */}
+            <Table aria-label="Example static collection table">
+              <TableHeader>
+                <TableColumn>Nombre</TableColumn>
+                <TableColumn>Precio</TableColumn>
+                <TableColumn>Cantidad</TableColumn>
+                <TableColumn>Subtotal</TableColumn>
+                <TableColumn>Acciones</TableColumn>
+              </TableHeader>
+              <TableBody>
+                {cart.map((item: any) => (
+                  <TableRow key={item.inventory_id}>
+                    <TableCell>
+                      <User
+                        avatarProps={{ radius: "lg", src: item.thumbnail }}
+                        description={item.category}
+                        name={item.name}
+                        aria-label={item.name}
+                      >
+                        {item.name}
+                      </User>
+                    </TableCell>
+                    <TableCell>{item.price}</TableCell>
+                    <TableCell>{item.quantity}</TableCell>
+                    <TableCell>{item.price * item.quantity}</TableCell>
+                    <TableCell>
+                      <Button isIconOnly variant="light" onPress={() => removeItem(item.inventory_id)} aria-label="Eliminar producto">
+                        <FaTimes className="text-danger-500" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+
+                ))}
 
 
-                </tr>
-                <tr>
-                  <td>
-                    <img src="https://picsum.photos/seed/1/200/300" alt="Product" className="w-10 h-10" />
-                    <span className="text-sm font-semibold">Producto 2</span>
-                  </td>
-                  <td className="text-center">2</td>
-                  <td className="text-center">200</td>
-                  <td className="text-center">400</td>
+              </TableBody>
 
-                </tr>
-                <tr>
-                  <td>
-                    <img src="https://picsum.photos/seed/1/200/300" alt="Product" className="w-10 h-10" />
-                    <span className="text-sm font-semibold">Producto 3</span>
-                  </td>
-                  <td className="text-center">3</td>
-                  <td className="text-center">300</td>
-                  <td className="text-center">900</td>
-                </tr>
-
-                {/* Descuentos */}
-                <tr>
-                  <td colSpan={3}>
-                    <span className="text-sm font-semibold">Descuentos</span>
-                  </td>
-                  <td className="text-center">100</td>
-                </tr>
-
-                <tr>
-                  <td colSpan={3}>
-                    <span className="text-sm font-semibold">Total</span>
-                  </td>
-                  <td className="text-center">600</td>
-                </tr>
-
-              </tbody>
-
-            </table>
-            {/* Seleccionar un cliente */}
-            <div className="flex justify-end">
-              <Select>
-                <SelectItem>Cliente 1</SelectItem>
-                <SelectItem>Cliente 2</SelectItem>
-                <SelectItem>Cliente 3</SelectItem>
-              </Select>
-            </div>
-            {/* Boton para comprar */}
-
-            <div className="flex justify-end">
-              <Button color="primary">Comprar</Button>
-            </div>
+            </Table>
+            <Table hideHeader>
+              <TableHeader>
+                <TableColumn>Total</TableColumn>
+                <TableColumn>Total</TableColumn>
+                <TableColumn>Total</TableColumn>
+                <TableColumn>Total</TableColumn>
+                <TableColumn>{cart.reduce((acc: number, item: any) => acc + item.price * item.quantity, 0)}</TableColumn>
+                <TableColumn>-</TableColumn>
+              </TableHeader>
+              <TableBody>
+                <TableRow>
+                <TableCell>-</TableCell>
+                  <TableCell>-</TableCell>
+                  <TableCell>-</TableCell>
+                  <TableCell className="font-bold">Total</TableCell>
+                  <TableCell className="font-bold">{cart.reduce((acc: number, item: any) => acc + item.price * item.quantity, 0)}</TableCell>
+                  <TableCell>-</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+            {/* Seleccionar cliente */}
+            <Select
+              size="sm"
+              isRequired
+              label="Seleccionar cliente"
+              placeholder="Seleccionar cliente"
+              onChange={(e) => setSelectedCustomer(e.target.value)}
+            >
+              {customers.map((customer: any) => (
+                <SelectItem key={customer.id} value={customer.id}>{customer.name}</SelectItem>
+              ))}
+            </Select>
           </ModalBody>
+          <ModalFooter>
+            <Button color="danger" size="sm" startContent={<FaTrash />} onPress={() => clearCart()}>Limpiar todo</Button>
+            <Button color="primary" size="sm" isDisabled={!selectedCustomer} startContent={<FaShoppingCart />} onPress={() => handleCheckout()}>Cerrar Venta</Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </>
-
-
-
   );
 };

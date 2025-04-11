@@ -10,10 +10,6 @@ import {
   Input,
   DropdownItem,
   Spinner,
-  Checkbox,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
 } from "@nextui-org/react";
 import { DynamicBreadcrumbs } from "../../../components/ui/dynamic-breadcrumbs";
 import {
@@ -26,7 +22,6 @@ import { FaEye, FaPencil, FaPlus, FaTrash } from "react-icons/fa6";
 import { RiMoreFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { OutputForm } from "./output-form";
-import { IProduct } from "../../../interface/inventories/warehouse/list-warehouse-response";
 import { ModalBrands } from "../../../components/modal/modal-brands";
 import { AlertDelete } from "../../../components";
 
@@ -371,7 +366,7 @@ export const IndexInventories = () => {
           handleConfirmDelete={handleConfirmDelete}
           handleCancelDelete={handleCancelDelete}
           deleteCountdown={deleteCountdown}
-          message={"¿Estás seguro de querer eliminar el cliente?"}
+          message={"¿Estás seguro de querer eliminar este producto?"}
         />
       ) : (
         ""

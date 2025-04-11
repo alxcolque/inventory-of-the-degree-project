@@ -3,7 +3,7 @@ import { Toaster } from "sonner";
 import { Button, CircularProgress, Input, Link, Navbar, NavbarBrand, NavbarContent } from "@nextui-org/react";
 
 import { BurguerButton } from "./burguer-button";
-import { NotificationsDropdown } from "./notifications-dropdown";
+/* import { NotificationsDropdown } from "./notifications-dropdown"; */
 import { UserDropdown } from "./user-dropdown";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useAuthStore, useSettingStore } from "../../stores";
@@ -104,7 +104,7 @@ export const NavbarLayout = () => {
               placeholder="Buscar..."
             />
           </NavbarContent>
-          
+
           <NavbarContent
             justify="end"
             className="w-fit data-[justify=end]:flex-grow-0"
@@ -115,7 +115,7 @@ export const NavbarLayout = () => {
             </div>
 
             <CartModal />
-            <NotificationsDropdown />
+            {/* <NotificationsDropdown /> */}
 
 
             <div className="max-md:hidden">
@@ -126,7 +126,7 @@ export const NavbarLayout = () => {
               <DarkModeSwitch />
             </NavbarContent>
 
-            <NavbarContent>
+            <NavbarContent className="max-md:hidden">
               {
                 authStatus === 'auth' ? <UserDropdown /> : <Button as={Link} href="/login" variant="flat">Iniciar sesión</Button>
               }

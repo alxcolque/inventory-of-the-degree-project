@@ -1,20 +1,21 @@
-import {create, StateCreator} from "zustand";
+import { create, StateCreator } from "zustand";
 import { IShopResponse } from "../../interface/shops/shop-response";
 //import { shops } from "../../api/systemdata";
 import { appDB } from "../../api";
 import { isAxiosError } from "axios";
 import { toast } from "sonner";
-                                            
 
 
-interface ShopsState{
+
+interface ShopsState {
     shops: IShopResponse[];
     shop: IShopResponse;
 }
 
-interface Actions{
-    getShops: ( token: string) => Promise<void>;
+interface Actions {
+    getShops: (token: string) => Promise<void>;
     getShop: (id: number, token: string) => Promise<void>;
+    getShopBySlug: (slug: string, token: string) => Promise<any>;
     addShop: (shop: [] | any, token: string) => Promise<void>;
     updateShop: (shop: [] | any, id: number, token: string) => Promise<void>;
     deleteShop: (id: number, token: string) => Promise<void>;
@@ -29,12 +30,28 @@ const storeApi: StateCreator<ShopsState & Actions> = (set, get) => ({
     },
     getShop: async (id: number, token: string) => {
         try {
-            const response = await appDB.get(`/stores/${id}`, { 
-                headers: { 
-                    Authorization: `Bearer ${token}` 
-            } 
-        });
-        set({ shop: response.data.shop as any });
+            const response = await appDB.get(`/stores/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            set({ shop: response.data.shop as any });
+        } catch (error) {
+            if (isAxiosError(error)) {
+                toast.error(error.response?.data.message);
+            }
+        }
+    },
+    getShopBySlug: async (slug: string, token: string) => {
+        try {
+            const response = await appDB.get(`/store-get-by-slug/${slug}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            //console.log(response.data.store);
+            set({ shop: response.data.store as any });
+            return response.data.store as any;
         } catch (error) {
             if (isAxiosError(error)) {
                 toast.error(error.response?.data.message);
@@ -47,7 +64,7 @@ const storeApi: StateCreator<ShopsState & Actions> = (set, get) => ({
             get().getShops(token);
             toast.success(response.data.message);
 
-            
+
         } catch (error) {
             if (isAxiosError(error)) {
                 toast.error(error.response?.data.message);
@@ -67,13 +84,13 @@ const storeApi: StateCreator<ShopsState & Actions> = (set, get) => ({
     },
     deleteShop: async (id: number, token: string) => {
         try {
-            const response = await appDB.delete(`/stores/${id}`, { 
-                headers: { Authorization: `Bearer ${token}` } 
+            const response = await appDB.delete(`/stores/${id}`, {
+                headers: { Authorization: `Bearer ${token}` }
             });
 
             get().getShops(token);
             toast.success(response.data.message);
-            
+
         } catch (error) {
             if (isAxiosError(error)) {
                 toast.error(error.response?.data.message);

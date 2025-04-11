@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useAuthStore, useCategoriesStore, useStockStore } from "../../stores";
+import { useAuthStore, useStockStore } from "../../stores";
 import { useShopsStore } from "../../stores/shops/shops.store";
 import { useEffect, useState } from "react";
 import { useMediaQuery } from "@react-hook/media-query";
@@ -11,37 +11,53 @@ import { RiMoreFill } from "react-icons/ri";
 import { IndexSale } from "./sales/index-sale";
 import { ModalBrands } from "../../components/modal/modal-brands";
 import { useNavigate } from "react-router-dom";
+import { AlertDelete } from "../../components/ui/alert-delete";
+import { toast } from "sonner";
 
 export const ShopHome = () => {
+  
+
+
+
   const navigate = useNavigate();
   const token = useAuthStore(state => state.token);
   const { slug } = useParams();
   const [isLoading, setIsLoading] = useState(true);
 
-  /* const [date, setDate] = useState<DateValue | null>();
-  const handleChangeDate = (date: DateValue | null) => {
-    setDate(date);
-  } */
-  const categories = useCategoriesStore(state => state.categories);
-  const getCategories = useCategoriesStore(state => state.getCategories);
-  const products = useStockStore(state => state.products);
-  const getProducts = useStockStore(state => state.getProducts);
   const [isModalBrandsOpen, setIsModalBrandsOpen] = useState(false);
 
+
+  const [deleteRowId, setDeleteRowId] = useState<number | null>(null);
+  const [deleteCountdown, setDeleteCountdown] = useState<number | null>(null);
+
+
   const shop = useShopsStore(state => state.shop);
-  const getShop = useShopsStore(state => state.getShop);
+  const getShop = useShopsStore(state => state.getShopBySlug);
+  const storeProducts = useStockStore(state => state.storeProducts);
+  const categories = useStockStore(state => state.categories);
+  const getProducts = useStockStore(state => state.getStoreProducts);
+
+  const handleFetchShop = async () => {
+    setIsLoading(true);
+    const response = await getShop(slug as string, token as string);
+    if (response !== undefined) {
+      let storeId = response.id as number;
+      await getProducts(storeId, token as string);
+    }
+    setIsLoading(false);
+  }
+
   const [isSale, setIsSale] = useState(false);
   useEffect(() => {
     setIsLoading(true);
-    getShop(Number(1), token as string);
-    setIsLoading(false);
-    getCategories(token!);
-    getProducts(token!);
+    handleFetchShop();
+    const shopId = localStorage.getItem('shopId');
+    if (!shopId) {
+      localStorage.setItem('shopId', shop?.id.toString());
+    }
   }, [token]);
 
   const [selectedKeys, setSelectedKeys] = useState(new Set(["1"]));
-
-
 
 
 
@@ -57,14 +73,82 @@ export const ShopHome = () => {
   }, [isMobile]);
 
 
-  //console.log(data?.field.id);
-  //console.log(currentDate);
-
-  //console.log(data);
+  //console.log(shop);
   /* Funcion para obtener las marcas */
   const selectBrands = () => {
-    console.log("getBrands");
-}
+    //console.log("getBrands");
+  }
+
+
+  /* Remove product in inventory */
+
+  useEffect(() => {
+    if (deleteCountdown !== null && deleteCountdown > 0) {
+      const timer = setTimeout(() => {
+        setDeleteCountdown(deleteCountdown - 1);
+      }, 1000);
+      return () => clearTimeout(timer); // Limpia el temporizador
+    } else if (deleteCountdown === 0) {
+      handleConfirmDelete(); // Elimina permanentemente cuando llega a 0
+    }
+  }, [deleteCountdown]);
+
+  const handleDeleteClick = (id: number) => {
+    //console.log(id);
+    setDeleteRowId(id);
+    setDeleteCountdown(10); // Inicia el temporizador de 10 segundos
+  };
+  const handleConfirmDelete = async () => {
+    //setRows(rows.filter(row => row.id !== deleteRowId)); // Elimina el registro de los datos
+    //await deleteRole(deleteRowId!, token!); // Elimina el registro de la base de datos
+    if (deleteRowId) {
+      //await deleteProduct(deleteRowId, token!);
+      setDeleteRowId(null);
+      setDeleteCountdown(null); // Resetea el temporizador
+    }
+  };
+  // Función para cancelar la eliminación
+  const handleCancelDelete = () => {
+    setDeleteRowId(null);
+    setDeleteCountdown(null); // Resetea el temporizador
+  };
+  /* Agregar al carrito */
+  const [quantity, setQuantity] = useState(1);
+  
+  const handleAddToCart = (id: number, thumbnail: string, name: string, price: number, category: string, product_id: number, stock_quantity: number) => {
+
+    //Verificar si stock es suficiente
+    if (stock_quantity < quantity) {
+      toast.error('No hay suficiente stock');
+      return;
+    }
+
+    const data = {
+      thumbnail: thumbnail,
+      name: name,
+      category: category,
+      price: price,
+      inventory_id: id,
+      product_id: product_id,
+      quantity: quantity
+    }
+    /* Almacenar este array en el local storage */
+    const cart = localStorage.getItem('cart');
+    if (cart) {
+      const cartArray = JSON.parse(cart);
+      const productIndex = cartArray.findIndex((item: any) => item.inventory_id === id);
+      if (productIndex !== -1) {
+        cartArray[productIndex].quantity += quantity;
+      } else {
+        cartArray.push(data);
+      }
+      localStorage.setItem('cart', JSON.stringify(cartArray));
+    } else {
+      localStorage.setItem('cart', JSON.stringify([data]));
+    }
+    //console.log(localStorage.getItem('cart'));
+  }
+
   return (
     <div className="my-2 px-4 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
       {/* Modal para brands */}
@@ -171,9 +255,15 @@ export const ShopHome = () => {
                 {/* Botones horizontales para listar categorias para filtro, scroll horizontal */}
                 <div className="flex gap-2 overflow-x-auto scrollbar-hide mt-3">
 
-                  <Button>Todos</Button>
-                  {categories.map((category) => (
-                    <Button key={category.id}>{category.name}</Button>
+                  <Button size="sm">Todos</Button>
+                  {categories.map((category: any) => (
+                    <Button
+                      key={category.id}
+                      size="sm"
+                      style={{ backgroundColor: category.color }}
+                    >
+                      {category.name}
+                    </Button>
                   ))}
 
                 </div>
@@ -182,29 +272,33 @@ export const ShopHome = () => {
                     <h5 className="text-md font-bold">TODOS LOS PRODUCTOS</h5>
                   </div>
                   {isLoading && <Spinner />}
-                  {products.map((product) => (
-                    <div className="flex flex-col gap-2">
-                      <h5 className="text-md font-semibold">{product.name}</h5>
+                  {!isLoading && storeProducts.map((subcategories: any, index: number) => (
+                    <div className="flex flex-col gap-2" key={index}>
+                      <h5 className="font-semibold text-md">
+                        {subcategories.subcategory}
+                      </h5>
                       {/* Cards de productos */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-                        {product.product.map((product) => (
+                      <div
+                        className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3"
+                        key={index}
+                      >
+                        {subcategories.products.map((product: any) => (
                           <Card
+                            key={product.id}
                             isBlurred
                             className="border-none bg-background/60 dark:bg-default-100/50 max-w-[610px]"
                             shadow="sm"
                           >
                             <CardBody>
-                              <div className="grid grid-cols-6 md:grid-cols-12 gap-6 md:gap-4 items-center justify-center">
+                              <div className="grid grid-cols-6 gap-6 justify-center items-center md:grid-cols-12 md:gap-4">
                                 <div className="relative col-span-6 md:col-span-4">
                                   <Image
-                                    alt="Album cover"
+                                    alt={product.name}
                                     className="object-cover"
                                     shadow="md"
-                                    src={product.image}
+                                    src={product.thumbnail}
                                     width={100}
                                     height={100}
-
-
                                   />
                                 </div>
 
@@ -212,93 +306,126 @@ export const ShopHome = () => {
                                   <div className="flex justify-between items-start">
                                     <div className="flex flex-col gap-0 w-full">
                                       <div className="flex flex-row justify-between items-center">
-                                        <h3 className="text-large font-medium">{product.name}</h3>
+                                        <h3 className="font-medium text-large">
+                                          {product.name}
+                                        </h3>
 
                                         <Dropdown>
                                           <DropdownTrigger>
-
                                             <Button
                                               isIconOnly
-
                                               className="text-default-900/60 data-[hover]:bg-foreground/10 -translate-y-2 translate-x-2"
                                               radius="full"
                                               variant="light"
                                             >
                                               <RiMoreFill size={25} />
                                             </Button>
-
                                           </DropdownTrigger>
-                                          <DropdownMenu aria-label="Dropdown menu with icons" variant="faded">
-
+                                          <DropdownMenu
+                                            aria-label="Dropdown menu with icons"
+                                            variant="faded"
+                                          >
                                             <DropdownItem
                                               key="edit"
                                               startContent={<FaPencil />}
+                                              onPress={() =>
+                                                navigate("/admin/inventories/input")
+                                              }
                                             >
-                                              Editar
+                                              Agregar
                                             </DropdownItem>
 
                                             <DropdownItem
                                               key="delete"
                                               className="text-danger"
                                               color="danger"
+                                              variant="bordered"
                                               startContent={<FaTrash />}
+                                              onPress={() => handleDeleteClick(product.inventory_id)}
                                             >
                                               Eliminar
                                             </DropdownItem>
-
-
                                           </DropdownMenu>
                                         </Dropdown>
                                       </div>
                                       <div className="flex flex-row gap-2">
-                                        <Chip className="font-small" color="warning" variant="bordered">
-                                          nuevo
+                                        <Chip
+                                          className="font-small"
+                                          style={{
+                                            backgroundColor: subcategories.color,
+                                          }}
+                                          variant="bordered"
+                                        >
+                                          {subcategories.category}
                                         </Chip>
-                                        <span className="text-sm text-foreground/90">{product.brand}</span>
-
-
+                                        <span className="text-sm text-foreground/90">
+                                          {product.brand}
+                                        </span>
                                       </div>
                                       {/* cantidad y precio */}
                                       <div className="flex flex-row gap-2">
-                                        <span className="text-sm text-foreground/90 font-bold text-red-500">Bs {product.price}</span>
-                                        <span className="text-sm text-foreground/90"> cantidad: {product.quantity}</span>
+                                        <span className="text-sm font-bold text-red-500 text-foreground/90">
+                                          Bs {product.price}
+                                        </span>
+                                        <span className="text-sm text-foreground/90">
+                                          {" "}
+                                          cantidad: {product.stock_quantity}
+                                        </span>
                                       </div>
                                     </div>
                                   </div>
 
-                                  <div className="flex flex-row gap-2 mt-2 justify-end">
-                                    <Button size="sm" color="primary" variant="bordered" isIconOnly onClick={() => navigate(`/tienda/${slug}/${product.slug}`)}>
+                                  <div
+                                    className="flex flex-row gap-2 justify-end mt-2"
+                                    key={product.id}
+                                  >
+                                    {/* Boton que redirija a /admin/invetories/nombre-del-producto */}
+
+                                    <Button
+                                      size="sm"
+                                      isIconOnly
+                                      color="primary"
+                                      variant="bordered"
+                                      onClick={() =>
+                                        navigate(`/admin/inventories/${product.slug}`)
+                                      }
+                                    >
                                       <FaEye />
                                     </Button>
-
                                     <Popover showArrow offset={10} placement="bottom">
                                       <PopoverTrigger>
-                                        <Button size="sm" color="success" variant="bordered">Carrito</Button>
+                                        <Button size="sm" color="success" variant="bordered" onPress={() => setQuantity(1)}>Agregar al carrito</Button>
                                       </PopoverTrigger>
                                       <PopoverContent className="w-[240px]">
-                                          <div className="px-1 py-2 w-full">
-                                            <p className="text-small font-bold text-foreground">
-                                              Cantidad
-                                            </p>
-                                            <div className="mt-2 flex flex-col gap-2 w-full">
-                                              <Input type="number" defaultValue="1" size="sm" variant="bordered" />
-                                              <Button size="sm" color="primary" variant="shadow">Agregar al carrito</Button>
-                                            </div>
+                                        <div className="px-1 py-2 w-full">
+                                          <div className="mt-2 flex flex-col gap-2 w-full">
+                                            <Input
+                                              label="Cantidad"
+                                              labelPlacement="outside"
+                                              placeholder="0"
+                                              defaultValue={String(quantity)}
+                                              onChange={(e) => setQuantity(Number(e.target.value))}
+                                              startContent={
+                                                <div className="pointer-events-none flex items-center">
+                                                  <span className="text-default-400 text-small">Unit</span>
+                                                </div>
+                                              }
+                                              type="number"
+                                            />
+                                            <Button size="sm" onPress={() => handleAddToCart(product.inventory_id, product.thumbnail, product.name, product.price, subcategories.category, product.id, product.stock_quantity)} color="primary" variant="shadow">Agregar al carrito</Button>
                                           </div>
-                                        
+                                        </div>
+
                                       </PopoverContent>
                                     </Popover>
-
                                   </div>
                                 </div>
                               </div>
-
                             </CardBody>
                           </Card>
                         ))}
                       </div>
                     </div>
-
                   ))}
                 </div>
               </>
@@ -312,6 +439,16 @@ export const ShopHome = () => {
           </div>
         </div> */}
       </div>
+      {deleteRowId != null ? (
+        <AlertDelete
+          handleConfirmDelete={handleConfirmDelete}
+          handleCancelDelete={handleCancelDelete}
+          deleteCountdown={deleteCountdown}
+          message={"¿Estás seguro de querer eliminar este producto?"}
+        />
+      ) : (
+        ""
+      )}
     </div>
   );
 
