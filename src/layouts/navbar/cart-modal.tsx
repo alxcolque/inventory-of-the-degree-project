@@ -19,7 +19,7 @@ import { useEffect, useState } from "react";
 import { FaShoppingCart, FaTimes, FaTrash } from "react-icons/fa";
 import { useCustomerStore } from '../../stores/customer/customer.store';
 import { useAuthStore } from '../../stores/auth/auth.store';
-import { useStockStore } from "../../stores/inventories/inv-shops.store";
+import { useOrdersStore } from "../../stores";
 export const CartModal = () => {
   const token = useAuthStore((state) => state.token);
   const user = useAuthStore((state) => state.user);
@@ -30,8 +30,8 @@ export const CartModal = () => {
 
   /* Obtener cliente */
   const customers = useCustomerStore((state) => state.customers);
-  const getCustomers = useCustomerStore((state) => state.getCustomers);
-  const createOutput = useStockStore((state) => state.createOutput);
+    const getCustomers = useCustomerStore((state) => state.getCustomers);
+    const createSale = useOrdersStore((state) => state.createSale);
   const handleCustomer = async () => {
     await getCustomers(token!);
   }
@@ -87,8 +87,8 @@ export const CartModal = () => {
       status: 'completado',
       products: cart ? JSON.parse(cart) : [],
     }
-    //console.log(data);
-    await createOutput(data, token!);
+    console.log(data);
+    await createSale(data, token!);
 
     clearCart();
     //console.log(response);

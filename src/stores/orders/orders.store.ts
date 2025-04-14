@@ -11,6 +11,7 @@ interface Actions{
     getSales: (token: string) => void;
     /* sales in store */
     getSalesInStore: (slug: string, token: string ) => void;
+    createSale: (data: any, token: string) => void;
 }
 
 const storeApi: StateCreator<OrdersState & Actions> = (set) => ({
@@ -42,6 +43,22 @@ const storeApi: StateCreator<OrdersState & Actions> = (set) => ({
             toast.error(error.response?.data.message);
         }
     }
+  },
+
+  createSale: async (data: ISaleResponse, token: string) => {
+    try {
+        const response = await appDB.post('/sales', data, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        toast.success(response.data.message);
+        //return response;
+      } catch (error) {
+        if (isAxiosError(error)) {
+          toast.error(error.response?.data.message);
+        }
+      }
   }
 });
 

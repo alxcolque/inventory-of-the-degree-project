@@ -9,11 +9,11 @@ export const CardBalance1 = () => {
           <FaUsers />
           <div className="flex flex-col">
             <span className="text-white">Beneficios</span>
-            <span className="text-white text-xs">1311 UDS</span>
+            <span className="text-white text-xs">1311 Bs</span>
           </div>
         </div>
         <div className="flex gap-2.5 py-2 items-center">
-          <span className="text-white text-xl font-semibold">$45,910</span>
+          <span className="text-white text-xl font-semibold">1311 Bs</span>
           <span className="text-success text-xs">+ 4.5%</span>
         </div>
         <div className="flex items-center gap-6">

@@ -61,7 +61,7 @@ const storeApi: StateCreator<ShopsState & Actions> = (set) => ({
   createOutput: async (data: any, token: string) => {
     // todo:: create output from api
     try {
-      const response = await appDB.post('/sales', data, {
+      const response = await appDB.post('/inventory-stores', data, {
         headers: {
           Authorization: `Bearer ${token}`
         }

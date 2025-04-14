@@ -9,13 +9,13 @@ export const CardBalance2 = () => {
           <RiCommunityFill className="text-default-900" size={20} />
           <div className="flex flex-col">
             <span className="text-default-900">Compras</span>
-            <span className="text-default-900 text-xs">+2400 UDS</span>
+            <span className="text-default-900 text-xs">+2400 Bs</span>
           </div>
         </div>
 
         <div className="flex gap-2.5 py-2 items-center">
           <span className="text-default-900 text-xl font-semibold">
-            $12,138
+            12,138 Bs
           </span>
           <span className="text-danger text-xs">- 4.5%</span>
         </div>
