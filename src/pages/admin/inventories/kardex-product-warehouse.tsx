@@ -9,6 +9,12 @@ import {
   Button,
   Image,
   Spinner,
+  Table,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
 } from "@nextui-org/react";
 import { motion, AnimatePresence, wrap } from "framer-motion";
 import clsx from "clsx";
@@ -45,48 +51,56 @@ export const KardexProductWarehouse = () => {
   const [product, setProduct] = useState<any>({});
   /* Cannot read properties of undefined (reading 'length') */
   const [productImages, setProductImages] = useState<any[]>([]);
-  const [productInventoryStore, setProductInventoryStore] = useState([]);
+  const [productInventoryStore, setProductInventoryStore] = useState<any[]>([]);
   const [productInventoryWarehouse, setProductInventoryWarehouse] = useState<any[]>([]);
-  const data = useProductsStore((state) => state.product);
+  //const data = useProductsStore((state) => state.product);
   const getProduct = useProductsStore((state) => state.getProductBySlug);
-
-  const handleGetProduct = async () => {
-    if (slug && token) {
-      await getProduct(slug, token);
-      setProduct(data.product);
-      setProductImages(data.productImages);
-      setProductInventoryStore(data.productInventoryStore);
-      setProductInventoryWarehouse(data.productInventoryWarehouse);
-    }
-  };
-
-
-  useEffect(() => {
-    setIsLoading(false);
-    handleGetProduct();
-    setIsLoading(true);
-  }, []);
-
-  console.log(data);
-
-
   const [[page, direction], setPage] = useState([0, 0]);
-  const imageIndex = wrap(0, productImages.length ?? [{}], page);
+ 
+  const handleGetProduct = async () => {
+    setIsLoading(true);
+    if (slug && token) {
+      const response = await getProduct(slug, token);
+      setProduct(response.product || {});
+      setProductImages(response.productImages || []);
+      setProductInventoryStore(response.productInventoryStore || []);
+      setProductInventoryWarehouse(response.productInventoryWarehouse || []);
+    } setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
 
+  };
+  let imageIndex = wrap(0, productImages.length ?? [{}], page);
   const paginate = (newDirection: number) => {
     setPage([page + newDirection, newDirection]);
   };
 
+
+  useEffect(() => {
+    handleGetProduct();
+  }, []);
+
+  console.log(productInventoryWarehouse);
   return (
-    <div className="my-2 px-4 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
+    <div className="my-2 px-4 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-2">
       <DynamicBreadcrumbs />
       {/* Dos columnas */}
-      {!isLoading ? (
+      {isLoading ? (
         <Spinner />
       ) : (
-        <div className="flex flex-row gap-4 w-full">
+        <div className="flex flex-wrap xl:flex-nowrap gap-4 w-full">
 
           <div className="flex flex-col">
+            <div className="flex flex-col gap-2 mb-2">
+              <img
+                src={product?.thumbnail}
+                alt={product?.name}
+                className="w-full h-full"
+                style={{
+                  borderRadius: "1rem",
+                }}
+              />
+            </div>
             <div className="flex flex-col gap-4 justify-center items-center w-full h-full">
               {/* Main Image Carousel */}
               {productImages.length > 0 && (
@@ -125,12 +139,12 @@ export const KardexProductWarehouse = () => {
                         className="absolute w-full h-full"
                       >
                         {productImages.length > 0 && (
-                        <Image
-                          removeWrapper
-                          alt={`Product Image ${imageIndex}`}
-                          className="object-cover w-full h-full"
-                          src={productImages[imageIndex].image}
-                        />
+                          <Image
+                            removeWrapper
+                            alt={`Product Image ${imageIndex}`}
+                            className="object-cover w-full h-full"
+                            src={productImages[imageIndex].image}
+                          />
                         )}
                       </motion.div>
                     </AnimatePresence>
@@ -179,7 +193,7 @@ export const KardexProductWarehouse = () => {
 
 
                   {/* Thumbnails Carousel */}
-                  <div className="flex overflow-x-auto gap-3 px-1 py-2 w-full max-w-4xl scrollbar-hide">
+                  <div className="flex overflow-x-auto gap-2 px-1 py-2 w-full max-w-4xl scrollbar-hide">
                     {productImages.map((img: any, index: number) => (
                       <button
                         key={index}
@@ -206,65 +220,78 @@ export const KardexProductWarehouse = () => {
               )}
             </div>
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 w-full">
             <>
               <div className="flex flex-col gap-2">
-                <img
-                  src={product?.thumbnail}
-                  alt={product?.name}
-                  height={100}
-                  width={100}
-                />
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                <h3 className="text-lg font-medium">Nombre: </h3>
-                <p>{product?.name}</p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <h3 className="text-lg font-medium">Descripción: </h3>
-                <p>{product?.description}</p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <h3 className="text-lg font-medium">Categoría: </h3>
-                <p
-                  style={{
-                    backgroundColor: product?.category ? product?.color : "",
-                  }}
-                >
-                  {product?.category}
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <h3 className="text-lg font-medium">Subcategoría: </h3>
-                <p>{product?.subcategory}</p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <h3 className="text-lg font-medium">Marca: </h3>
-                <p>{product?.brand}</p>
-              </div>
-              <div className="flex flex-col gap-2">
-                <h3 className="text-lg font-bold uppercase">Detalle de Precios y Stock</h3>
-                <div className="flex flex-wrap gap-2">
-                  {productInventoryWarehouse.map((inventory: any, index: number) => (
-                    <div key={index} className="flex flex-col gap-2">
-                      <p className="text-lg">Stock en Bodega: <b>{inventory.stock_quantity}</b></p>
-                      <hr className="w-full border-t border-gray-300" />
-                    </div>
-                  ))}
+                <div className="flex flex-wrap gap-1">
+                  <h3 className="text-2xl font-bold uppercase">{product?.name}</h3>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  <h3 className="text-lg font-medium">Descripción: </h3>
+                  <p>{product?.description}</p>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  <h3 className="text-lg font-medium">Categoría: </h3>
+                  <p
+                    style={{
+                      backgroundColor: product?.category ? product?.color : "",
+                    }}
+                  >
+                    {product?.category}
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  <h3 className="text-lg font-medium">Subcategoría: </h3>
+                  <p>{product?.subcategory}</p>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  <h3 className="text-lg font-medium">Marca: </h3>
+                  <p>{product?.brand}</p>
                 </div>
               </div>
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-1">
+                <h3 className="text-lg font-bold uppercase">Stock en la Bodega</h3>
+                <div className="flex flex-wrap gap-1">
+
+                  <Table aria-label="Stock bodega">
+                    <TableHeader>
+                      <TableColumn>Stock</TableColumn>
+                      <TableColumn>Percio</TableColumn>
+                      <TableColumn>Unidad</TableColumn>
+                    </TableHeader>
+                    <TableBody>
+                      {productInventoryWarehouse.map((inventory: any, index: number) => (
+                        <TableRow key={index}>
+                          <TableCell>{inventory.stock_quantity}</TableCell>
+                          <TableCell>{inventory.price}</TableCell>
+                          <TableCell>{inventory.unit}</TableCell>
+                        </TableRow>
+                      ))}
+
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+              <div className="flex flex-col gap-1">
                 <h3 className="text-lg font-bold uppercase">Tiendas Distribuidas</h3>
-                <div className="flex flex-col wrap gap-2">
-                  {productInventoryStore.map((inventory: any, index: number) => (
-                    <div key={index} className="flex flex-col gap-2">
-                      <h4 className="text-md font-medium">{inventory.store.name}</h4>
-                      <p className="text-lg">Tienda: <b>{inventory.store}</b></p>
-                      <p className="text-sm">Stock en tienda: <b>{inventory.stock_quantity}</b></p>
-                      <hr className="w-full border-t border-gray-300" />
-                    </div>
-                  ))}
+                <div className="flex flex-col wrap gap-1">
+
+
+                  <Table aria-label="Tiendas Distribuidas">
+                    <TableHeader>
+                      <TableColumn>Tienda</TableColumn>
+                      <TableColumn>Stock</TableColumn>
+                    </TableHeader>
+                    <TableBody>
+                      {productInventoryStore.map((inventory: any, index: number) => (
+                        <TableRow key={index}>
+                          <TableCell>{inventory.store}</TableCell>
+                          <TableCell>{inventory.stock_quantity}</TableCell>
+                        </TableRow>
+                      ))}
+
+                    </TableBody>
+                  </Table>
                 </div>
               </div>
             </>

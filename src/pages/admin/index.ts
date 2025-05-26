@@ -32,3 +32,4 @@ export { ShowSuppliers } from "./suppliers/show-suppliers";
 export { ShowBrands } from "./brands/show-brands";
 export { IndexBrands } from "./brands/index-brands";
 export { ShowProducts } from "./products/show-products";
+export { ModalAddStock } from "./inventories/modal-add-stock";

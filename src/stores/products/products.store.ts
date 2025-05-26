@@ -15,7 +15,7 @@ interface ProductState {
 interface Action {
     getProducts: (token: string) => Promise<void>;
     getProduct: (id: number, token: string) => Promise<void>;
-    getProductBySlug: (slug: string, token: string) => Promise<void>;
+    getProductBySlug: (slug: string, token: string) => Promise<any>;
     createProduct: (product: [], token: string) => Promise<void>;
     updateProduct: (id: number, product: {}, token: string) => Promise<void>;
     deleteProduct: (id: number, token: string) => Promise<void>;
@@ -49,7 +49,8 @@ const storeApi: StateCreator<ProductState & Action> = (set, get) => ({
                     'Authorization': `Bearer ${token}`
                 }
             });
-            set({ product: response.data });
+            return response.data;
+            //set({ product: response.data });
         } catch (error) {
             if (isAxiosError(error)) {
                 toast.error(error.response?.data.message);

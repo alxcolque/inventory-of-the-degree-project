@@ -24,6 +24,7 @@ import { useNavigate } from "react-router-dom";
 import { OutputForm } from "./output-form";
 import { ModalBrands } from "../../../components/modal/modal-brands";
 import { AlertDelete } from "../../../components";
+import { ModalAddStock } from "./modal-add-stock";
 
 export const IndexInventories = () => {
   const navigate = useNavigate();
@@ -55,6 +56,10 @@ export const IndexInventories = () => {
   /* modal para registrar salida de productos */
   const [isOpen, setIsOpen] = useState(false);
   const [product, setProduct] = useState([] as any);
+  /* modal para agregar stock */
+  const [openModalAddStock, setOpenModalAddStock] = useState(false);
+
+  
   const handleOpenFormOutput = (product: []) => {
     setProduct(product);
     setIsOpen(true);
@@ -137,6 +142,16 @@ export const IndexInventories = () => {
     }
   };
 
+  const handleOpenModalAddStock = (product: any) => {
+    setProduct(product);
+    setOpenModalAddStock(true);
+  };
+
+  const handleCloseModalAddStock = () => {
+    setOpenModalAddStock(false);
+    getWarehouseProducts("", token!);
+  };
+
   return (
     <>
       <div className="my-2 px-4 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -147,7 +162,7 @@ export const IndexInventories = () => {
             color="primary"
             startContent={<FaPlus />}
             variant="shadow"
-            onClick={() => navigate("/admin/inventories/input")}
+            onPress={() => navigate("/admin/inventories/input")}
           >
             Registrar Entrada
           </Button>
@@ -172,7 +187,7 @@ export const IndexInventories = () => {
           <Button
             color="primary"
             variant="shadow"
-            onClick={() => setIsModalBrandsOpen(true)}
+            onPress={() => setIsModalBrandsOpen(true)}
           >
             Marca
           </Button>
@@ -192,7 +207,7 @@ export const IndexInventories = () => {
         <div className="flex overflow-x-auto gap-2 scrollbar-hide">
           <Button
             size="sm"
-            onClick={() => {
+            onPress={() => {
               navigate("/admin/inventories");
             }}
           >
@@ -203,7 +218,7 @@ export const IndexInventories = () => {
               key={category.id}
               size="sm"
               style={{ backgroundColor: category.color }}
-              onClick={() => {
+              onPress={() => {
                 handleFilter("categories", category.slug);
               }}
             >
@@ -234,19 +249,21 @@ export const IndexInventories = () => {
                     shadow="sm"
                   >
                     <CardBody>
-                      <div className="grid grid-cols-6 gap-6 justify-center items-center md:grid-cols-12 md:gap-4">
-                        <div className="relative col-span-6 md:col-span-4">
+                      <div className="grid grid-cols-12 gap-2 justify-center items-center md:grid-cols-12 md:gap-4">
+                        <div className="relative col-span-4 cursor-pointer md:col-span-4 sm:col-span-4">
                           <Image
-                            alt="Album cover"
+                            onClick={() => navigate(`/admin/inventories/${product.slug}`)}
                             className="object-cover"
                             shadow="md"
                             src={product.thumbnail}
                             width={100}
                             height={100}
+                            alt={product.name}
+                            
                           />
                         </div>
 
-                        <div className="flex flex-col col-span-6 md:col-span-8">
+                        <div className="flex flex-col col-span-8 md:col-span-8 sm:col-span-8">
                           <div className="flex justify-between items-start">
                             <div className="flex flex-col gap-0 w-full">
                               <div className="flex flex-row justify-between items-center">
@@ -273,10 +290,10 @@ export const IndexInventories = () => {
                                       key="edit"
                                       startContent={<FaPencil />}
                                       onPress={() =>
-                                        navigate("/admin/inventories/input")
+                                        handleOpenModalAddStock(product)
                                       }
                                     >
-                                      Agregar
+                                      Agregar Stock
                                     </DropdownItem>
 
                                     <DropdownItem
@@ -330,20 +347,31 @@ export const IndexInventories = () => {
                               isIconOnly
                               color="primary"
                               variant="bordered"
-                              onClick={() =>
+                              onPress={() =>
                                 navigate(`/admin/inventories/${product.slug}`)
                               }
                             >
                               <FaEye />
                             </Button>
-                            <Button
-                              size="sm"
-                              color="success"
-                              variant="bordered"
-                              onClick={() => handleOpenFormOutput(product)}
+                            {product.stock_quantity > 0 ? (
+                              <Button
+                                size="sm"
+                                color="success"
+                                variant="bordered"
+                                onPress={() => handleOpenFormOutput(product)}
                             >
                               Salida
                             </Button>
+                            ) : (
+                              <Button
+                                size="sm"
+                                color="danger"
+                                variant="bordered"
+                            >
+                              No disponible
+                            </Button>
+                            )
+                          }
                           </div>
                         </div>
                       </div>
@@ -371,6 +399,12 @@ export const IndexInventories = () => {
       ) : (
         ""
       )}
+      <ModalAddStock
+        open={openModalAddStock}
+        onClose={() => handleCloseModalAddStock()}
+        data={product}
+        change={(value: boolean) => setOpenModalAddStock(value)}
+      />
     </>
   );
 };
