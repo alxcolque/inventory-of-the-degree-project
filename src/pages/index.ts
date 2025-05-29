@@ -9,3 +9,4 @@ export { ErrorPage } from "./error/404";
 export { PrivacyPage } from './privacy-page';
 export { TermsPage } from './terms-page';
 
+export { CartModal } from './shop/modals/cart-modal';

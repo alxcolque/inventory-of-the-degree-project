@@ -10,17 +10,20 @@ interface WarehouseState {
 }
 
 interface Action {
-    getWarehouseProducts: (slug: string, token: string) => Promise<void>;
+    getWarehouseProducts: (params: {}, token: string) => Promise<void>;
     addWarehouseProduct: (product: {}, token: string) => Promise<void>;
     deleteWarehouseProduct: (id: number, token: string) => Promise<void>;
+    updatePriceQuantity: (id: number, data: {}, token: string) => Promise<void>;
 }
 
 const storeApi: StateCreator<WarehouseState & Action> = (set, get) => ({
     categories: [],
     warehouseProducts: [],
-    getWarehouseProducts: async (slug: string, token: string) => {
+    getWarehouseProducts: async (params: {}, token: string) => {
+        
         try {
-            const response = await appDB.get('/inventory-warehouses', {params: {slug},
+            const response = await appDB.get('/inventory-warehouses', {
+                params,
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -42,7 +45,9 @@ const storeApi: StateCreator<WarehouseState & Action> = (set, get) => ({
             });
             toast.success(response.data.message);
         } catch (error) {
-            console.log(error);
+            if (isAxiosError(error)) {
+                toast.error(error.response?.data.message || 'Error al agregar el producto al almacén');
+            }
         }
     },
     deleteWarehouseProduct: async (id: number, token: string) => {
@@ -51,9 +56,22 @@ const storeApi: StateCreator<WarehouseState & Action> = (set, get) => ({
             toast.success(response.data.message);
             get().getWarehouseProducts("", token);
         } catch (error) {
-            console.log(error);
+            if (isAxiosError(error)) {
+                toast.error(error.response?.data.message || 'Error al eliminar el producto del almacén');
+            }
         }
     },
+    updatePriceQuantity: async (id: number, data: {}, token: string) => {
+        try {
+            const response = await appDB.put(`/inventory-warehouses/${id}`, data, { headers: { Authorization: `Bearer ${token}` } });
+            toast.success(response.data.message);
+            get().getWarehouseProducts("", token);
+        } catch (error) {
+            if (isAxiosError(error)) {
+                toast.error(error.response?.data.message || 'Error al actualizar el precio o cantidad del producto del almacén');
+            }
+        }
+    }
 });
 
 

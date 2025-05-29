@@ -55,7 +55,7 @@ export const OutputForm = ({
     price: "",
     unit: "",
   });
-  console.log(product);
+  //console.log(product);
   //const getShops = useShopsStore(state => state.getShops);
   const [isSelectedShop, setIsSelectedShop] = useState(false);
 
@@ -92,7 +92,7 @@ export const OutputForm = ({
 
   return (
     /* modal para registrar salida de productos */
-    <Modal isOpen={isOpen} size="2xl" onClose={handleClose}>
+    <Modal isOpen={isOpen} size="2xl" onClose={handleClose} scrollBehavior="outside" aria-labelledby="modal-title">
       <ModalContent>
         <ModalHeader>
           <h3>Registrar Salida</h3>

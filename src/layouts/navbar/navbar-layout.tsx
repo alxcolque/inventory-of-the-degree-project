@@ -1,6 +1,6 @@
 
 import { Toaster } from "sonner";
-import { Button, CircularProgress, Input, Link, Navbar, NavbarBrand, NavbarContent } from "@nextui-org/react";
+import { Button, CircularProgress, Link, Navbar, NavbarBrand, NavbarContent } from "@nextui-org/react";
 
 import { BurguerButton } from "./burguer-button";
 /* import { NotificationsDropdown } from "./notifications-dropdown"; */
@@ -10,9 +10,9 @@ import { useAuthStore, useSettingStore } from "../../stores";
 import { DarkModeSwitch } from "./darkmodeswitch";
 import { FaCircleQuestion } from "react-icons/fa6";
 import { RiMegaphoneFill } from "react-icons/ri";
-import { IoMdSearch } from "react-icons/io";
+//import { IoMdSearch } from "react-icons/io";
 import { useEffect } from "react";
-import { CartModal } from "./cart-modal";
+import { NotificationsDropdown } from "./notifications-dropdown";
 
 
 
@@ -93,7 +93,7 @@ export const NavbarLayout = () => {
             )
           }
           <NavbarContent className="w-full">
-            <Input
+            {/* <Input
               startContent={<IoMdSearch />}
               isClearable
               className="w-full"
@@ -102,7 +102,7 @@ export const NavbarLayout = () => {
                 mainWrapper: "w-full",
               }}
               placeholder="Buscar..."
-            />
+            /> */}
           </NavbarContent>
 
           <NavbarContent
@@ -114,8 +114,7 @@ export const NavbarLayout = () => {
               <span>Feedback?</span>
             </div>
 
-            <CartModal />
-            {/* <NotificationsDropdown /> */}
+            <NotificationsDropdown /> 
 
 
             <div className="max-md:hidden">

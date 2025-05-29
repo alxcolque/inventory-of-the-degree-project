@@ -10,6 +10,7 @@ import {
   Input,
   DropdownItem,
   Spinner,
+  Badge,
 } from "@nextui-org/react";
 import { DynamicBreadcrumbs } from "../../../components/ui/dynamic-breadcrumbs";
 import {
@@ -25,6 +26,7 @@ import { OutputForm } from "./output-form";
 import { ModalBrands } from "../../../components/modal/modal-brands";
 import { AlertDelete } from "../../../components";
 import { ModalAddStock } from "./modal-add-stock";
+import { IoMdSearch } from "react-icons/io";
 
 export const IndexInventories = () => {
   const navigate = useNavigate();
@@ -59,7 +61,7 @@ export const IndexInventories = () => {
   /* modal para agregar stock */
   const [openModalAddStock, setOpenModalAddStock] = useState(false);
 
-  
+
   const handleOpenFormOutput = (product: []) => {
     setProduct(product);
     setIsOpen(true);
@@ -78,7 +80,7 @@ export const IndexInventories = () => {
   useEffect(() => {
     if (token) {
       setIsLoading(true);
-      getWarehouseProducts("", token!);
+      handleFilter("", "");
       setIsLoading(false);
     }
     handleCategories();
@@ -87,8 +89,10 @@ export const IndexInventories = () => {
   //console.log(warehouseProducts);
 
   /* Funcion para obtener las marcas */
-  const selectBrands = () => {
-    console.log("getBrands");
+  const selectBrands = (brand: string) => {
+    if (brand) {
+      handleFilter("brands", brand);
+    }
   };
   /* Remove product in inventory */
 
@@ -107,7 +111,7 @@ export const IndexInventories = () => {
     //console.log(id);
     setDeleteRowId(id);
     setDeleteCountdown(10); // Inicia el temporizador de 10 segundos
-};
+  };
   const handleConfirmDelete = async () => {
     //setRows(rows.filter(row => row.id !== deleteRowId)); // Elimina el registro de los datos
     //await deleteRole(deleteRowId!, token!); // Elimina el registro de la base de datos
@@ -124,20 +128,33 @@ export const IndexInventories = () => {
   };
   /* Filter */
   const handleFilter = async (type: string, slug: string) => {
+    let params = {
+      search: "",
+      brands: "",
+      categories: ""
+    };
     if (type === "brands") {
       navigate("/admin/inventories?brands=" + slug);
       setIsLoading(true);
-      await getWarehouseProducts(slug, token!);
+      params.brands = slug;
+      await getWarehouseProducts(params, token!);
       setIsLoading(false);
     } else if (type === "categories") {
       navigate("/admin/inventories?categories=" + slug);
       setIsLoading(true);
-      await getWarehouseProducts(slug, token!);
+      params.categories = slug;
+      await getWarehouseProducts(params, token!);
+      setIsLoading(false);
+    } else if (type === "search") {
+      navigate("/admin/inventories?search=" + slug);
+      setIsLoading(true);
+      params.search = slug;
+      await getWarehouseProducts(params, token!);
       setIsLoading(false);
     } else {
       navigate("/admin/inventories");
       setIsLoading(true);
-      await getWarehouseProducts("", token!);
+      await getWarehouseProducts({ search: "", brands: "", categories: "" }, token!);
       setIsLoading(false);
     }
   };
@@ -149,7 +166,11 @@ export const IndexInventories = () => {
 
   const handleCloseModalAddStock = () => {
     setOpenModalAddStock(false);
-    getWarehouseProducts("", token!);
+    handleFilter("", "");
+  };
+
+  const handleSearch = (search: string) => {
+    handleFilter("search", search);
   };
 
   return (
@@ -175,13 +196,24 @@ export const IndexInventories = () => {
           }}
           selectBrands={selectBrands}
         />
-        <div className="flex flex-wrap gap-2 items-center">
+        <div className="flex flex-row gap-2 justify-between items-center">
           {/* busqueda */}
-          <div className="flex flex-row gap-2 items-center">
-            <Input type="text" placeholder="Buscar producto" />
-            <Button color="primary" variant="shadow">
-              Buscar
-            </Button>
+          <div className="flex flex-row gap-2">
+            <Input
+              startContent={<IoMdSearch />}
+              isClearable
+              className="w-full"
+              classNames={{
+                input: "w-full",
+                mainWrapper: "w-full",
+              }}
+              placeholder="Buscar..."
+              onKeyDown={(e: any) => {
+                if (e.key === "Enter") {
+                  handleSearch(e.target.value);
+                }
+              }}
+            />
           </div>
           {/* Boton de marca */}
           <Button
@@ -191,39 +223,33 @@ export const IndexInventories = () => {
           >
             Marca
           </Button>
-          {/* date picker */}
-
-          {/* FEcha actual */}
-          {/* <div className="flex flex-row gap-2 items-center">
-
-            <DatePicker
-                onChange={handleChangeDate}
-                value={date}
-            />
-        </div> */}
         </div>
 
         {/* Botones horizontales para listar categorias para filtro, scroll horizontal */}
-        <div className="flex overflow-x-auto gap-2 scrollbar-hide">
+        <div className="flex gap-2 w-full overflow-x-scroll h-[60px] items-center justify-center">
           <Button
             size="sm"
             onPress={() => {
               navigate("/admin/inventories");
+              handleFilter("", "");
             }}
           >
             Todos
           </Button>
           {categories.map((category: any) => (
-            <Button
-              key={category.id}
-              size="sm"
-              style={{ backgroundColor: category.color }}
-              onPress={() => {
-                handleFilter("categories", category.slug);
-              }}
-            >
-              {category.name}
-            </Button>
+
+            <Badge key={category.id} size="sm" color="danger" content={category.product_count} shape="circle">
+              <Button
+                key={category.id}
+                size="sm"
+                style={{ backgroundColor: category.color }}
+                onPress={() => {
+                  handleFilter("categories", category.slug);
+                }}
+              >
+                {category.name}
+              </Button>
+            </Badge>
           ))}
         </div>
         <div className="flex flex-col gap-2">
@@ -241,14 +267,14 @@ export const IndexInventories = () => {
                 className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3"
                 key={index}
               >
-                {subcategories.products.map((product: any) => (
+                {subcategories.products.map((product: any, index: number) => (
                   <Card
-                    key={product.id}
+                    key={index}
                     isBlurred
                     className="border-none bg-background/60 dark:bg-default-100/50 max-w-[610px]"
                     shadow="sm"
                   >
-                    <CardBody>
+                    <CardBody key={index}>
                       <div className="grid grid-cols-12 gap-2 justify-center items-center md:grid-cols-12 md:gap-4">
                         <div className="relative col-span-4 cursor-pointer md:col-span-4 sm:col-span-4">
                           <Image
@@ -259,7 +285,7 @@ export const IndexInventories = () => {
                             width={100}
                             height={100}
                             alt={product.name}
-                            
+
                           />
                         </div>
 
@@ -359,19 +385,19 @@ export const IndexInventories = () => {
                                 color="success"
                                 variant="bordered"
                                 onPress={() => handleOpenFormOutput(product)}
-                            >
-                              Salida
-                            </Button>
+                              >
+                                Salida
+                              </Button>
                             ) : (
                               <Button
                                 size="sm"
                                 color="danger"
                                 variant="bordered"
-                            >
-                              No disponible
-                            </Button>
+                              >
+                                No disponible
+                              </Button>
                             )
-                          }
+                            }
                           </div>
                         </div>
                       </div>
@@ -404,6 +430,7 @@ export const IndexInventories = () => {
         onClose={() => handleCloseModalAddStock()}
         data={product}
         change={(value: boolean) => setOpenModalAddStock(value)}
+        token={token!}
       />
     </>
   );

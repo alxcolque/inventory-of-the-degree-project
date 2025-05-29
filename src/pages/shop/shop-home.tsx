@@ -3,26 +3,25 @@ import { useAuthStore, useStockStore } from "../../stores";
 import { useShopsStore } from "../../stores/shops/shops.store";
 import { useEffect, useState } from "react";
 import { useMediaQuery } from "@react-hook/media-query";
-import { Accordion, AccordionItem, Button, Card, CardBody, CardHeader, Chip, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Image, Input, Popover, PopoverContent, PopoverTrigger, Skeleton, Spacer, Spinner } from "@nextui-org/react";
+import { Accordion, AccordionItem, Badge, Button, Card, CardBody, CardHeader, Chip, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Image, Input, Popover, PopoverContent, PopoverTrigger, Skeleton, Spacer, Spinner, Tooltip } from "@nextui-org/react";
 import { TbDotsVertical } from "react-icons/tb";
 import { FaShoppingCart, FaStarHalfAlt } from "react-icons/fa";
-import { FaEye, FaPencil, FaTrash } from "react-icons/fa6";
+import { FaChartLine, FaEye, FaPencil, FaTrash } from "react-icons/fa6";
 import { RiMoreFill } from "react-icons/ri";
 import { IndexSale } from "./sales/index-sale";
 import { ModalBrands } from "../../components/modal/modal-brands";
 import { useNavigate } from "react-router-dom";
 import { AlertDelete } from "../../components/ui/alert-delete";
 import { toast } from "sonner";
+import { IoMdSearch } from "react-icons/io";
+import { CartModal } from "./modals/cart-modal";
 
 export const ShopHome = () => {
-  
-
-
 
   const navigate = useNavigate();
   const token = useAuthStore(state => state.token);
   const { slug } = useParams();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [isModalBrandsOpen, setIsModalBrandsOpen] = useState(false);
 
@@ -34,32 +33,33 @@ export const ShopHome = () => {
   const shop = useShopsStore(state => state.shop);
   const getShop = useShopsStore(state => state.getShopBySlug);
   const storeProducts = useStockStore(state => state.storeProducts);
-  const categories = useStockStore(state => state.categories) || [];
+  const categories = useStockStore(state => state.categories);
   const getProducts = useStockStore(state => state.getStoreProducts);
 
-  const handleFetchShop = async () => {
-    setIsLoading(true);
-    const response = await getShop(slug as string, token as string);
-    if (response !== undefined) {
-      let storeId = response.id as number;
-      await getProducts(storeId, token as string);
+  const handleGetShop = async () => {
+    if (token) {
+      setIsLoading(true);
+      await getShop(slug as string, token as string);
+      handleFilter("", "");
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }
 
   const [isSale, setIsSale] = useState(false);
   useEffect(() => {
-    setIsLoading(true);
-    handleFetchShop();
+    if (token) {
+      handleGetShop();
+    }
+
     const shopId = localStorage.getItem('shopId');
     if (!shopId) {
       localStorage.setItem('shopId', shop?.id.toString());
     }
+    //navigate("/tienda/" + slug);
+
   }, [token]);
 
   const [selectedKeys, setSelectedKeys] = useState(new Set(["1"]));
-
-
 
   /* Si la pantalla es mobile se contrae el accordion setSelectedKeys==[]*/
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -71,16 +71,6 @@ export const ShopHome = () => {
       setSelectedKeys(new Set(["1"]));
     }
   }, [isMobile]);
-
-
-  //console.log(shop);
-  /* Funcion para obtener las marcas */
-  const selectBrands = () => {
-    //console.log("getBrands");
-  }
-
-  console.log(categories);
-
   /* Remove product in inventory */
 
   useEffect(() => {
@@ -115,7 +105,7 @@ export const ShopHome = () => {
   };
   /* Agregar al carrito */
   const [quantity, setQuantity] = useState(1);
-  
+
   const handleAddToCart = (id: number, thumbnail: string, name: string, price: number, category: string, product_id: number, stock_quantity: number) => {
 
     //Verificar si stock es suficiente
@@ -149,7 +139,49 @@ export const ShopHome = () => {
     }
     //console.log(localStorage.getItem('cart'));
   }
+  /* Funcion para obtener las marcas */
+  const selectBrands = (brand: string) => {
+    if (brand) {
+      handleFilter("brands", brand);
+    }
+  };
+  const handleSearch = (search: string) => {
+    handleFilter("search", search);
+  };
+  /* Funcion para obtener los productos */
+  const handleFilter = async (type: string, value: string) => {
+    let params = {
+      search: "",
+      brands: "",
+      categories: ""
+    };
+    if (type === "brands") {
+      navigate("/tienda/" + slug + "?brands=" + value);
 
+      params.brands = value;
+      await getProducts(slug!, params, token!);
+
+    } else if (type === "categories") {
+      navigate("/tienda/" + slug + "?categories=" + value);
+
+      params.categories = value;
+      await getProducts(slug!, params, token!);
+
+    } else if (type === "search") {
+      navigate("/tienda/" + slug + "?search=" + value);
+
+      params.search = value;
+      await getProducts(slug!, params, token!);
+
+    } else {
+      setIsLoading(true);
+      navigate("/tienda/" + slug);
+      await getProducts(slug!, params, token!);
+      setIsLoading(false);
+    }
+
+
+  }
   return (
     <div className="my-2 px-4 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
       {/* Modal para brands */}
@@ -193,7 +225,7 @@ export const ShopHome = () => {
                           </Button>
                         </DropdownTrigger>
                         <DropdownMenu aria-label="Dynamic Actions">
-                          <DropdownItem key="reportar">Ajustes</DropdownItem>
+                          <DropdownItem key="ajustes">Ajustes</DropdownItem>
                         </DropdownMenu>
 
                       </Dropdown>
@@ -216,7 +248,7 @@ export const ShopHome = () => {
                       </div>
                       <Spacer y={0.5} />
                       {/* Boton para ventas */}
-                      <Button color={isSale ? 'primary' : 'default'} startContent={<FaShoppingCart />} onClick={() => setIsSale(true)} className="w-full">Ventas</Button>
+                      <Button color={isSale ? 'primary' : 'default'} startContent={<FaShoppingCart />} onPress={() => setIsSale(true)} className="w-full">Ventas</Button>
                     </>
                   </AccordionItem>
                 </Accordion>
@@ -233,40 +265,66 @@ export const ShopHome = () => {
                 <div className="flex flex-row justify-between items-center">
                   <h2>Inventario de almacén</h2>
                 </div>
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-row gap-2 justify-between items-center">
                   {/* busqueda */}
-                  <div className="flex flex-row items-center gap-2">
-                    <Input type="text" placeholder="Buscar producto" />
-                    <Button color="primary" variant="shadow">Buscar...</Button>
+                  <div className="flex flex-row gap-2">
+                    <Input
+                      startContent={<IoMdSearch />}
+                      isClearable
+                      className="w-full"
+                      classNames={{
+                        input: "w-full",
+                        mainWrapper: "w-full",
+                      }}
+                      placeholder="Buscar..."
+                      onKeyDown={(e: any) => {
+                        if (e.key === "Enter") {
+                          handleSearch(e.target.value);
+                        }
+                      }}
+                    />
                   </div>
                   {/* Boton de marca */}
-                  <Button color="primary" variant="shadow" onClick={() => { setIsModalBrandsOpen(true) }}>Marca</Button>
-                  {/* date picker */}
-
-                  {/* FEcha actual */}
-                  {/* <div className="flex flex-row items-center gap-2">
-
-                    <DatePicker
-                      onChange={handleChangeDate}
-                      value={date}
-                    />
-                  </div> */}
+                  <Button
+                    color="primary"
+                    variant="shadow"
+                    onPress={() => setIsModalBrandsOpen(true)}
+                  >
+                    Marca
+                  </Button>
                 </div>
 
                 {/* Botones horizontales para listar categorias para filtro, scroll horizontal */}
-                <div className="flex gap-2 overflow-x-auto scrollbar-hide mt-3">
+                <div className="flex gap-2 w-full overflow-x-scroll h-[60px] items-center justify-center">
 
-                  <Button size="sm">Todos</Button>
+                  <Button
+                    size="sm"
+                    onPress={() => {
+                      handleFilter("", "");
+                    }}
+                  >
+                    Todos
+                  </Button>
 
-                  {isLoading ? <Spinner /> : Object.values(categories).map((category: any) => (
-                    <Button
-                      key={category.id}
-                      size="sm"
-                      style={{ backgroundColor: category.color }}
-                    >
-                      {category.name}
-                    </Button>
-                  ))}
+                  {categories.length === 0 && (
+                    <Spinner />
+                  )}
+                  {categories.length > 0 && (
+                    categories.map((category: any, index: number) => (
+                      <Badge key={index} size="sm" color="danger" content={category.product_count} shape="circle">
+                        <Button
+                          key={index}
+                          size="sm"
+                          style={{ backgroundColor: category.color }}
+                          onPress={() => {
+                            handleFilter("categories", category.slug);
+                          }}
+                        >
+                          {category.name}
+                        </Button>
+                      </Badge>
+                    )))}
+
 
                 </div>
                 <div className="flex flex-col gap-2">
@@ -292,8 +350,8 @@ export const ShopHome = () => {
                             shadow="sm"
                           >
                             <CardBody>
-                              <div className="grid grid-cols-6 gap-6 justify-center items-center md:grid-cols-12 md:gap-4">
-                                <div className="relative col-span-6 md:col-span-4">
+                              <div className="grid grid-cols-12 gap-2 justify-center items-center md:grid-cols-12 md:gap-4">
+                                <div className="relative col-span-4 cursor-pointer md:col-span-4 sm:col-span-4">
                                   <Image
                                     alt={product.name}
                                     className="object-cover"
@@ -304,7 +362,7 @@ export const ShopHome = () => {
                                   />
                                 </div>
 
-                                <div className="flex flex-col col-span-6 md:col-span-8">
+                                <div className="flex flex-col col-span-8 md:col-span-8 sm:col-span-8">
                                   <div className="flex justify-between items-start">
                                     <div className="flex flex-col gap-0 w-full">
                                       <div className="flex flex-row justify-between items-center">
@@ -353,6 +411,7 @@ export const ShopHome = () => {
                                       <div className="flex flex-row gap-2">
                                         <Chip
                                           className="font-small"
+                                          size="sm"
                                           style={{
                                             backgroundColor: subcategories.color,
                                           }}
@@ -388,7 +447,7 @@ export const ShopHome = () => {
                                       isIconOnly
                                       color="primary"
                                       variant="bordered"
-                                      onClick={() =>
+                                      onPress={() =>
                                         navigate(`/admin/inventories/${product.slug}`)
                                       }
                                     >
@@ -409,7 +468,7 @@ export const ShopHome = () => {
                                               onChange={(e) => setQuantity(Number(e.target.value))}
                                               startContent={
                                                 <div className="pointer-events-none flex items-center">
-                                                  <span className="text-default-400 text-small">Unit</span>
+                                                  <span className="text-default-400 text-small">{product.unit}</span>
                                                 </div>
                                               }
                                               type="number"
@@ -451,6 +510,27 @@ export const ShopHome = () => {
       ) : (
         ""
       )}
+      {/* boton flotante en la parte inferior statico */}
+      <div className="fixed bottom-4 right-4 flex flex-col gap-2">
+        <Tooltip content="Carrito" placement="left" color="warning">
+          <Badge color="primary" content="5" shape="circle" showOutline={false}>
+            <CartModal />
+          </Badge>
+        </Tooltip>
+        <Tooltip content="Ventas" placement="left" color="warning">
+          <Badge color="primary" content="5" shape="circle" showOutline={false}>
+            <Button
+              color="primary"
+              variant="shadow"
+              radius="full"
+              isIconOnly
+              onPress={() => setIsSale(true)}
+            >
+              <FaChartLine  size={20} />
+            </Button>
+          </Badge>
+        </Tooltip>
+      </div>
     </div>
   );
 

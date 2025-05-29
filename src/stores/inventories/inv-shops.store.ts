@@ -13,7 +13,7 @@ interface ShopsState {
 }
 
 interface Actions {
-  getStoreProducts: (storeId: number, token: string) => void;
+  getStoreProducts: (slug: string, params: {}, token: string) => void;
   getProducts: (token: string) => void;
   /* DB */
   createOutput: (data: any, token: string) => void;
@@ -25,18 +25,19 @@ const storeApi: StateCreator<ShopsState & Actions> = (set) => ({
   products: [],
   storeProducts: [],
   categories: [],
-  getStoreProducts: async (storeId: number, token: string) => {
+  getStoreProducts: async (slug: string, params: {}, token: string) => {
     //console.log(storeId);
     
     try {
-      const response = await appDB.get(`/inventory-stores-get-by-store-id/${storeId}`, {
+      const response = await appDB.get(`/inventory-stores-get-by-store-slug/${slug}`, {
+        params,
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
       //console.log(response.data);
-      set({ storeProducts: response.data.products });
       set({ categories: response.data.categories });
+      set({ storeProducts: response.data.products });
     } catch (error) {
       if (isAxiosError(error)) {
         toast.error(error.response?.data.message || 'Error al obtener los productos de la tienda');

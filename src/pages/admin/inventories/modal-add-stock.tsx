@@ -8,14 +8,17 @@ import {
     Input,
     Image,
 } from "@nextui-org/react";
-import { useState } from "react";
 import { FaCheck } from "react-icons/fa6";
+import { useWarehouseStore } from "../../../stores";
+import { toast } from "sonner";
+
 
 interface ModalAddStockProps {
     open: boolean;
     onClose: () => void;
     data: any;
     change: (value: boolean) => void;
+    token: string;
 }
 
 export const ModalAddStock = ({
@@ -23,12 +26,32 @@ export const ModalAddStock = ({
     onClose,
     data,
     change,
+    token
 }: ModalAddStockProps) => {
+    const { updatePriceQuantity } = useWarehouseStore();
 
-    console.log(data);
+    const handleAddStock = async () => {
+        /* Valida que los campos no esten vacios */
+        if (Number(data.price) === 0 || Number(data.stock_quantity) === 0) {
+            toast.error("Los campos no pueden estar vacios");
+            return;
+        }
+        const dataUpdate = {
+            product_id: data.id,
+            supplier_id: data.supplier_id,
+            quantity: data.quantity,
+            unit: data.unit,
+            price: Number(data.price),
+            stock_quantity: Number(data.stock_quantity)
+        }
+        await updatePriceQuantity(data.inventory_id, dataUpdate, token);
+        change(false);
+    };
+
+    //console.log(data);
 
     return (
-        <Modal size="md" isOpen={open} onClose={onClose} scrollBehavior="outside">
+        <Modal key={data.inventory_id} size="md" isOpen={open} onClose={onClose} scrollBehavior="outside">
             <ModalContent>
                 {(onClose) => (
                     <>
@@ -50,11 +73,11 @@ export const ModalAddStock = ({
                                     </div>
                                     <div className="flex flex-row gap-1">
                                         <b>Precio:</b>
-                                        <Input type="number" value={data.price} />
+                                        <Input type="number" defaultValue={data.price} onChange={(e) => data.price = e.target.value} />
                                     </div>
                                     <div className="flex flex-row gap-1">
                                         <b>Cantidad:</b>
-                                        <Input type="number" value={data.stock_quantity} />
+                                        <Input type="number" defaultValue={data.stock_quantity} onChange={(e) => data.stock_quantity = e.target.value} />
                                     </div>
                                 </div>
                             </div>
@@ -66,6 +89,7 @@ export const ModalAddStock = ({
                                 color="success"
                                 variant="shadow"
                                 startContent={<FaCheck />}
+                                onPress={() => handleAddStock()}
                             >
                                 {" "}
                                 Aceptar
