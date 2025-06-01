@@ -28,3 +28,5 @@ export { useSubcategoriesStore } from "./subcategories/subcategories.store";
 export { useProductImagesStore } from "./products/product-images.store";
 
 export { useDetailSalesStore } from "./detail-sales/detail-sales.store";
+
+export { useAssignmentsStore } from "./shops/assignments.store";

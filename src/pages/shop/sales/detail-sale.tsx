@@ -4,11 +4,18 @@ import { jsPDF } from 'jspdf';
 import { Button } from "@nextui-org/react"
 import { useEffect } from "react";
 import { useAuthStore, useDetailSalesStore } from "../../../stores";
+import { company } from "../../../api/systemdata";
+import { useShopsStore } from "../../../stores/shops/shops.store";
+import { format } from "date-fns";
 
 export const DetailSale = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { slug } = useParams();
+
+    const shop = useShopsStore(state => state.shop);
+    const { getShopBySlug } = useShopsStore();
+
     const handlePrint = () => {
         /* Imprimir solo la seccion de my-sale-detail */
         const printContent = document.querySelector(".my-sale-detail");
@@ -21,7 +28,6 @@ export const DetailSale = () => {
             WindowPrt.print();
             WindowPrt.close();
         }
-
     }
     /* Obtener detalle de la venta */
 
@@ -32,17 +38,19 @@ export const DetailSale = () => {
         getDetailSale(id as string, token as string);
     }, []);
 
+    useEffect(() => {
+        getShopBySlug(slug as string, token as string);
+    }, []);
+
     const handleDownload = () => {
         const pdf = new jsPDF();
         /* Descarga desde el componente receipt.tsx */
         const receiptContent = `
             
-            Tech Solutions
-            NIT: 123456789
-            Tienda: ${slug}
-            Direccion: Calle Cbba entre Plata y
-            presidente Montes, Galeria José
-            Gabriel. ORURO
+            ${company.name}
+            NIT: ${company.nit}
+            Tienda: ${shop.name}
+            Direccion: ${shop.address}
 
             Fecha: ${sale.created_at ? sale.created_at : ''}
             Cajero: ${sale.seller ? sale.seller : ''}
@@ -74,13 +82,13 @@ export const DetailSale = () => {
         pdf.save(`${sale.customer.name}-${sale.created_at}.pdf`);
     }
 
-    console.log(detailSales);
-    console.log(sale);
+    //console.log(detailSales);
+    //console.log(sale);
     return (
         <div>
             {/* Tabla con detalle de ventas */}
             <div className="flex flex-col justify-center my-sale-detail">
-                <div className="max-w-3xl bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+                <div className="max-w-3xl shadow-md rounded px-8 pt-6 pb-8 mb-4">
                     <div className="flex items-center justify-center mb-4">
                         <img
                             src="https://img.lovepik.com/element/45011/0959.png_860.png"
@@ -93,13 +101,13 @@ export const DetailSale = () => {
                     {/* Titulo */}
                     <div className="items-center justify-center text-center mb-4">
                         <h2 className="text-2xl font-bold">
-                            Tech Solutions
+                            {shop.name}
                         </h2>
-                        <p>NIT: 123456789</p>
-                        <p>Tienda: {slug}</p>
-                        <p>Dirección: Calle Junin #123</p>
+                        <p>NIT: {company.nit}</p>
+                        <p>Tienda: {shop.name}</p>
+                        <p>Dirección: {shop.address}</p>
                         <div>
-                            <p>Fecha: {sale.created_at ? sale.created_at : ''}</p>
+                            <p>Fecha: {sale.created_at ? format(new Date(sale.created_at), 'dd/MM/yyyy') : ''}</p>
                             <p>Cajero: {sale.seller ? sale.seller : ''}</p>
                             <p>Cliente: {sale.customer ? sale.customer.name : ''}</p>
                         </div>
@@ -135,7 +143,7 @@ export const DetailSale = () => {
 
                     </div>
 
-                <div className="flex flex-col items-center justify-center mb-4">
+                    <div className="flex flex-col items-center justify-center sm:text-sm mb-4">
                         <p>
                             GARANTIA DEL EQUIPO: 30 DIAS
                         </p>
@@ -150,21 +158,21 @@ export const DetailSale = () => {
                         </p>
 
                     </div>
-                {/* Botones para imprimir o descargar */}
+                    {/* Botones para imprimir o descargar */}
                 </div>
             </div>
-                <div className="flex no-print">
-                    {/* Boton atras */}
-                    <Button className="mr-4" variant="solid" color="primary" onPress={() => navigate(`/tienda/${slug}`)}>
-                        Atras
-                    </Button>
-                    <Button className="mr-4" onPress={handlePrint} variant="solid" color="secondary">
-                        Imprimir
-                    </Button>
-                    <Button variant="solid" color="danger" onPress={handleDownload}>
-                        Descargar
-                    </Button>
-                </div>
+            <div className="flex no-print">
+                {/* Boton atras */}
+                <Button className="mr-4" variant="solid" color="primary" onPress={() => navigate(`/tienda/${slug}`)}>
+                    Atras
+                </Button>
+                <Button className="mr-4" onPress={handlePrint} variant="solid" color="secondary">
+                    Imprimir
+                </Button>
+                <Button variant="solid" color="danger" onPress={handleDownload}>
+                    Descargar
+                </Button>
+            </div>
         </div>
     )
 }

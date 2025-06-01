@@ -10,3 +10,4 @@ export { PrivacyPage } from './privacy-page';
 export { TermsPage } from './terms-page';
 
 export { CartModal } from './shop/modals/cart-modal';
+export { ShowProduct } from './shop/show-product';

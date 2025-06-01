@@ -18,6 +18,7 @@ export const dataLogin =
 export const company = {
     id: 1,
     name: 'TECH SOL',
+    nit: '23123456789',
     // random logo
     logo: `https://picsum.photos/200/300?random=${Math.floor(Math.random() * 1000)}`,
     logoKey: null,

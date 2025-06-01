@@ -1,4 +1,5 @@
 export interface IUsersResponse {
+    id: number;
     message: string;
     username: string;
     name: string;

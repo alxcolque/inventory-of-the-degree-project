@@ -32,7 +32,7 @@ export const IndexSale = ({ onClose }: Props) => {
         { name: 'FECHA', uid: 'date' },
         { name: 'ACCIONES', uid: 'actions' }
     ];
-    console.log(sales);
+    //console.log(sales);
     
     return (
         <div className="w-full">

@@ -22,7 +22,7 @@ export const HomeIndex = () => {
   const printTable = () => {
     const table = document.getElementById('products-table');
     const printWindow = window.open('', '', 'height=400,width=600');
-    printWindow?.document.write(table?.innerHTML);
+    printWindow?.document.write(table?.innerHTML || '');
     printWindow?.document.close();
     printWindow?.print();
   }
@@ -30,7 +30,7 @@ export const HomeIndex = () => {
   const downloadTable = () => {
     const table = document.getElementById('products-table');
     const printWindow = window.open('', '', 'height=400,width=600');
-    printWindow?.document.write(table?.innerHTML);
+    printWindow?.document.write(table?.innerHTML || '');
     printWindow?.document.close();
   }
 
@@ -39,7 +39,7 @@ export const HomeIndex = () => {
       <DynamicBreadcrumbs />
       <h2 className="text-2xl font-semibold">Panel de control</h2>
       {/* Boton para copia de seguridad de base de dats  */}
-      <Button onClick={handleBackup} startContent={<LuDatabaseBackup size={20} />} color="secondary">Copia de seguridad</Button>
+      <Button onPress={handleBackup} startContent={<LuDatabaseBackup size={20} />} color="secondary">Copia de seguridad</Button>
       <div className="flex justify-center gap-4 xl:gap-4 pt-3 px-4 lg:px-0  flex-wrap xl:flex-nowrap sm:pt-10 max-w-[90rem] mx-auto w-full">
         <div className="mt-3 gap-6 flex flex-col w-full">
 
@@ -91,8 +91,8 @@ export const HomeIndex = () => {
                 <DatePicker value={date} onChange={setDate} />
 
                 {/* Boton para imprimir y descargar */}
-                <Button variant="bordered" color="primary" onClick={printTable}>Imprimir</Button>
-                <Button variant="bordered" color="primary" onClick={downloadTable}>Descargar</Button>
+                <Button variant="bordered" color="primary" onPress={printTable}>Imprimir</Button>
+                <Button variant="bordered" color="primary" onPress={downloadTable}>Descargar</Button>
               </div>
             </div>
             <Table aria-label="Productos más vendidos" id="products-table">

@@ -17,7 +17,7 @@ import { IoMdSearch } from "react-icons/io";
 import { CartModal } from "./modals/cart-modal";
 
 export const ShopHome = () => {
-
+  const user = useAuthStore(state => state.user);
   const navigate = useNavigate();
   const token = useAuthStore(state => state.token);
   const { slug } = useParams();
@@ -36,12 +36,22 @@ export const ShopHome = () => {
   const categories = useStockStore(state => state.categories);
   const getProducts = useStockStore(state => state.getStoreProducts);
 
+  const [quantityCart, setQuantityCart] = useState(0);
+
   const handleGetShop = async () => {
     if (token) {
       setIsLoading(true);
       await getShop(slug as string, token as string);
       handleFilter("", "");
       setIsLoading(false);
+    }
+    
+  }
+  /* Calculate cart */
+  const handleCalculateCart = () => {
+    let cart = localStorage.getItem('cart' + slug);
+    if (cart) {
+      setQuantityCart(JSON.parse(cart).length);
     }
   }
 
@@ -50,12 +60,7 @@ export const ShopHome = () => {
     if (token) {
       handleGetShop();
     }
-
-    const shopId = localStorage.getItem('shopId');
-    if (!shopId) {
-      localStorage.setItem('shopId', shop?.id.toString());
-    }
-    //navigate("/tienda/" + slug);
+    handleCalculateCart();
 
   }, [token]);
 
@@ -124,7 +129,7 @@ export const ShopHome = () => {
       quantity: quantity
     }
     /* Almacenar este array en el local storage */
-    const cart = localStorage.getItem('cart');
+    const cart = localStorage.getItem('cart' + slug);
     if (cart) {
       const cartArray = JSON.parse(cart);
       const productIndex = cartArray.findIndex((item: any) => item.inventory_id === id);
@@ -133,10 +138,12 @@ export const ShopHome = () => {
       } else {
         cartArray.push(data);
       }
-      localStorage.setItem('cart', JSON.stringify(cartArray));
+      localStorage.setItem('cart' + slug, JSON.stringify(cartArray));
     } else {
-      localStorage.setItem('cart', JSON.stringify([data]));
+      localStorage.setItem('cart' + slug, JSON.stringify([data]));
     }
+    handleCalculateCart();
+    toast.success('Producto agregado al carrito');
     //console.log(localStorage.getItem('cart'));
   }
   /* Funcion para obtener las marcas */
@@ -147,6 +154,7 @@ export const ShopHome = () => {
   };
   const handleSearch = (search: string) => {
     handleFilter("search", search);
+    handleCalculateCart();
   };
   /* Funcion para obtener los productos */
   const handleFilter = async (type: string, value: string) => {
@@ -218,6 +226,8 @@ export const ShopHome = () => {
                       <span className="text-lg font-semibold">{shop?.name}
                         <p title={shop?.slug} className="text-sm text-gray-500">{shop?.slug}</p>
                       </span>
+                      {/* Only admin */}
+                      {user?.roles.includes('admin') && (
                       <Dropdown>
                         <DropdownTrigger>
                           <Button variant="bordered" isIconOnly>
@@ -227,9 +237,8 @@ export const ShopHome = () => {
                         <DropdownMenu aria-label="Dynamic Actions">
                           <DropdownItem key="ajustes">Ajustes</DropdownItem>
                         </DropdownMenu>
-
                       </Dropdown>
-
+                      )}
                     </div>
                   </div>
                 </CardHeader>
@@ -324,8 +333,6 @@ export const ShopHome = () => {
                         </Button>
                       </Badge>
                     )))}
-
-
                 </div>
                 <div className="flex flex-col gap-2">
                   <div className="flex flex-row items-center gap-2">
@@ -342,14 +349,16 @@ export const ShopHome = () => {
                         className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3"
                         key={index}
                       >
-                        {subcategories.products.map((product: any) => (
+                        {subcategories.products.map((product: any, index: number) => (
                           <Card
-                            key={product.id}
+                            key={index}
                             isBlurred
                             className="border-none bg-background/60 dark:bg-default-100/50 max-w-[610px]"
                             shadow="sm"
                           >
-                            <CardBody>
+                            <CardBody
+                            key={index}
+                            >
                               <div className="grid grid-cols-12 gap-2 justify-center items-center md:grid-cols-12 md:gap-4">
                                 <div className="relative col-span-4 cursor-pointer md:col-span-4 sm:col-span-4">
                                   <Image
@@ -365,6 +374,9 @@ export const ShopHome = () => {
                                 <div className="flex flex-col col-span-8 md:col-span-8 sm:col-span-8">
                                   <div className="flex justify-between items-start">
                                     <div className="flex flex-col gap-0 w-full">
+                                      {/* Only admin */}
+                                      {user?.roles.includes('admin') && (
+                                      
                                       <div className="flex flex-row justify-between items-center">
                                         <h3 className="font-medium text-large">
                                           {product.name}
@@ -408,6 +420,7 @@ export const ShopHome = () => {
                                           </DropdownMenu>
                                         </Dropdown>
                                       </div>
+                                      )}
                                       <div className="flex flex-row gap-2">
                                         <Chip
                                           className="font-small"
@@ -423,6 +436,7 @@ export const ShopHome = () => {
                                           {product.brand}
                                         </span>
                                       </div>
+                                      
                                       {/* cantidad y precio */}
                                       <div className="flex flex-row gap-2">
                                         <span className="text-sm font-bold text-red-500 text-foreground/90">
@@ -448,14 +462,18 @@ export const ShopHome = () => {
                                       color="primary"
                                       variant="bordered"
                                       onPress={() =>
-                                        navigate(`/admin/inventories/${product.slug}`)
+                                        navigate(`/productos/${product.slug}`)
                                       }
                                     >
                                       <FaEye />
                                     </Button>
                                     <Popover showArrow offset={10} placement="bottom">
                                       <PopoverTrigger>
-                                        <Button size="sm" color="success" variant="bordered" onPress={() => setQuantity(1)}>Agregar al carrito</Button>
+                                        {product.stock_quantity > 0 ? (
+                                          <Button size="sm" color="success" variant="bordered">Agregar al carrito</Button>
+                                        ) : (
+                                          <Button size="sm" color="danger" variant="bordered" isDisabled>Agotado</Button>
+                                        )}
                                       </PopoverTrigger>
                                       <PopoverContent className="w-[240px]">
                                         <div className="px-1 py-2 w-full">
@@ -512,13 +530,27 @@ export const ShopHome = () => {
       )}
       {/* boton flotante en la parte inferior statico */}
       <div className="fixed bottom-4 right-4 flex flex-col gap-2">
+      {quantityCart > 0 && (
         <Tooltip content="Carrito" placement="left" color="warning">
-          <Badge color="primary" content="5" shape="circle" showOutline={false}>
-            <CartModal />
+          <Badge color="primary" content={quantityCart} shape="circle" showOutline={false}>
+            {shop?.id && (
+              <CartModal
+                getCheckout={
+                  (checkout: boolean) => {
+                    if (checkout) {
+                      handleFilter("", "");
+                      handleCalculateCart();
+                    }
+                  }
+                }
+                shopId={shop?.id} 
+                slug={slug}
+                />
+            )}
           </Badge>
         </Tooltip>
+      )}
         <Tooltip content="Ventas" placement="left" color="warning">
-          <Badge color="primary" content="5" shape="circle" showOutline={false}>
             <Button
               color="primary"
               variant="shadow"
@@ -526,9 +558,8 @@ export const ShopHome = () => {
               isIconOnly
               onPress={() => setIsSale(true)}
             >
-              <FaChartLine  size={20} />
+              <FaChartLine size={20} />
             </Button>
-          </Badge>
         </Tooltip>
       </div>
     </div>

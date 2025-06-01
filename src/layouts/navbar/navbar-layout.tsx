@@ -67,7 +67,7 @@ export const NavbarLayout = () => {
                 <BurguerButton />
               )
             }
-            <NavbarBrand className="hidden md:flex">
+            <NavbarBrand className="md:flex">
               <img src={logo} alt="Logo" className="w-10 h-10 rounded-full" />
               <p className="font-bold text-inherit uppercase">{name}</p>
             </NavbarBrand>
@@ -125,7 +125,7 @@ export const NavbarLayout = () => {
               <DarkModeSwitch />
             </NavbarContent>
 
-            <NavbarContent className="max-md:hidden">
+            <NavbarContent className="">
               {
                 authStatus === 'auth' ? <UserDropdown /> : <Button as={Link} href="/login" variant="flat">Iniciar sesión</Button>
               }

@@ -8,6 +8,7 @@ import {
   HomeIndex,
   PrivacyPage,
   TermsPage,
+  ShowProduct,
 
 } from "../pages";
 import { Layout } from "../layouts/layout";
@@ -64,8 +65,14 @@ const router = createBrowserRouter([
             path: "/terminos",
             element: <TermsPage />,
           },
+          /* show product */
+          {
+            path: "/productos/:slug",
+            element: <ShowProduct />,
+          },
 
         ],
+
 
       },
       //Routes shop page
@@ -94,8 +101,11 @@ const router = createBrowserRouter([
             path: "/tienda/:slug/:slug",
             element: <KardexProduct />,
           },
+
         ],
       },
+
+
 
       //Routes auth Admin page
 
