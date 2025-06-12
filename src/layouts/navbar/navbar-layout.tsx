@@ -12,7 +12,9 @@ import { FaCircleQuestion } from "react-icons/fa6";
 import { RiMegaphoneFill } from "react-icons/ri";
 //import { IoMdSearch } from "react-icons/io";
 import { useEffect } from "react";
-import { NotificationsDropdown } from "./notifications-dropdown";
+import { NotificationCenter } from "../../components/notifications/notification-center";
+import { useEcho } from '../../hooks/echo';
+
 
 
 
@@ -21,12 +23,17 @@ export const NavbarLayout = () => {
   const navigate = useNavigate();
   const authStatus = useAuthStore(state => state.authStatus);
   const checkAuthStatus = useAuthStore(state => state.checkAuthStatus);
+  const user = useAuthStore(state => state.user);
   const company = useSettingStore(state => state.systemData);
   const { logo, name } = company as any;
+  // Inicializar Echo para notificaciones en tiempo real
+  const { isConnected } = useEcho();
+
   const getSystemData = useSettingStore(state => state.getSystemData);
   useEffect(() => {
     getSystemData();
   }, []);
+
 
   if (authStatus === 'pending') {
     checkAuthStatus();
@@ -40,6 +47,7 @@ export const NavbarLayout = () => {
   /* if (authStatus === 'not-auth') {
     return <Navigate to='/' />
   } */
+
 
   return (
     <>
@@ -114,8 +122,16 @@ export const NavbarLayout = () => {
               <span>Feedback?</span>
             </div>
 
-            <NotificationsDropdown /> 
+            {/* <NotificationsDropdown />  */}
+            <div className="hidden sm:flex items-center space-x-2">
+              <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}></div>
+              <span className="text-xs text-gray-500">
+                {isConnected ? 'Conectado' : 'Desconectado'}
+              </span>
+            </div>
+            <NotificationCenter userId={user?.id ?? 0} />
 
+            
 
             <div className="max-md:hidden">
               <FaCircleQuestion className="text-default-500" size={20} />
