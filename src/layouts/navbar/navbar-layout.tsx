@@ -16,8 +16,6 @@ import { NotificationCenter } from "../../components/notifications/notification-
 import { useEcho } from '../../hooks/echo';
 
 
-
-
 export const NavbarLayout = () => {
   //const pathname = useLocation().pathname;
   const navigate = useNavigate();
@@ -47,8 +45,6 @@ export const NavbarLayout = () => {
   /* if (authStatus === 'not-auth') {
     return <Navigate to='/' />
   } */
-
-
   return (
     <>
       <Toaster
@@ -81,7 +77,7 @@ export const NavbarLayout = () => {
             </NavbarBrand>
             {
               !window.location.pathname.includes('/admin') && (
-                <NavbarContent className="" justify="start">
+                <NavbarContent className="hidden md:flex" justify="start">
                   <NavbarBrand className="cursor-pointer" onClick={() => navigate('/')}>
                     <img src={logo} alt="Logo" className="w-10 h-10 rounded-full" />
                     <p className="font-bold text-inherit uppercase">{name}</p>
@@ -121,16 +117,18 @@ export const NavbarLayout = () => {
               <RiMegaphoneFill className="text-default-500" size={20} />
               <span>Feedback?</span>
             </div>
-
-            {/* <NotificationsDropdown />  */}
-            <div className="hidden sm:flex items-center space-x-2">
-              <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}></div>
-              <span className="text-xs text-gray-500">
-                {isConnected ? 'Conectado' : 'Desconectado'}
+            {authStatus === 'auth' && (
+              <>
+              {/* <NotificationsDropdown />  */}
+              <div className="hidden sm:flex items-center space-x-2">
+                <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                <span className="text-xs text-gray-500">
+                  {isConnected ? 'Conectado' : 'Desconectado'}
               </span>
             </div>
             <NotificationCenter userId={user?.id ?? 0} />
-
+              </>
+            )}
             
 
             <div className="max-md:hidden">

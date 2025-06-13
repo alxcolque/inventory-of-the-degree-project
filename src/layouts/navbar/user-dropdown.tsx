@@ -42,7 +42,7 @@ export const UserDropdown = () => {
         aria-label='User menu actions'
         onAction={(actionKey) => console.log({ actionKey })}>
         <DropdownItem
-            href={user?.roles[0] === 'admin' ? '/admin' : '/home'}
+            href={user?.roles[0] === 'admin' ? '/admin' : '/'}
           
           key='profile'
           className='flex flex-col justify-start w-full items-start'>

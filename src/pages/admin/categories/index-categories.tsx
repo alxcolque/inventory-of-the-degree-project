@@ -62,7 +62,7 @@ export const IndexCategories = () => {
             await createCategory(formData as ICategoryResponse, token!);
         }
         setIsModalOpen(false); // Cerrar el modal
-        console.log(formData)
+        //console.log(formData)
     };
     //Define controles para abrir el modal de agregar rol
     // Función para abrir el modal con datos vacíos (creación)

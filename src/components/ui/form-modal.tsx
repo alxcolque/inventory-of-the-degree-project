@@ -100,7 +100,7 @@ export const FormModal = ({ fields, isOpen, onClose, onSubmit, initialValues = {
 
     return (
         <>
-            <Modal isOpen={isOpen} onClose={onClose}>
+            <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="outside">
                 <ModalContent>
                     <ModalHeader>{initialValues?.name ? 'Editar' : 'Nuevo'}</ModalHeader>
                     <ModalBody className='flex gap-0'>
@@ -117,7 +117,7 @@ export const FormModal = ({ fields, isOpen, onClose, onSubmit, initialValues = {
                         </Button>
                         {/* Boton se habilita cuando los campos estan llenos */}
                         {isButtonDisabled ? (
-                            <Button onClick={handleSubmit} isLoading={isLoading} color="primary" variant="solid">
+                            <Button onPress={handleSubmit} isLoading={isLoading} color="primary" variant="solid">
                                 <FaSave size={18} />
                                 {initialValues?.name ? 'Actualizar' : 'Crear'}
                             </Button>

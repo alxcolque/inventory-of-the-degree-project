@@ -69,8 +69,6 @@ export const Welcome = () => {
     setIsLoading(false);
   }, []);
 
-
-
   return (
     <div className="my-0 px-4 md:px-6 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
       <h2 className="text-2xl font-bold">Tiendas</h2>

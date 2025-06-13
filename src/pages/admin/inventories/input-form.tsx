@@ -22,6 +22,7 @@ export const InputForm = () => {
         price: "",
         unit: "",
         quantity: "",
+        stock_quantity: 0
     });
 
 
