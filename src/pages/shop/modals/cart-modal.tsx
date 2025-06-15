@@ -1,5 +1,6 @@
 import {
     Button,
+    Input,
     Modal,
     ModalBody,
     ModalContent,
@@ -21,9 +22,10 @@ import { useCustomerStore } from '../../../stores/customer/customer.store';
 import { useAuthStore } from '../../../stores/auth/auth.store';
 import { useOrdersStore } from "../../../stores";
 import { FaCartPlus } from "react-icons/fa6";
+import { toast } from "sonner";
 
 interface Props {
-    getCheckout( checkout: boolean): void;
+    getCheckout(checkout: boolean): void;
     shopId?: string;
     slug?: string;
 }
@@ -32,6 +34,9 @@ export const CartModal = ({ getCheckout, shopId, slug }: Props) => {
     const token = useAuthStore((state) => state.token);
     const user = useAuthStore((state) => state.user);
     const [selectedCustomer, setSelectedCustomer] = useState<string | null>(null);
+    const [inputPhone, setInputPhone] = useState<string>("");
+    const [inputName, setInputName] = useState<string>("");
+    const [inputDiscount, setInputDiscount] = useState<string>("0");
     const [isOpen, setIsOpen] = useState(false);
     const [cart, setCart] = useState([]);
     const [notifyCart, setNotifyCart] = useState<number>(0);
@@ -50,7 +55,7 @@ export const CartModal = ({ getCheckout, shopId, slug }: Props) => {
 
     //console.log(customers);
 
-    
+
     useEffect(() => {
         const cart = localStorage.getItem('cart' + slug);
         if (cart) {
@@ -87,13 +92,31 @@ export const CartModal = ({ getCheckout, shopId, slug }: Props) => {
     const handleCheckout = async () => {
         const cart = localStorage.getItem('cart' + slug);
         //console.log(cart, selectedCustomer);
+        /* Validar que el carrito no este vacio */
+        if (!cart) {
+            toast.error("El carrito esta vacio");
+            return;
+        }
+        /* Validar que el nombre y el celular no esten vacios */
+        if (!inputName || !inputPhone) {
+            toast.error("El nombre y el celular son obligatorios");
+            return;
+        }
+        let phoneRegex = /^[67]\d{7}$/;
+        if (!phoneRegex.test(inputPhone)) {
+            toast.error("El celular debe tener 8 digitos y comenzar con 6 o 7");
+            return;
+        }
         const data = {
-            customer_id: selectedCustomer,
+            //customer_id: selectedCustomer,
             total: cart ? JSON.parse(cart).reduce((acc: number, item: any) => acc + item.price * item.quantity, 0) : 0,
             seller_id: user?.id,
             store_id: shopId,
             status: 'completado',
             products: cart ? JSON.parse(cart) : [],
+            discount: inputDiscount,
+            name: inputName,
+            phone: inputPhone,
         }
         //console.log(data);
         await createSale(data, token!);
@@ -161,28 +184,45 @@ export const CartModal = ({ getCheckout, shopId, slug }: Props) => {
                             </TableBody>
 
                         </Table>
-                        <Table hideHeader>
-                            <TableHeader>
-                                <TableColumn>Total</TableColumn>
-                                <TableColumn>Total</TableColumn>
-                                <TableColumn>Total</TableColumn>
-                                <TableColumn>Total</TableColumn>
-                                <TableColumn>{cart.reduce((acc: number, item: any) => acc + item.price * item.quantity, 0)}</TableColumn>
-                                <TableColumn>-</TableColumn>
-                            </TableHeader>
-                            <TableBody>
-                                <TableRow>
-                                    <TableCell>-</TableCell>
-                                    <TableCell>-</TableCell>
-                                    <TableCell>-</TableCell>
-                                    <TableCell className="font-bold">Total</TableCell>
-                                    <TableCell className="font-bold">{cart.reduce((acc: number, item: any) => acc + item.price * item.quantity, 0)}</TableCell>
-                                    <TableCell>-</TableCell>
-                                </TableRow>
-                            </TableBody>
-                        </Table>
+                        {/* input discount */}
+                        <div className="flex flex-row gap-2">
+                            <Input
+                                label="Descuento"
+                                className="w-1/2"
+                                labelPlacement="outside"
+                                placeholder="0"
+                                defaultValue="0"
+                                value={inputDiscount}
+                                min={0}
+                                onChange={(e) => setInputDiscount(e.target.value)}
+                                type="number"
+                            />
+                            Total: <b>{cart.reduce((acc: number, item: any) => acc + item.price * item.quantity, 0) - parseInt(inputDiscount)}</b>
+                        </div>
+                        {/* input cliente */}
+                        <div className="flex flex-row gap-2">
+                            <Input
+                                label="Nombre"
+                                labelPlacement="outside"
+                                placeholder="Nombre"
+                                onChange={(e) => setInputName(e.target.value)}
+                                type="text"
+                                className="w-3/4"
+                                isRequired
+                            />
+                            <Input
+                                label="Celular"
+                                labelPlacement="outside"
+                                placeholder="Celular"
+                                onChange={(e) => setInputPhone(e.target.value)}
+                                type="text"
+                                className="w-1/3"
+                                isRequired
+                            />
+                        </div>
+
                         {/* Seleccionar cliente */}
-                        <Select
+                        {/* <Select
                             size="sm"
                             isRequired
                             label="Seleccionar cliente"
@@ -192,11 +232,11 @@ export const CartModal = ({ getCheckout, shopId, slug }: Props) => {
                             {customers.map((customer: any) => (
                                 <SelectItem key={customer.id} value={customer.id}>{customer.name}</SelectItem>
                             ))}
-                        </Select>
+                        </Select> */}
                     </ModalBody>
                     <ModalFooter>
                         <Button color="danger" size="sm" startContent={<FaTrash />} onPress={() => clearCart()}>Limpiar todo</Button>
-                        <Button color="primary" size="sm" isDisabled={!selectedCustomer} startContent={<FaShoppingCart />} onPress={() => handleCheckout()}>Cerrar Venta</Button>
+                        <Button color="primary" size="sm" isDisabled={!inputName || !inputPhone} startContent={<FaShoppingCart />} onPress={() => handleCheckout()}>Cerrar Venta</Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>

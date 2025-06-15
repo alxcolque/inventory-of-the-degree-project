@@ -37,6 +37,7 @@ export const ShopHome = () => {
   const getProducts = useStockStore(state => state.getStoreProducts);
 
   const [quantityCart, setQuantityCart] = useState(0);
+  const [price, setPrice] = useState("");
 
   const handleGetShop = async () => {
     if (token) {
@@ -375,12 +376,12 @@ export const ShopHome = () => {
                                   <div className="flex justify-between items-start">
                                     <div className="flex flex-col gap-0 w-full">
                                       {/* Only admin */}
-                                      {user?.roles.includes('admin') && (
                                       
                                       <div className="flex flex-row justify-between items-center">
                                         <h3 className="font-medium text-large">
                                           {product.name}
                                         </h3>
+                                      {user?.roles.includes('admin') && (
 
                                         <Dropdown>
                                           <DropdownTrigger>
@@ -419,8 +420,8 @@ export const ShopHome = () => {
                                             </DropdownItem>
                                           </DropdownMenu>
                                         </Dropdown>
-                                      </div>
                                       )}
+                                      </div>
                                       <div className="flex flex-row gap-2">
                                         <Chip
                                           className="font-small"
@@ -491,7 +492,21 @@ export const ShopHome = () => {
                                               }
                                               type="number"
                                             />
-                                            <Button size="sm" onPress={() => handleAddToCart(product.inventory_id, product.thumbnail, product.name, product.price, subcategories.category, product.id, product.stock_quantity)} color="primary" variant="shadow">Agregar al carrito</Button>
+                                            <Input
+                                              label="Precio"
+                                              labelPlacement="outside"
+                                              placeholder="0"
+                                              defaultValue={String(product.price)}
+                                              onChange={(e) => setPrice(e.target.value)}
+                                              startContent={
+                                                <div className="pointer-events-none flex items-center">
+                                                  <span className="text-default-400 text-small">Bs</span>
+                                                </div>
+                                              }
+                                              type="number"
+                                            />
+
+                                            <Button size="sm" onPress={() => handleAddToCart(product.inventory_id, product.thumbnail, product.name, Number(price), subcategories.category, product.id, product.stock_quantity)} color="primary" variant="shadow">Agregar al carrito</Button>
                                           </div>
                                         </div>
 

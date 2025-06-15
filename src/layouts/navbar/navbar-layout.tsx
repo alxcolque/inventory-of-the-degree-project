@@ -8,8 +8,8 @@ import { UserDropdown } from "./user-dropdown";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useAuthStore, useSettingStore } from "../../stores";
 import { DarkModeSwitch } from "./darkmodeswitch";
-import { FaCircleQuestion } from "react-icons/fa6";
-import { RiMegaphoneFill } from "react-icons/ri";
+//import { FaCircleQuestion } from "react-icons/fa6";
+//import { RiMegaphoneFill } from "react-icons/ri";
 //import { IoMdSearch } from "react-icons/io";
 import { useEffect } from "react";
 import { NotificationCenter } from "../../components/notifications/notification-center";
@@ -113,10 +113,10 @@ export const NavbarLayout = () => {
             justify="end"
             className="w-fit data-[justify=end]:flex-grow-0"
           >
-            <div className="flex items-center gap-2 max-md:hidden">
+            {/* <div className="flex items-center gap-2 max-md:hidden">
               <RiMegaphoneFill className="text-default-500" size={20} />
               <span>Feedback?</span>
-            </div>
+            </div> */}
             {authStatus === 'auth' && (
               <>
               {/* <NotificationsDropdown />  */}
@@ -131,9 +131,9 @@ export const NavbarLayout = () => {
             )}
             
 
-            <div className="max-md:hidden">
+            {/* <div className="max-md:hidden">
               <FaCircleQuestion className="text-default-500" size={20} />
-            </div>
+            </div> */}
 
             <NavbarContent className="max-md:hidden" key='switch'>
               <DarkModeSwitch />
