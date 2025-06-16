@@ -109,7 +109,7 @@ export const DetailSale = () => {
                         <div>
                             <p>Fecha: {sale.created_at ? format(new Date(sale.created_at), 'dd/MM/yyyy') : ''}</p>
                             <p>Cajero: {sale.seller ? sale.seller : ''}</p>
-                            <p>Cliente: {sale.customer ? sale.customer.name : ''}</p>
+                            <p>Cliente: {sale.customer_id === 0 ? sale.name : sale.customer.name}</p>
                         </div>
                     </div>
                     <div className="flex items-center justify-between mb-4">

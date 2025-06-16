@@ -37,7 +37,7 @@ export const ShopHome = () => {
   const getProducts = useStockStore(state => state.getStoreProducts);
 
   const [quantityCart, setQuantityCart] = useState(0);
-  const [price, setPrice] = useState("");
+  const [priceIn, setPriceIn] = useState("0");
 
   const handleGetShop = async () => {
     if (token) {
@@ -46,7 +46,7 @@ export const ShopHome = () => {
       handleFilter("", "");
       setIsLoading(false);
     }
-    
+
   }
   /* Calculate cart */
   const handleCalculateCart = () => {
@@ -113,18 +113,25 @@ export const ShopHome = () => {
   const [quantity, setQuantity] = useState(1);
 
   const handleAddToCart = (id: number, thumbnail: string, name: string, price: number, category: string, product_id: number, stock_quantity: number) => {
-
+    if (quantity < 1) {
+      toast.error('La cantidad debe ser mayor a 0');
+      return;
+    }
     //Verificar si stock es suficiente
     if (stock_quantity < quantity) {
       toast.error('No hay suficiente stock');
       return;
+    }
+    let priceFinal = priceIn;
+    if (priceFinal === "0") {
+      priceFinal = String(price);
     }
 
     const data = {
       thumbnail: thumbnail,
       name: name,
       category: category,
-      price: price,
+      price: Number(priceFinal),
       inventory_id: id,
       product_id: product_id,
       quantity: quantity
@@ -188,8 +195,6 @@ export const ShopHome = () => {
       await getProducts(slug!, params, token!);
       setIsLoading(false);
     }
-
-
   }
   return (
     <div className="my-2 px-4 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -229,16 +234,16 @@ export const ShopHome = () => {
                       </span>
                       {/* Only admin */}
                       {user?.roles.includes('admin') && (
-                      <Dropdown>
-                        <DropdownTrigger>
-                          <Button variant="bordered" isIconOnly>
-                            <TbDotsVertical />
-                          </Button>
-                        </DropdownTrigger>
-                        <DropdownMenu aria-label="Dynamic Actions">
-                          <DropdownItem key="ajustes">Ajustes</DropdownItem>
-                        </DropdownMenu>
-                      </Dropdown>
+                        <Dropdown>
+                          <DropdownTrigger>
+                            <Button variant="bordered" isIconOnly>
+                              <TbDotsVertical />
+                            </Button>
+                          </DropdownTrigger>
+                          <DropdownMenu aria-label="Dynamic Actions">
+                            <DropdownItem key="ajustes">Ajustes</DropdownItem>
+                          </DropdownMenu>
+                        </Dropdown>
                       )}
                     </div>
                   </div>
@@ -259,6 +264,20 @@ export const ShopHome = () => {
                       <Spacer y={0.5} />
                       {/* Boton para ventas */}
                       <Button color={isSale ? 'primary' : 'default'} startContent={<FaShoppingCart />} onPress={() => setIsSale(true)} className="w-full">Ventas</Button>
+                      <Card className="xl:max-w-sm bg-primary rounded-xl shadow-md px-3 w-full mt-2">
+                        <CardBody className="py-5 overflow-hidden">
+                          <div className="flex gap-2.5">
+                            <FaShoppingCart size={20} color="white" />
+                            <div className="flex flex-col">
+                              <span className="text-white">Ventas Hoy</span>
+                            </div>
+                          </div>
+                          <div className="flex gap-2.5 py-2 items-center">
+                            <span className="text-white text-xl font-semibold"> {3242.2} Bs</span>
+                            <span className="text-success text-xs">+ 4.5%</span>
+                          </div>
+                        </CardBody>
+                      </Card>
                     </>
                   </AccordionItem>
                 </Accordion>
@@ -317,7 +336,7 @@ export const ShopHome = () => {
                   </Button>
 
                   {categories.length === 0 && (
-                    <Spinner />
+                    <Skeleton />
                   )}
                   {categories.length > 0 && (
                     categories.map((category: any, index: number) => (
@@ -358,7 +377,7 @@ export const ShopHome = () => {
                             shadow="sm"
                           >
                             <CardBody
-                            key={index}
+                              key={index}
                             >
                               <div className="grid grid-cols-12 gap-2 justify-center items-center md:grid-cols-12 md:gap-4">
                                 <div className="relative col-span-4 cursor-pointer md:col-span-4 sm:col-span-4">
@@ -376,51 +395,51 @@ export const ShopHome = () => {
                                   <div className="flex justify-between items-start">
                                     <div className="flex flex-col gap-0 w-full">
                                       {/* Only admin */}
-                                      
+
                                       <div className="flex flex-row justify-between items-center">
                                         <h3 className="font-medium text-large">
                                           {product.name}
                                         </h3>
-                                      {user?.roles.includes('admin') && (
+                                        {user?.roles.includes('admin') && (
 
-                                        <Dropdown>
-                                          <DropdownTrigger>
-                                            <Button
-                                              isIconOnly
-                                              className="text-default-900/60 data-[hover]:bg-foreground/10 -translate-y-2 translate-x-2"
-                                              radius="full"
-                                              variant="light"
+                                          <Dropdown>
+                                            <DropdownTrigger>
+                                              <Button
+                                                isIconOnly
+                                                className="text-default-900/60 data-[hover]:bg-foreground/10 -translate-y-2 translate-x-2"
+                                                radius="full"
+                                                variant="light"
+                                              >
+                                                <RiMoreFill size={25} />
+                                              </Button>
+                                            </DropdownTrigger>
+                                            <DropdownMenu
+                                              aria-label="Dropdown menu with icons"
+                                              variant="faded"
                                             >
-                                              <RiMoreFill size={25} />
-                                            </Button>
-                                          </DropdownTrigger>
-                                          <DropdownMenu
-                                            aria-label="Dropdown menu with icons"
-                                            variant="faded"
-                                          >
-                                            <DropdownItem
-                                              key="edit"
-                                              startContent={<FaPencil />}
-                                              onPress={() =>
-                                                navigate("/admin/inventories/input")
-                                              }
-                                            >
-                                              Agregar
-                                            </DropdownItem>
+                                              <DropdownItem
+                                                key="edit"
+                                                startContent={<FaPencil />}
+                                                onPress={() =>
+                                                  navigate("/admin/inventories/input")
+                                                }
+                                              >
+                                                Agregar
+                                              </DropdownItem>
 
-                                            <DropdownItem
-                                              key="delete"
-                                              className="text-danger"
-                                              color="danger"
-                                              variant="bordered"
-                                              startContent={<FaTrash />}
-                                              onPress={() => handleDeleteClick(product.inventory_id)}
-                                            >
-                                              Eliminar
-                                            </DropdownItem>
-                                          </DropdownMenu>
-                                        </Dropdown>
-                                      )}
+                                              <DropdownItem
+                                                key="delete"
+                                                className="text-danger"
+                                                color="danger"
+                                                variant="bordered"
+                                                startContent={<FaTrash />}
+                                                onPress={() => handleDeleteClick(product.inventory_id)}
+                                              >
+                                                Eliminar
+                                              </DropdownItem>
+                                            </DropdownMenu>
+                                          </Dropdown>
+                                        )}
                                       </div>
                                       <div className="flex flex-row gap-2">
                                         <Chip
@@ -437,7 +456,7 @@ export const ShopHome = () => {
                                           {product.brand}
                                         </span>
                                       </div>
-                                      
+
                                       {/* cantidad y precio */}
                                       <div className="flex flex-row gap-2">
                                         <span className="text-sm font-bold text-red-500 text-foreground/90">
@@ -483,6 +502,8 @@ export const ShopHome = () => {
                                               label="Cantidad"
                                               labelPlacement="outside"
                                               placeholder="0"
+                                              min={1}
+                                              max={product.stock_quantity}
                                               defaultValue={String(quantity)}
                                               onChange={(e) => setQuantity(Number(e.target.value))}
                                               startContent={
@@ -497,7 +518,7 @@ export const ShopHome = () => {
                                               labelPlacement="outside"
                                               placeholder="0"
                                               defaultValue={String(product.price)}
-                                              onChange={(e) => setPrice(e.target.value)}
+                                              onChange={(e) => setPriceIn(e.target.value)}
                                               startContent={
                                                 <div className="pointer-events-none flex items-center">
                                                   <span className="text-default-400 text-small">Bs</span>
@@ -506,7 +527,7 @@ export const ShopHome = () => {
                                               type="number"
                                             />
 
-                                            <Button size="sm" onPress={() => handleAddToCart(product.inventory_id, product.thumbnail, product.name, Number(price), subcategories.category, product.id, product.stock_quantity)} color="primary" variant="shadow">Agregar al carrito</Button>
+                                            <Button size="sm" onPress={() => handleAddToCart(product.inventory_id, product.thumbnail, product.name, product.price, subcategories.category, product.id, product.stock_quantity)} color="primary" variant="shadow">Agregar al carrito</Button>
                                           </div>
                                         </div>
 
@@ -545,36 +566,36 @@ export const ShopHome = () => {
       )}
       {/* boton flotante en la parte inferior statico */}
       <div className="fixed bottom-4 right-4 flex flex-col gap-2">
-      {quantityCart > 0 && (
-        <Tooltip content="Carrito" placement="left" color="warning">
-          <Badge color="primary" content={quantityCart} shape="circle" showOutline={false}>
-            {shop?.id && (
-              <CartModal
-                getCheckout={
-                  (checkout: boolean) => {
-                    if (checkout) {
-                      handleFilter("", "");
-                      handleCalculateCart();
+        {quantityCart > 0 && (
+          <Tooltip content="Carrito" placement="left" color="warning">
+            <Badge color="primary" content={quantityCart} shape="circle" showOutline={false}>
+              {shop?.id && (
+                <CartModal
+                  getCheckout={
+                    (checkout: boolean) => {
+                      if (checkout) {
+                        handleFilter("", "");
+                        handleCalculateCart();
+                      }
                     }
                   }
-                }
-                shopId={shop?.id} 
-                slug={slug}
+                  shopId={shop?.id}
+                  slug={slug}
                 />
-            )}
-          </Badge>
-        </Tooltip>
-      )}
+              )}
+            </Badge>
+          </Tooltip>
+        )}
         <Tooltip content="Ventas" placement="left" color="warning">
-            <Button
-              color="primary"
-              variant="shadow"
-              radius="full"
-              isIconOnly
-              onPress={() => setIsSale(true)}
-            >
-              <FaChartLine size={20} />
-            </Button>
+          <Button
+            color="primary"
+            variant="shadow"
+            radius="full"
+            isIconOnly
+            onPress={() => setIsSale(true)}
+          >
+            <FaChartLine size={20} />
+          </Button>
         </Tooltip>
       </div>
     </div>

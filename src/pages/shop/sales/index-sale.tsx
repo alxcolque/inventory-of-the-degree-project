@@ -1,11 +1,11 @@
 
-import { Table, TableHeader, TableCell, TableBody, TableRow, TableColumn, Tooltip, Chip, Button } from "@nextui-org/react";
+import { Table, TableHeader, TableCell, TableBody, TableRow, TableColumn, Tooltip, Chip, Button, Skeleton } from "@nextui-org/react";
 
 import { FaArrowLeft, FaEye } from "react-icons/fa6";
 
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuthStore, useOrdersStore } from "../../../stores";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface Props {
     onClose: () => void;
@@ -15,13 +15,16 @@ export const IndexSale = ({ onClose }: Props) => {
     const { slug } = useParams();
     const navigate = useNavigate();
     const token = useAuthStore((state) => state.token);
+    const [isLoading, setIsLoading] = useState(false);
 
 
     const sales = useOrdersStore((state) => state.sales);
     const getSalesInStore = useOrdersStore((state) => state.getSalesInStore);
 
     useEffect(() => {
+        setIsLoading(true);
         getSalesInStore(slug as string, token!);
+        setIsLoading(false);
     }, []);
 
 
@@ -41,7 +44,11 @@ export const IndexSale = ({ onClose }: Props) => {
                 <Button color="primary" size="sm" startContent={<FaArrowLeft size={18} />} variant="shadow" onPress={() => onClose()}></Button>
                 <h2>Ventas</h2>
             </div>
-            <Table aria-label="Example table with custom cells" className="mt-4">
+            {isLoading && (
+                <Skeleton className="w-full h-[300px]" />
+            )}
+            {!isLoading && (
+                <Table aria-label="Example table with custom cells" className="mt-4">
                 <TableHeader columns={columns}>
                     {(column) => (
                         <TableColumn key={column.uid} align={column.uid === "actions" ? "center" : "start"}>
@@ -53,7 +60,7 @@ export const IndexSale = ({ onClose }: Props) => {
                     {sales.map((sale) => (
                         <TableRow key={sale.id}>
                             <TableCell>
-                                {sale.customer.name}
+                                {sale.customer_id === 0 ? sale.name : sale.customer.name}
                             </TableCell>
                             <TableCell>
                                 <p className="text-bold text-sm capitalize text-default-400">{sale.total}</p>
@@ -77,6 +84,7 @@ export const IndexSale = ({ onClose }: Props) => {
                     ))}
                 </TableBody>
             </Table>
+            )}
         </div>
     )
 }

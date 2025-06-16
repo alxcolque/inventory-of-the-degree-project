@@ -1,5 +1,8 @@
 export interface ISaleResponse {
     id: number,
+    customer_id: number,
+    name: string,
+    phone: string,
     customer: {
         name: string,
         email: string,

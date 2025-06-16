@@ -8,12 +8,15 @@ import {
     ModalHeader,
     Select,
     SelectItem,
+    Spinner,
+    Tab,
     Table,
     TableBody,
     TableCell,
     TableColumn,
     TableHeader,
     TableRow,
+    Tabs,
     User,
 } from "@nextui-org/react";
 import { useEffect, useState } from "react";
@@ -34,12 +37,14 @@ export const CartModal = ({ getCheckout, shopId, slug }: Props) => {
     const token = useAuthStore((state) => state.token);
     const user = useAuthStore((state) => state.user);
     const [selectedCustomer, setSelectedCustomer] = useState<string | null>(null);
+    const [selectedTab, setSelectedTab] = useState<string>("customer");
     const [inputPhone, setInputPhone] = useState<string>("");
     const [inputName, setInputName] = useState<string>("");
     const [inputDiscount, setInputDiscount] = useState<string>("0");
     const [isOpen, setIsOpen] = useState(false);
     const [cart, setCart] = useState([]);
     const [notifyCart, setNotifyCart] = useState<number>(0);
+    const [isLoading, setIsLoading] = useState(false);
 
     /* Obtener cliente */
     const customers = useCustomerStore((state) => state.customers);
@@ -97,32 +102,49 @@ export const CartModal = ({ getCheckout, shopId, slug }: Props) => {
             toast.error("El carrito esta vacio");
             return;
         }
-        /* Validar que el nombre y el celular no esten vacios */
-        if (!inputName || !inputPhone) {
-            toast.error("El nombre y el celular son obligatorios");
-            return;
-        }
-        let phoneRegex = /^[67]\d{7}$/;
-        if (!phoneRegex.test(inputPhone)) {
-            toast.error("El celular debe tener 8 digitos y comenzar con 6 o 7");
-            return;
-        }
-        const data = {
-            //customer_id: selectedCustomer,
-            total: cart ? JSON.parse(cart).reduce((acc: number, item: any) => acc + item.price * item.quantity, 0) : 0,
-            seller_id: user?.id,
-            store_id: shopId,
-            status: 'completado',
-            products: cart ? JSON.parse(cart) : [],
-            discount: inputDiscount,
-            name: inputName,
-            phone: inputPhone,
-        }
-        //console.log(data);
-        await createSale(data, token!);
 
+        let data = {};
+        if (selectedTab === "customer") {
+            let phoneRegex = /^[67]\d{7}$/;
+            if (!phoneRegex.test(inputPhone)) {
+                toast.error("El celular debe tener 8 digitos y comenzar con 6 o 7");
+                return;
+            }
+            if (!inputName || !inputPhone) {
+                toast.error("El nombre y el celular son obligatorios");
+                return;
+            }
+            data = {
+                total: cart ? JSON.parse(cart).reduce((acc: number, item: any) => acc + item.price * item.quantity, 0) : 0,
+                seller_id: user?.id,
+                store_id: shopId,
+                status: 'completado',
+                products: cart ? JSON.parse(cart) : [],
+                discount: inputDiscount,
+                name: inputName,
+                phone: inputPhone,
+                tab: selectedTab,
+            }
+        } else {
+            if (!selectedCustomer) {
+                toast.error("El cliente es obligatorio");
+                return;
+            }
+            data = {
+                total: cart ? JSON.parse(cart).reduce((acc: number, item: any) => acc + item.price * item.quantity, 0) : 0,
+                seller_id: user?.id,
+                store_id: shopId,
+                status: 'completado',
+                products: cart ? JSON.parse(cart) : [],
+                discount: inputDiscount,
+                customer_id: selectedCustomer,
+                tab: selectedTab,
+            }
+        }
+        setIsLoading(true);
+        await createSale(data, token!);
+        setIsLoading(false);
         clearCart();
-        //console.log(response);
         getCheckout(true);
     }
 
@@ -147,7 +169,7 @@ export const CartModal = ({ getCheckout, shopId, slug }: Props) => {
                     </ModalHeader>
                     <ModalBody>
                         {/* Mostrar los productos del carrito */}
-                        <Table aria-label="Example static collection table">
+                        <Table aria-label="Carrito">
                             <TableHeader>
                                 <TableColumn>Nombre</TableColumn>
                                 <TableColumn>Precio</TableColumn>
@@ -199,44 +221,53 @@ export const CartModal = ({ getCheckout, shopId, slug }: Props) => {
                             />
                             Total: <b>{cart.reduce((acc: number, item: any) => acc + item.price * item.quantity, 0) - parseInt(inputDiscount)}</b>
                         </div>
-                        {/* input cliente */}
-                        <div className="flex flex-row gap-2">
-                            <Input
-                                label="Nombre"
-                                labelPlacement="outside"
-                                placeholder="Nombre"
-                                onChange={(e) => setInputName(e.target.value)}
-                                type="text"
-                                className="w-3/4"
-                                isRequired
-                            />
-                            <Input
-                                label="Celular"
-                                labelPlacement="outside"
-                                placeholder="Celular"
-                                onChange={(e) => setInputPhone(e.target.value)}
-                                type="text"
-                                className="w-1/3"
-                                isRequired
-                            />
-                        </div>
+                        <Tabs aria-label="Options" selectedKey={selectedTab} onSelectionChange={(key) => setSelectedTab(key as string)}>
+                            <Tab key="customer" title="Cliente">
+                                {/* input cliente */}
+                                <div className="flex flex-row gap-2">
+                                    <Input
+                                        label="Nombre"
+                                        labelPlacement="outside"
+                                        placeholder="Nombre"
+                                        onChange={(e) => setInputName(e.target.value)}
+                                        type="text"
+                                        className="w-3/4"
+                                        isRequired
+                                    />
+                                    <Input
+                                        label="Celular"
+                                        labelPlacement="outside"
+                                        placeholder="Celular"
+                                        onChange={(e) => setInputPhone(e.target.value)}
+                                        type="text"
+                                        className="w-1/3"
+                                        isRequired
+                                    />
+                                </div>
 
-                        {/* Seleccionar cliente */}
-                        {/* <Select
-                            size="sm"
-                            isRequired
-                            label="Seleccionar cliente"
-                            placeholder="Seleccionar cliente"
-                            onChange={(e) => setSelectedCustomer(e.target.value)}
-                        >
-                            {customers.map((customer: any) => (
-                                <SelectItem key={customer.id} value={customer.id}>{customer.name}</SelectItem>
-                            ))}
-                        </Select> */}
+                            </Tab>
+                            <Tab key="customer2" title="Cliente existente">
+                                {/* Seleccionar cliente */}
+                                <Select
+                                    size="sm"
+                                    isRequired
+                                    label="Seleccionar cliente"
+                                    placeholder="Seleccionar cliente"
+                                    onChange={(e) => setSelectedCustomer(e.target.value)}
+                                >
+                                    {customers.map((customer: any) => (
+                                        <SelectItem key={customer.id} value={customer.id}>{customer.name}</SelectItem>
+                                    ))}
+                                </Select>
+                            </Tab>
+
+                        </Tabs>
+
+
                     </ModalBody>
                     <ModalFooter>
                         <Button color="danger" size="sm" startContent={<FaTrash />} onPress={() => clearCart()}>Limpiar todo</Button>
-                        <Button color="primary" size="sm" isDisabled={!inputName || !inputPhone} startContent={<FaShoppingCart />} onPress={() => handleCheckout()}>Cerrar Venta</Button>
+                        <Button color="primary" size="sm" isLoading={isLoading} spinner={<Spinner color="success" size="sm" />} startContent={<FaShoppingCart />} onPress={() => handleCheckout()}>Cerrar Venta</Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>
